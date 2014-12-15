@@ -24,8 +24,8 @@ function redrawScrean(maps, odata, blobCanvas){
             for (var yi = 0; yi < maps.length; yi++){
                 //console.log("matcha: ", yi + 1);
                 if(maps[yi][0][dptr_s] === yi + 1){
-                    imageDatar.data[dptr] =  odata[maps[yi][1]].data[dptr] ; //blobImage.data[dptr] / 3; //128;
-                    imageDatar.data[dptr + 1] = 0; //odata[maps[yi][1]].data[dptr + 1] ;// >> 4;
+                    imageDatar.data[dptr] =  0;//odata[maps[yi][1]].data[dptr] ; //blobImage.data[dptr] / 3; //128;
+                    imageDatar.data[dptr + 1] = odata[maps[yi][1]].data[dptr + 1] ;// >> 4;
                     imageDatar.data[dptr + 2] = 0;//odata[maps[yi][1]].data[dptr + 2]  ;//>> 4;
                     imageDatar.data[dptr + 3] = 200;
                 }

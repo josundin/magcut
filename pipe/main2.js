@@ -93,8 +93,9 @@ function loadCanvas(id){
 };
 
 function blobStuff(){
-    var demo_opt = function(){
+    var demo_opt = function(blobimg){
         this.threshold = 10;
+        this.blobMap = blobimg;
     }
 
     var blobCanvas = loadCanvas("blobs");
@@ -115,9 +116,20 @@ function blobStuff(){
         var imgBaseChanels = getChanels(overlapBase);
         var blobMaps = [];
 
+        var gui = new dat.GUI({ autoPlace: false });
+        var customContainer = document.getElementById('thresblobs');
+        customContainer.appendChild(gui.domElement);
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         for (var xii = 1; xii < images.length; xii++){
-            console.log("h från stack", xii); 
+            console.log("ny option", xii); 
+
+            var options = new demo_opt(xii);
+            var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
+            thresholdfunc.onChange(function(value) {
+                // console.log(this.object.blobMap);
+                getThemBlobs(this.object.blobMap, value)
+            });
 
             //Denna ska loopa igenom alla element
             var overlap = overlapData[xii];
@@ -140,7 +152,7 @@ function blobStuff(){
                 blobMaps.push([blobtmp, xii]);
             }
             globalNumberOfUnique += overlap.blobs.numberOfUnique;
-            console.log(globalNumberOfUnique, overlap.blobs.numberOfUnique,"--------------------------------restart--------------------------------------------");
+            console.log(globalNumberOfUnique, overlap.blobs.numberOfUnique);
         }
         return blobMaps;
     }
@@ -152,24 +164,27 @@ function blobStuff(){
     redrawScrean(bmaps, overlapData);
     
     /** gui options*/
-    var options = new demo_opt();
-    
-    var gui = new dat.GUI({ autoPlace: false });
-    var customContainer = document.getElementById('thresblobs');
-    customContainer.appendChild(gui.domElement);
+    // var options = new demo_opt(1);
+
 
     var el = document.getElementById('blobs');
-/////////////////////////////////////////////////////
-        // gui.add(options, "pre_blur_size", 3, 9).step(1);
-        // gui.add(options, "pre_sigma", 0, 2);
-        // gui.add(options, "post_blur_size", 100, 200).step(10);
-        // gui.add(options, "post_sigma", 10, 40);
-        var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
-        // var train_p = gui.add(options, "train_pattern");
-        // gui.add(options, 'message');
 
-        thresholdfunc.onChange(function(value) {
+        // var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
+
+
+
+
+
+
+
+
+
+
+
+        //thresholdfunc.onChange(function(value) {
+        function getThemBlobs(blobMap, value){
           // Fires on every change, drag, keypress, etc.
+            console.log(blobMap, value);
             var globalNumberOfUnique = 0;
             var blobMaps = [];
 
@@ -193,7 +208,7 @@ function blobStuff(){
                 globalNumberOfUnique += overlap.blobs.numberOfUnique;
             }
             redrawScrean(blobMaps, overlapData);
-            });
+            };
 
         // thresholdfunc.onFinishChange(function(value) {
         //   // Fires when a controller loses focus.
