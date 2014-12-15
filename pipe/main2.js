@@ -101,7 +101,7 @@ function blobStuff(){
     var mosaic2 = stitch.getMosaic2();
     selectview('canvas', mosaic2);
 
-        var overlapData = stitch.getOverlap();
+    var overlapData = stitch.getOverlap();
     console.log("Length of overlap data ", overlapData.length);
 ///////////////////////////
     var myblobs1 = [];
@@ -142,7 +142,6 @@ function blobStuff(){
             globalNumberOfUnique += overlap.blobs.numberOfUnique;
             console.log(globalNumberOfUnique, overlap.blobs.numberOfUnique,"--------------------------------restart--------------------------------------------");
         }
-        console.log("blobMaps length", blobMaps.length , blobMaps);
         return blobMaps;
     }
     // print(blobMaps[0], 10);

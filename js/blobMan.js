@@ -1,20 +1,21 @@
 //blobMan.js
 function redrawScrean(maps, odata, blobCanvas){
+    console.log(odata);
     var baseImgData = odata[0];
 
 	result_canvas.width = baseImgData.width;
     result_canvas.height = baseImgData.height;
     var result_ctx = result_canvas.getContext("2d");
   
-    result_ctx.putImageData(baseImgData, 0, 0);
-    var imageDatar = result_ctx.getImageData(0, 0, baseImgData.width, baseImgData.height);
+   
+    // var imageDatar = result_ctx.getImageData(0, 0, baseImgData.width, baseImgData.height);
+    result_ctx.globalAlpha = 0.5;
 
-    // for (var yi = 0; yi < odata.length; yi++){
+    var imageDatar = result_ctx.createImageData(baseImgData.width, baseImgData.height);
 
-    //     console.log("matcha: ", yi + 1);
-    //     console.log(maps[yi][0]);
-    //     console.log(odata[maps[0][1]].data);
-
+    // for (var yi = 0; yi < maps.length; yi++){
+    //     console.log(maps[yi][1], yi);
+    //     odata[maps[yi][1]].globalAlpha = 0.5;
     // }
 
     var dptr = 0, dptr_s = 0;
@@ -22,25 +23,33 @@ function redrawScrean(maps, odata, blobCanvas){
         for (var x = 0; x < baseImgData.width; x++, dptr+=4, dptr_s+=1) {
             for (var yi = 0; yi < maps.length; yi++){
                 //console.log("matcha: ", yi + 1);
-
                 if(maps[yi][0][dptr_s] === yi + 1){
                     imageDatar.data[dptr] =  odata[maps[yi][1]].data[dptr] ; //blobImage.data[dptr] / 3; //128;
                     imageDatar.data[dptr + 1] = 0; //odata[maps[yi][1]].data[dptr + 1] ;// >> 4;
                     imageDatar.data[dptr + 2] = 0;//odata[maps[yi][1]].data[dptr + 2]  ;//>> 4;
                     imageDatar.data[dptr + 3] = 200;
                 }
-                else{
-                    imageDatar.data[dptr + 3] = 255;    
-                }
+                // else{
+                //     imageDatar.data[dptr + 3] = 128;    
+                // }
             }            
         }
     }
-
-    // result_ctx.putImageData(blobImage.imageData, 0, 0);
+// result_ctx.globalAlpha = 1;
+ // result_ctx.putImageData(baseImgData, 0, 0);
     result_ctx.putImageData(imageDatar, 0, 0);
+    var canvas2 = document.createElement('CANVAS');//createcanvas(id);
+    document.body.appendChild(canvas2);
+    
+    canvas2.width =  baseImgData.width;
+    canvas2.height =  baseImgData.height;
+    var ctx2 = canvas2.getContext('2d');
+    ctx2.putImageData(baseImgData, 0, 0);
+    ctx2.drawImage(result_canvas,0,0);
+
     //print(blobImage.blobs.data, blobImage.height);
 }
-///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
 function zeros(size) {
     var array = new Array(size);
     for (var i = 0; i < size; i++) {
