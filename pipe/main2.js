@@ -120,17 +120,29 @@ function blobStuff(){
         var customContainer = document.getElementById('thresblobs');
         customContainer.appendChild(gui.domElement);
 
+        // var thresValues = new Array(images.length - 1);
+        // for (var xii = 1; xii < images.length; xii++){
+        //     thresValues.push(10);
+        // }
+        var thresValues = {};
+        for (var xii = 1; xii < images.length; xii++){
+            // thresValues.push(10);
+            console.log(xii);
+            thresValues[xii] = 10;//{value: 10};
+        }
+        console.log("thresValues", thresValues);
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         for (var xii = 1; xii < images.length; xii++){
             console.log("ny option", xii); 
 
             var options = new demo_opt(xii);
             var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
+            
             thresholdfunc.onChange(function(value) {
-                // console.log(this.object.blobMap);
-                getThemBlobs(this.object.blobMap, value)
+                thresValues[this.object.blobMap] = value;
+                getThemBlobs(thresValues)
             });
-
+            
             //Denna ska loopa igenom alla element
             var overlap = overlapData[xii];
             var img1Chanels = getChanels(overlap);
@@ -152,7 +164,7 @@ function blobStuff(){
                 blobMaps.push([blobtmp, xii]);
             }
             globalNumberOfUnique += overlap.blobs.numberOfUnique;
-            console.log(globalNumberOfUnique, overlap.blobs.numberOfUnique);
+            // console.log(globalNumberOfUnique, overlap.blobs.numberOfUnique);
         }
         return blobMaps;
     }
@@ -162,37 +174,18 @@ function blobStuff(){
 
     result_canvas = loadCanvas("blobs");
     redrawScrean(bmaps, overlapData);
-    
-    /** gui options*/
-    // var options = new demo_opt(1);
-
-
     var el = document.getElementById('blobs');
 
-        // var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
-
-
-
-
-
-
-
-
-
-
-
-        //thresholdfunc.onChange(function(value) {
-        function getThemBlobs(blobMap, value){
+        function getThemBlobs(tvalues){
           // Fires on every change, drag, keypress, etc.
-            console.log(blobMap, value);
+            // console.log(blobMap, value, v2);
             var globalNumberOfUnique = 0;
             var blobMaps = [];
 
             for (var xii = 1; xii < images.length; xii++){
                 var overlap = overlapData[xii];
-
-                ////// Go find them blobs //////////
-                overlap.blobs = myblobs1[xii].compareToThres(value);
+                
+                overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
                 // Separate the aryes
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
                     

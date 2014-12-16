@@ -70,7 +70,6 @@
 				return myBlobs;
         	},
         	compareToThres: function(cmpThreshold) {
-
         		var tblobs = findBlobs(gGauss, gW, gH, cmpThreshold);
 				return tblobs;
         	}

@@ -32,9 +32,6 @@ function redrawScrean(maps, odata, blobCanvas){
             }            
         }
     }
-    // result_ctx.putImageData(imageDatar, 0, 0);
-    // ctx2.putImageData(baseImgData, 0, 0);
-    // ctx2.drawImage(result_canvas,0,0);
 
     ctx2.putImageData(imageDatar, 0, 0);
     result_ctx.putImageData(baseImgData, 0, 0);
