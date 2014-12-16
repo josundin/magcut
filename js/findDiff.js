@@ -1,5 +1,3 @@
-//findDiff.js
-// Input the base image and the rest of the images
 
 (function(_this){
 "use strict";

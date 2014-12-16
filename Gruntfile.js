@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             },
             dist: {
               src: [ 'ext_js/jquery-1.9.1.min.js','js/extracted.js','ext_js/jsfeat-min.js', 'ext_js/numeric-1.2.6.min.js', 'ext_js/dat.gui.min.js', 
-              "js/imagewarp.js",'js/findDiff.js', 'js/findBlobs.js', 'js/blobMan.js', 'js/selectview.js'],
+              "js/imagewarp.js",'js/findDiff.js', 'js/findBlobs.js', 'js/blobMan.js', 'js/selectview.js', 'js/interactMouse.js'],
               dest: 'dist/magcut.js',
             },
           },

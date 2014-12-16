@@ -104,37 +104,23 @@ function blobStuff(){
 
     var overlapData = stitch.getOverlap();
     console.log("Length of overlap data ", overlapData.length);
-///////////////////////////
     var myblobs1 = [];
     var bmaps = findBlobs();
 
     function findBlobs(){
         var globalNumberOfUnique = 0;
-
-        ////// Go find them blobs /////////
         var overlapBase = overlapData[0];
         var imgBaseChanels = getChanels(overlapBase);
         var blobMaps = [];
-
         var gui = new dat.GUI({ autoPlace: false });
         var customContainer = document.getElementById('thresblobs');
         customContainer.appendChild(gui.domElement);
 
-        // var thresValues = new Array(images.length - 1);
-        // for (var xii = 1; xii < images.length; xii++){
-        //     thresValues.push(10);
-        // }
         var thresValues = {};
         for (var xii = 1; xii < images.length; xii++){
-            // thresValues.push(10);
-            console.log(xii);
-            thresValues[xii] = 10;//{value: 10};
+            thresValues[xii] = 10;
         }
-        console.log("thresValues", thresValues);
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         for (var xii = 1; xii < images.length; xii++){
-            console.log("ny option", xii); 
-
             var options = new demo_opt(xii);
             var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
             
@@ -160,48 +146,41 @@ function blobStuff(){
                         blobtmp[x] = currentblobindx + globalNumberOfUnique;
                     }
                 }
-                // print(blobtmp, 10);
                 blobMaps.push([blobtmp, xii]);
             }
             globalNumberOfUnique += overlap.blobs.numberOfUnique;
-            // console.log(globalNumberOfUnique, overlap.blobs.numberOfUnique);
         }
         return blobMaps;
     }
-    // print(blobMaps[0], 10);
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     result_canvas = loadCanvas("blobs");
     redrawScrean(bmaps, overlapData);
     var el = document.getElementById('blobs');
+    el.scrollIntoView(true);
+    console.log("setup mouse");
+    setupMouse(bmaps, overlapData);
 
-        function getThemBlobs(tvalues){
-          // Fires on every change, drag, keypress, etc.
-            // console.log(blobMap, value, v2);
-            var globalNumberOfUnique = 0;
-            var blobMaps = [];
+    function getThemBlobs(tvalues){
+        var globalNumberOfUnique = 0;
+        var blobMaps = [];
 
-            for (var xii = 1; xii < images.length; xii++){
-                var overlap = overlapData[xii];
-                
-                overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
-                // Separate the aryes
-                for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
-                    
-                    var currentblobindx = y + 1;
-                    var blobtmp = zeros(overlap.blobs.data.length);
-                    for (var x = 0; x < overlap.blobs.data.length; x++){
-                        if(currentblobindx === overlap.blobs.data[x]){
-                            blobtmp[x] = currentblobindx + globalNumberOfUnique;
-                        }
+        for (var xii = 1; xii < images.length; xii++){
+            var overlap = overlapData[xii];
+            overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
+            for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
+                var currentblobindx = y + 1;
+                var blobtmp = zeros(overlap.blobs.data.length);
+                for (var x = 0; x < overlap.blobs.data.length; x++){
+                    if(currentblobindx === overlap.blobs.data[x]){
+                        blobtmp[x] = currentblobindx + globalNumberOfUnique;
                     }
-                    blobMaps.push([blobtmp, xii]);
                 }
-                globalNumberOfUnique += overlap.blobs.numberOfUnique;
+                blobMaps.push([blobtmp, xii]);
             }
-            redrawScrean(blobMaps, overlapData);
-            };
+            globalNumberOfUnique += overlap.blobs.numberOfUnique;
+        }
+        redrawScrean(blobMaps, overlapData);
+    };
 
         // thresholdfunc.onFinishChange(function(value) {
         //   // Fires when a controller loses focus.
@@ -209,9 +188,7 @@ function blobStuff(){
 
         // train_p.onFinishChange(function(value) {
         //   // Fires when a controller loses focus.
-        // });
-        el.scrollIntoView(true); 
-        
+        // });    
 
     function getChanels(imageDatar){
         var dptr=0, dptrSingle=0;
