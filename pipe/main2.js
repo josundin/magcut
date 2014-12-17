@@ -105,7 +105,10 @@ function blobStuff(){
     var overlapData = stitch.getOverlap();
     console.log("Length of overlap data ", overlapData.length);
     var myblobs1 = [];
+    var blobSelected = {};
+    var mouse = {};
     var bmaps = findBlobs();
+
 
     function findBlobs(){
         var globalNumberOfUnique = 0;
@@ -150,15 +153,19 @@ function blobStuff(){
             }
             globalNumberOfUnique += overlap.blobs.numberOfUnique;
         }
+        console.log("globalNumberOfUnique", globalNumberOfUnique);
+        for (var xii = 0; xii < globalNumberOfUnique; xii++){
+            blobSelected[xii + 1] = false;
+        }
         return blobMaps;
     }
 
     result_canvas = loadCanvas("blobs");
-    redrawScrean(bmaps, overlapData);
+    redrawScrean(bmaps, overlapData, blobSelected);
     var el = document.getElementById('blobs');
     el.scrollIntoView(true);
     console.log("setup mouse");
-    setupMouse(bmaps, overlapData);
+    mouse = interactMouse(bmaps, overlapData);
 
     function getThemBlobs(tvalues){
         var globalNumberOfUnique = 0;
@@ -179,7 +186,13 @@ function blobStuff(){
             }
             globalNumberOfUnique += overlap.blobs.numberOfUnique;
         }
-        redrawScrean(blobMaps, overlapData);
+        blobSelected = {};
+        for (var xii = 0; xii < globalNumberOfUnique; xii++){
+            blobSelected[xii + 1] = false;
+        }
+        console.log("globalNumberOfUnique", globalNumberOfUnique, blobSelected);
+        mouse.setNblobs(blobMaps, overlapData);
+        redrawScrean(blobMaps, overlapData, blobSelected);      
     };
 
         // thresholdfunc.onFinishChange(function(value) {

@@ -1,5 +1,5 @@
 //blobMan.js
-function redrawScrean(maps, odata, blobCanvas){
+function redrawScrean(maps, odata, blobSelected){
     var baseImgData = odata[0];
 
 	result_canvas.width = baseImgData.width;
@@ -14,8 +14,11 @@ function redrawScrean(maps, odata, blobCanvas){
     var imageDatar = result_ctx.createImageData(baseImgData.width, baseImgData.height);
 
     // for (var yi = 0; yi < maps.length; yi++){
-    //     console.log(maps[yi][1], yi);
-    //     odata[maps[yi][1]].globalAlpha = 0.5;
+
+    //     var red = blobSelected[yi + 1] ? 255 : 128;
+    //     var green = blobSelected[yi + 1] ? 128 : 255;
+
+    //     console.log(blobSelected[yi + 1], red, green,yi);
     // }
 
     var dptr = 0, dptr_s = 0;
@@ -24,9 +27,9 @@ function redrawScrean(maps, odata, blobCanvas){
             for (var yi = 0; yi < maps.length; yi++){
                 //console.log("matcha: ", yi + 1);
                 if(maps[yi][0][dptr_s] === yi + 1){
-                    imageDatar.data[dptr] =  0;//odata[maps[yi][1]].data[dptr] ; //blobImage.data[dptr] / 3; //128;
-                    imageDatar.data[dptr + 1] = odata[maps[yi][1]].data[dptr + 1] ;// >> 4;
-                    imageDatar.data[dptr + 2] = 0;//odata[maps[yi][1]].data[dptr + 2]  ;//>> 4;
+                    imageDatar.data[dptr] = odata[maps[yi][1]].data[dptr];//blobSelected[yi + 1] ? 0 : odata[maps[yi][1]].data[dptr];
+                    imageDatar.data[dptr + 1] = 0; // blobSelected[yi + 1] ? odata[maps[yi][1]].data[dptr + 1] : 0 ;
+                    imageDatar.data[dptr + 2] = 0;
                     imageDatar.data[dptr + 3] = 200;
                 }
             }            
