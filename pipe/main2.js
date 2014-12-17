@@ -165,7 +165,7 @@ function blobStuff(){
     var el = document.getElementById('blobs');
     el.scrollIntoView(true);
     console.log("setup mouse");
-    mouse = interactMouse(bmaps, overlapData, blobSelected);
+    mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
 
     function getThemBlobs(tvalues){
         var globalNumberOfUnique = 0;
@@ -190,7 +190,6 @@ function blobStuff(){
         for (var xii = 0; xii < globalNumberOfUnique; xii++){
             blobSelected[xii + 1] = false;
         }
-        console.log("globalNumberOfUnique", globalNumberOfUnique, blobSelected);
         mouse.setNblobs(blobMaps, overlapData, blobSelected);
         redrawScrean(blobMaps, overlapData, blobSelected);      
     };
@@ -225,3 +224,4 @@ function blobStuff(){
         return [imgR_f32, imgG_f32, imgB_f32, imgAlpha];
     };
 }
+

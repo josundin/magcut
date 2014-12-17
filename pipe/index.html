@@ -44,6 +44,7 @@
 
 <script src="../js/blobMan.js" type="text/javascript"></script>	
 <script src="../js/interactMouse.js" type="text/javascript"></script>	
+<script src="../js/poisson.js" type="text/javascript"></script>	
 <script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
 
 <div class="container">
@@ -70,8 +71,21 @@
 	  <div class="col-md-4">
 	  <p>Threshold interface</p>
 	  <div id="thresblobs"></div>
+	  <br> <br>
+	  		    When the regions are selected, click 
+		    <button name="adjustBtn" onclick="blend()">HERE</button>.
 	  </div>
 	</div>
+
+    <div class="span12">
+        <div id="extra-canvas"></div>
+        <p>EXTRA1 CANVAS</p>
+ 
+        <div id="final-canvas"></div>
+        <p>FINAL CANVAS</p>
+        <div id="extra2-canvas"></div>
+        <p>EXTRA2 CANVAS</p> 
+    </div>
 
 </div>
 
