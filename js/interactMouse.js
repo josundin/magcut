@@ -3,9 +3,10 @@
 (function(_this){
 "use strict";
 
-    _this['interactMouse'] = function(overlap, imgs){
+    _this['interactMouse'] = function(overlap, imgs, selectedBlobs){
         var numBlobs = 0, blobData = [], imgData = [], dragging = false;
         var is_mixing_gradients = true;
+        var blobSelected = selectedBlobs;
         var setupOverlay = (function(){
             function $(selector){
                 var c = selector.charAt(0);
@@ -94,7 +95,7 @@
                     lastPos = getPointerPositionsIn(e);
                     currPos = lastPos;
                     //Finout if we have a hit
-                    console.log("mosue touchstart", currPos[0].x,currPos[0].y ,  result_canvas.width, result_canvas.height);
+                    // console.log("mosue touchstart", currPos[0].x,currPos[0].y ,  result_canvas.width, result_canvas.height);
                     //find which shape was clicked
                     for (var i= 1; i < numBlobs + 1; i++) {
                         //console.log(blobData[i - 1][0]);
@@ -102,10 +103,13 @@
                         if( blobData[i - 1][0][(currPos[0].y*result_canvas.width) + currPos[0].x] === i) {
                             dragging = i;
                             console.log("HITT", i, "on", (currPos[0].y*result_canvas.width) + currPos[0].x);
+                            blobSelected[i] = !blobSelected[i];
                         }
                     }
 
-                    
+                    console.log(blobSelected);
+                    redrawScrean(blobData, imgData, blobSelected);
+
                 }).on('touchmove mousemove',function(e){
                     if( lastPos ){
                         var tmp = lastPos;
@@ -140,12 +144,8 @@
                                     }
                                 }
                             }
-                            //////////////////////////////////////////////////////////////////////
-                            console.log("PRINTA blobDatatmp");
-                            // print(blobDatatmp, result_canvas.height)
                             blobData[dragging - 1][0] = blobDatatmp;
-
-                            redrawScrean(blobData, imgData);
+                            redrawScrean(blobData, imgData, blobSelected);
 
                         }
             
@@ -165,8 +165,6 @@
             };
         })();
 
-        // setupMouse(overlap, imgs);
-        // function setupMouse(overlap, imgs){
         (function(){    
             numBlobs = overlap.length;
             blobData = overlap;
@@ -185,10 +183,11 @@
         };
 
         return{
-            setNblobs: function(overlap1, imgs1){
+            setNblobs: function(overlap1, imgs1, selectedBlobs){
                 numBlobs = overlap1.length;
                 blobData = overlap1;
                 imgData = imgs1;
+                blobSelected = selectedBlobs;
             }
         };
     };

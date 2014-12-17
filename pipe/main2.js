@@ -165,7 +165,7 @@ function blobStuff(){
     var el = document.getElementById('blobs');
     el.scrollIntoView(true);
     console.log("setup mouse");
-    mouse = interactMouse(bmaps, overlapData);
+    mouse = interactMouse(bmaps, overlapData, blobSelected);
 
     function getThemBlobs(tvalues){
         var globalNumberOfUnique = 0;
@@ -191,7 +191,7 @@ function blobStuff(){
             blobSelected[xii + 1] = false;
         }
         console.log("globalNumberOfUnique", globalNumberOfUnique, blobSelected);
-        mouse.setNblobs(blobMaps, overlapData);
+        mouse.setNblobs(blobMaps, overlapData, blobSelected);
         redrawScrean(blobMaps, overlapData, blobSelected);      
     };
 
