@@ -79,7 +79,6 @@ function selectview(id, mosaicin){
     viewMosaic(mosaics);
 
     setupOverlaySelectView('#selectViewContainer',function(){
-    	console.log("selectview2");
     });
 }
 

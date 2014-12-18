@@ -34,9 +34,10 @@ var imgData = [], blobData = [];
                     }
                     return self;
                 };
-
+                element.children.blobs.remove();
                 self.on = on;
                 self.element = element;
+                console.log("self",self);
 
                 return self;
             }
@@ -86,6 +87,8 @@ var imgData = [], blobData = [];
                 }; })(onChange);
 
                 canvas = $(id);
+                canvas.width = 0;
+                canvas.height = 0;
 
                 canvas.on('touchstart mousedown',function(e){
 
@@ -100,7 +103,7 @@ var imgData = [], blobData = [];
                     lastPos = getPointerPositionsIn(e);
                     currPos = lastPos;
                     //Finout if we have a hit
-                    // console.log("mosue touchstart", currPos[0].x,currPos[0].y ,  result_canvas.width, result_canvas.height);
+                    console.log("mosue touchstart", currPos[0].x,currPos[0].y ,  result_canvas.width, result_canvas.height);
                     //find which shape was clicked
                     for (var i= 1; i < numBlobs + 1; i++) {
                         //console.log(blobData[i - 1][0]);
