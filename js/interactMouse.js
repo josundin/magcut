@@ -109,11 +109,9 @@ var imgData = [], blobData = [];
                             dragging = i;
                             console.log("HITT", i, "on", (currPos[0].y*result_canvas.width) + currPos[0].x);
                             blobSelected[i] = !blobSelected[i];
-                            break;
+                            //break;
                         }
                     }
-
-                    console.log(blobSelected);
                     redrawScrean(blobData, imgData, blobSelected);
 
                 }).on('touchmove mousemove',function(e){
@@ -201,12 +199,17 @@ var imgData = [], blobData = [];
 }(this));
 
 function blend(){
-    console.log("blend them balle");
-    console.log(blobData.length,_.size(blobSelected));
+    var cont = _.contains(blobSelected, true);
+    if(cont !== true){    
+        alert("First, select which regions to blend by click them in the image");
+        return 0;    
+    }
+    
+    $('#btn1').show();
 
     var newcanvas =  document.createElement('CANVAS');//loadCanvas("new-canvas");
     var srccanvas =  document.createElement('CANVAS');//loadCanvas("src-canvas");
-    var finalcanvas =  loadCanvas("final-canvas");
+    // var finalcanvas =  loadCanvas("final-canvas");
     newcanvas.width = srccanvas.width = finalcanvas.width = cwidth;
     newcanvas.height = srccanvas.height = finalcanvas.height = cheight;
 
@@ -232,9 +235,6 @@ function blend(){
             var mask_data = getMask(mask_pixels, srcData, blobNr);
 
             poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas);
-
-
-            console.log(i ,"Bild", blobData[i-1][1] );
         }
     }
 }

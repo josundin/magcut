@@ -92,6 +92,7 @@ function loadCanvas(id){
     return canvas;
 };
 
+var finalcanvas =  loadCanvas("final-canvas");
 function blobStuff(){
     var demo_opt = function(blobimg){
         this.threshold = 10;
@@ -108,13 +109,15 @@ function blobStuff(){
     var blobSelected = {};
     var mouse = {};
     var bmaps = findBlobs();
-
-
+    var blobMaps = [];
+    $('#btn1').hide();
+    createButton1();
+    var globalNumberOfUnique = 0;
     function findBlobs(){
-        var globalNumberOfUnique = 0;
+        globalNumberOfUnique = 0;
         var overlapBase = overlapData[0];
         var imgBaseChanels = getChanels(overlapBase);
-        var blobMaps = [];
+        blobMaps = [];
         var gui = new dat.GUI({ autoPlace: false });
         var customContainer = document.getElementById('thresblobs');
         customContainer.appendChild(gui.domElement);
@@ -168,8 +171,8 @@ function blobStuff(){
     mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
 
     function getThemBlobs(tvalues){
-        var globalNumberOfUnique = 0;
-        var blobMaps = [];
+        globalNumberOfUnique = 0;
+        blobMaps = [];
 
         for (var xii = 1; xii < images.length; xii++){
             var overlap = overlapData[xii];
@@ -196,10 +199,6 @@ function blobStuff(){
 
         // thresholdfunc.onFinishChange(function(value) {
         //   // Fires when a controller loses focus.
-        // });
-
-        // train_p.onFinishChange(function(value) {
-        //   // Fires when a controller loses focus.
         // });    
 
     function getChanels(imageDatar){
@@ -210,18 +209,38 @@ function blobStuff(){
         var imgAlpha = new jsfeat.matrix_t(imageDatar.width, imageDatar.height, jsfeat.U8_t | jsfeat.C1_t);
 
         for (var y = 0; y < imageDatar.height; y++) {
-            //lumas[y] = new Array(imagedata.width);
             for (var x = 0; x < imageDatar.width; x++, dptr+=4, dptrSingle+=1) {
-                //var i = x * 4 + y * 4;
-                //console.log(dptr, dptrSingle);
                 imgR_f32.data[dptrSingle] = imageDatar.data[dptr];
                 imgG_f32.data[dptrSingle] = imageDatar.data[dptr + 1];
                 imgB_f32.data[dptrSingle] = imageDatar.data[dptr + 2];
                 imgAlpha.data[dptrSingle] = imageDatar.data[dptr + 3];
             }
         }
-
         return [imgR_f32, imgG_f32, imgB_f32, imgAlpha];
     };
+
+    function createButton1(){
+        var button = document.createElement("input");
+        button.type = "button";
+        button.className="btn btn-primary";
+        button.value = "reset";
+        button.onclick = reset;
+        var div = document.getElementById("btn1"); 
+        div.appendChild(button);
+    }
+
+    function reset(){
+        finalcanvas.width = 0;
+        finalcanvas.height = 0;
+        $('#btn1').hide();
+        for (var xii = 0; xii < _.size(blobSelected); xii++){
+            blobSelected[xii + 1] = false;
+        }
+        redrawScrean(bmaps, overlapData, blobSelected); 
+        var el = document.getElementById('blobs');
+        el.scrollIntoView(true);
+    }
 }
+
+
 
