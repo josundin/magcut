@@ -109,6 +109,7 @@ var imgData = [], blobData = [];
                             dragging = i;
                             console.log("HITT", i, "on", (currPos[0].y*result_canvas.width) + currPos[0].x);
                             blobSelected[i] = !blobSelected[i];
+                            break;
                         }
                     }
 
@@ -200,13 +201,12 @@ var imgData = [], blobData = [];
 }(this));
 
 function blend(){
-    console.log("blend them");
-    console.log(blobSelected);
+    console.log("blend them balle");
+    console.log(blobData.length,_.size(blobSelected));
 
     var newcanvas =  document.createElement('CANVAS');//loadCanvas("new-canvas");
     var srccanvas =  document.createElement('CANVAS');//loadCanvas("src-canvas");
     var finalcanvas =  loadCanvas("final-canvas");
-
     newcanvas.width = srccanvas.width = finalcanvas.width = cwidth;
     newcanvas.height = srccanvas.height = finalcanvas.height = cheight;
 
@@ -214,17 +214,29 @@ function blend(){
     var new_ctx = newcanvas.getContext("2d");
     var final_ctx = finalcanvas.getContext("2d");
 
-    src_ctx.putImageData(imgData[1], 0, 0);
-    final_ctx.putImageData(imgData[0], 0, 0);
-    new_ctx.putImageData(imgData[0], 0, 0);
+    var firstImg = true;
+    for (var i = 0; i <= _.size(blobSelected); i++){
+        if(blobSelected[i] === true){
+            var blobNr = i;
 
-    var blobNr = 5;
-    var mask_pixels = blobData[blobNr -1][0];
-    // // print(mask_pixels, srccanvas.height);
-    var srcData = src_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
-    var mask_data = getMask(mask_pixels, srcData, blobNr);
-    poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas);
+            // src_ctx.putImageData(imgData[1], 0, 0);
+            src_ctx.putImageData(imgData[blobData[i - 1][1]], 0, 0);
+             
+            new_ctx.putImageData(imgData[0], 0, 0);
+            if(firstImg){
+                final_ctx.putImageData(imgData[0], 0, 0);
+                firstImg = false;
+            }
+            var mask_pixels = blobData[blobNr -1][0];
+            var srcData = src_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
+            var mask_data = getMask(mask_pixels, srcData, blobNr);
 
+            poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas);
+
+
+            console.log(i ,"Bild", blobData[i-1][1] );
+        }
+    }
 }
 
 
@@ -235,18 +247,13 @@ function getMask(mask_pixels, src_pixels, blobNr){
     var extraCtx = extraCanvas.getContext("2d");
 
     var test_pixels = extraCtx.getImageData(0, 0, src_pixels.width, src_pixels.height);
-    ////////////////////////////////////////////////////////////////////////////////////
-
-    var dptr_s = 0, nrPixels = 0;
+    var dptr_s = 0;
     for(var y=0; y<src_pixels.height; y++) {
         for(var x=0; x<src_pixels.width; x++, dptr_s+=1) {
 
             var p = dptr_s*4;//;(y*src_pixels.width+x)*4;
 
             if(mask_pixels[dptr_s] === blobNr){
-
-                nrPixels++;
-
                 test_pixels.data[p+0] = 0; 
                 test_pixels.data[p+1] = 255;
                 test_pixels.data[p+2] = 0 ; 
