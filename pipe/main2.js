@@ -43,7 +43,7 @@ function enablestart() {
 		// var startbutton = document.getElementById('startbutton');
 		// startbutton.value = "start";
 		// startbutton.disabled = null;
-		stitch = imagewarp(canvasDiv, homographies, imagesRef, blobStuff);
+		stitch = imagewarp(canvasDiv, homographies, imagesRef, selView);
 	}
 }
 
@@ -92,6 +92,28 @@ function loadCanvas(id){
     return canvas;
 };
 
+function selView(){
+    console.log("selView");
+    var mosaic2 = stitch.getMosaic2();
+    selectview('canvas', mosaic2);
+};
+
+function createImgObj(val){
+    var imagesRefTmp = new Array(imagesRef.length);
+    var rindx = 0;
+
+    //beroende på val, så sätter vi också H
+
+    imagesRefTmp[rindx++] = imagesRef[val];
+    for (var i = 0; i < imagesRef.length; i++){
+        if (i != val){
+            imagesRefTmp[rindx++] = imagesRef[i]; 
+        }
+    }
+    console.log("old", imagesRef);
+    console.log("new", imagesRefTmp);
+}
+
 var finalcanvas =  loadCanvas("final-canvas");
 function blobStuff(){
     var demo_opt = function(blobimg){
@@ -100,8 +122,6 @@ function blobStuff(){
     }
 
     var blobCanvas = loadCanvas("blobs");
-    var mosaic2 = stitch.getMosaic2();
-    selectview('canvas', mosaic2);
 
     var overlapData = stitch.getOverlap();
     console.log("Length of overlap data ", overlapData.length);
@@ -113,6 +133,9 @@ function blobStuff(){
     $('#btn1').hide();
     createButton1();
     var globalNumberOfUnique = 0;
+
+    $('#blobInterface').show();
+
     function findBlobs(){
         globalNumberOfUnique = 0;
         var overlapBase = overlapData[0];

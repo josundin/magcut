@@ -13,3 +13,4 @@ Göra ett interface som presenterar images-setten
 gör också så att användaren kan välja ett sätt för att redigera.
 	
 2. 
+Som utput av grunt ha två separata filer en för demo och en för app

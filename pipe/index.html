@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>The indexDev Demo</title>
+<title>The Demo</title>
 <style>
 	.selectedFiles img {
 		max-width: 100;
@@ -14,83 +14,61 @@
 	.masks {
 		display: none;
 	}
+
+
+@media (min-width: 768px) {
+	  .navbar-collapse {
+	    height: auto;
+	    border-top: 0;
+	    box-shadow: none;
+	    max-height: none;
+	    padding-left:0;
+	    padding-right:0;
+	  }
+
+	  .navbar-collapse.in {
+	    overflow-x: visible;
+	  }
+
+	.navbar
+	{
+		max-width:150px;
+		margin-right: 0;
+		margin-left: 0;
+	}	
+
+	.navbar-nav,
+	.navbar-nav > li,
+	.navbar-left,
+	.navbar-right,
+	.navbar-header
+	{float:none !important;}
+
+	.navbar-right .dropdown-menu {left:0;right:auto;}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+	    margin-right: 0;
+	}
+}
+
+
 </style>
 
 	<link rel="stylesheet" href="../libs/twitter-bootstrap/bootstrap.min.css">
 </head>
 <body>
+<nav class="navbar navbar-default" role="navigation">
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="indexDemo.html">Demo</a></li>
+      <li><a href="indexApp.html">App</a></li>
+    </ul>
 
-<img id="IMG_0050" class="masks" src="../imgs/IMG_0050.jpg"></img>
-<img id="IMG_0053" class="masks" src="../imgs/IMG_0053.jpg"></img>
-<img id="IMG_0051" class="masks" src="../imgs/IMG_0051.jpg"></img>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#">Link</a></li>
 
-<img id="P1100328" class="masks" src="../imgs/P1100328.jpg"></img>
-<img id="P1100329" class="masks" src="../imgs/P1100329.jpg"></img>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
 
-<img id="P1" class="masks" src="../imgs/P1.jpg"></img>
-<img id="P2" class="masks" src="../imgs/P2.jpg"></img>
-
-<script type="text/javascript" src="../ext_js/jsfeat-min.js"></script>
-<script type="text/javascript" src="../ext_js/numeric-1.2.6.min.js"></script>
-<!--script type="text/javascript" src="../ext_js/underscore-min.js"></script>
-<script type="text/javascript" src="../ext_js/underscore_dev.js"></script-->
-<script type="text/javascript" src="../js/extracted.js"></script>
-<script type="text/javascript" src="../ext_js/dat.gui.min.js"></script>
-<script src="../js/selectview.js" type="text/javascript"></script>
-
-<script src="../js/findBlobs.js" type="text/javascript"></script>
-<script src="../js/findDiff.js" type="text/javascript"></script>
-<script type="text/javascript" src="../js/imagewarp.js"></script>
-
-<script src="../js/blobMan.js" type="text/javascript"></script>	
-<script src="../js/interactMouse.js" type="text/javascript"></script>	
-<script src="../js/poisson.js" type="text/javascript"></script>	
-<script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
-
-<div class="container">
-	<div class="row">
-		<div class="span12">
-			<p>The images</p>			
-			<div id="selectedF1" class="selectedFiles"></div>
-		</div>
-	</div>
-
-    <div class="row">
-	  <div class="col-md-8">
-      	<h2>Select reference view</h2>
-		<div id="selectViewContainer"></div>
-	  </div>
-	  <div class="col-md-4">
-	  Scroll inside the images to select a reference view
-	  </div>
-	</div>
-
-	<div class="row">
-	  <div class="col-md-8">
-	  <p>The fuond blobs</p> <br>
-	  Select the colored regions by click them to blend
-	  <div id="blobs"></div>
-	  </div>
-
-	  <div class="col-md-4">
-	  <p>Threshold interface</p>
-	  <div id="thresblobs"></div>
-	  <br> <br>
-	  		    When the regions are selected, click 
-		    <button name="adjustBtn" onclick="blend()">HERE</button>.		    
-	  </div>
-	</div>
-
-	<div class="row">
-	  <div class="col-md-8">
-	  	<div id="final-canvas"></div> 
-	  </div>
-	  <div class="col-md-4">
-	  	<div id="btn1"></div>
-	  </div>
-	</div>
-</div>
-
-<script type="text/javascript" src="main2.js"></script>
 </body>
 </html>

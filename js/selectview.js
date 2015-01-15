@@ -46,9 +46,11 @@ var setupOverlaySelectView = (function(){
             else if (e.returnValue) {
                 e.returnValue = false;
             } //older IE
-            console.log("down");
+            //console.log("down");
+            console.log("down, scrollValue:", scrollValue);
         }).on('touchend mouseup',function(e){
-        	console.log("upp");
+        	console.log("upp, call function in main2.js");
+            createImgObj(scrollValue);
         }).on('DOMMouseScroll mousewheel',function(e){
             if (e.preventDefault) {
                 e.preventDefault();
