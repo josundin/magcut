@@ -43,15 +43,14 @@ And some stuff
         };
 
         function createcanvas(id){
-            var tmpCanvas = document.createElement('CANVAS');
-            //tmpCanvas.style=("border:1px solid #000000;");
+            var tmpCanvas = document.createElement('canvas');
             tmpCanvas.width = imageW;
             tmpCanvas.height = imageH;
-            // var div = document.getElementById(id); 
-            // div.appendChild(tmpCanvas);
-            // var tmpCanvas = document.createElement('CANVAS');
-            // tmpCanvas.width = imageW;
-            // tmpCanvas.height = imageH; 
+            if(0 === id.localeCompare('CANVAS') || 0 === id.localeCompare('canvas')  ){}
+            else{
+                var div = document.getElementById(id); 
+                div.appendChild(tmpCanvas);
+            }
 
             return tmpCanvas;
         };
