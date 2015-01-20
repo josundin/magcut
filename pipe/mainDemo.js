@@ -13,8 +13,15 @@ var imagesBird = ["P1","P2"];
 // 50-53
 var homographiesBike = [[0.9562448859214783, -0.04059208929538727, 55.0452766418457, 0.002029840601608157, 0.9665254354476929, 11.779176712036133, -0.00005650325692840852, -0.00007099410140654072, 0.9958619475364685]];
 // 50-53-51
-var homographiesBike2 = [[1.020303726196289, -0.010079147294163704, -42.59284591674805, -0.008457145653665066, 0.9905731081962585, -6.965245246887207, 0.00004839357643504627, -0.00012295154738239944, 0.9988846778869629],
+var homographiesBike2H1 = [[1.020303726196289, -0.010079147294163704, -42.59284591674805, -0.008457145653665066, 0.9905731081962585, -6.965245246887207, 0.00004839357643504627, -0.00012295154738239944, 0.9988846778869629],
                         [0.9562448859214783, -0.04059208929538727, 55.0452766418457, 0.002029840601608157, 0.9665254354476929, 11.779176712036133, -0.00005650325692840852, -0.00007099410140654072, 0.9958619475364685]]; 
+//51-50-53
+var homographiesBike2H2 = [[ 0.9660865664482117, -0.008302299305796623, 45.14383316040039, 0.005773747805505991, 0.9849867820739746, 9.751049995422363, -0.0000490144120703917, 0.00006797895184718072, 0.9983599185943604 ],
+                        [0.8957809209823608, -0.025373294949531555, 98.51021575927734, 0.004517511930316687, 0.939185619354248, 21.728973388671875, -0.00012811814667657018, -0.00000596984045841964, 0.9856936931610107]];
+//53-50-51
+var homographiesBike2H3 = [[1.0311598777770996, 0.0011012349277734756, -54.12679672241211, -0.0024361235555261374, 1.0119781494140625, -11.21747875213623, 0.00006324340938590467, -0.000037644367694156244, 0.9971030950546265],
+                        [1.0898643732070923, 0.06088623031973839, -113.0201416015625, -0.008569265715777874, 1.0580685138702393, -22.7808895111084, 0.00014498442760668695, 0.00005467134542413987, 0.983923614025116]];
+
 //bird
 var homographiesBird = [[1.0095304250717163, -0.016554025933146477, 8.953278541564941, 0.03932776674628258, 1.01807701587677, -168.96636962890625, -0.000007351650765485829, 0.00010901226050918922, 0.9818366169929504]];
 // 28-29
@@ -30,7 +37,8 @@ var homographiesSiencePark = [[1.3479026556015015, 0.008745760656893253, -210.18
 
 var images = imagesBike2;
 var imagesRef = imagesRefBike2; 
-var homographies = homographiesBike2;
+var homographies = [];
+var allHomographies = [homographiesBike2H1,homographiesBike2H2,homographiesBike2H3];
 
 var stitch = {};
 
@@ -44,7 +52,7 @@ function enablestart() {
 		// var startbutton = document.getElementById('startbutton');
 		// startbutton.value = "start";
 		// startbutton.disabled = null;
-		stitch = imagewarp(canvasDiv, homographies, imagesRef, selView);
+		stitch = imagewarp(canvasDiv, homographiesBike2H1, imagesRef, selView);
 	}
 }
 
@@ -97,7 +105,6 @@ function selView(){
     console.log("selView");
     var mosaic2 = stitch.getMosaic2();
     selectview('canvas', mosaic2);
-    blobStuff();
 };
 
 function createImgObj(val){
@@ -112,12 +119,24 @@ function createImgObj(val){
             imagesRefTmp[rindx++] = imagesRef[i]; 
         }
     }
+
+    homographies = allHomographies[val];
+
     console.log("old", imagesRef);
     console.log("new", imagesRefTmp);
+    console.log("val", val);
+
+    imagesRef = imagesRefTmp;
+
+
+    stitch = imagewarp(canvasDiv, homographies, imagesRef, blobStuff);
+
+    //blobStuff();
 }
 
 var finalcanvas =  loadCanvas("final-canvas");
 function blobStuff(){
+
     var demo_opt = function(blobimg){
         this.threshold = 10;
         this.blobMap = blobimg;
@@ -132,11 +151,10 @@ function blobStuff(){
     var mouse = {};
     var bmaps = findBlobs();
     var blobMaps = [];
+
     $('#btn1').hide();
     createButton1();
     var globalNumberOfUnique = 0;
-
-    $('#blobInterface').show();
 
     function findBlobs(){
         globalNumberOfUnique = 0;
@@ -190,6 +208,10 @@ function blobStuff(){
 
     result_canvas = loadCanvas("blobs");
     redrawScrean(bmaps, overlapData, blobSelected);
+
+    $('#ComputingBlobs').hide();
+    $('#blobInterface').show();
+
     var el = document.getElementById('blobs');
     el.scrollIntoView(true);
     console.log("setup mouse");

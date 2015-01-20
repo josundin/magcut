@@ -1,6 +1,6 @@
   "use strict";
   // lets do some fun
-  var canvas = loadCanvas("tmpCanvas");//document.getElementById('canvas');
+  var canvas =  loadCanvas("tmpCanvas");//document.getElementById('canvas');
   var imgSrcs = [];
   var images = [];
   var selDiv = "";
@@ -202,7 +202,7 @@ console.log("Now do the blob stuff")
             var canvas = document.createElement('canvas');
             //canvas.style=("border:1px solid #000000;");
             var div = document.getElementById(id); 
-            canvas.id     = "calculateDecriptors";
+            canvas.id     = "tmpCanvas";
             div.appendChild(canvas);
 
             return canvas;

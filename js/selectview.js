@@ -37,6 +37,8 @@ var setupOverlaySelectView = (function(){
     }; })(onChange);
 
         canvas = $(id);
+        var el = document.getElementById('ComputingBlobs');
+
 
         canvas.on('touchstart mousedown',function(e){
             //prevents the mouse down from having an effect on the main browser window:
@@ -46,10 +48,12 @@ var setupOverlaySelectView = (function(){
             else if (e.returnValue) {
                 e.returnValue = false;
             } //older IE
-            //console.log("down");
             console.log("down, scrollValue:", scrollValue);
-        }).on('touchend mouseup',function(e){
+            el.style.display = 'block';
+        }).on('touchend mouseup',function(e){            // $('#ComputingBlobs').show();
+            el.scrollIntoView(true);
         	console.log("upp, call function in main2.js");
+
             createImgObj(scrollValue);
         }).on('DOMMouseScroll mousewheel',function(e){
             if (e.preventDefault) {
