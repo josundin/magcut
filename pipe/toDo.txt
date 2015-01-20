@@ -14,3 +14,40 @@ gör också så att användaren kan välja ett sätt för att redigera.
 	
 2. 
 Som utput av grunt ha två separata filer en för demo och en för app
+
+3.
+Skrollen pluss en vertical slider för att ändra interface
+
+4.
+på samma sätt som bildernas url ändras så Ändras också homographi listan
+
+Exempel:
+
+1.
+img1, img2
+H11
+img2, img1
+H21
+
+2.
+img1, img2, img3
+H11, H12
+
+img1, img3, img2
+H12, H11
+
+
+img2, img1, img3
+H21, H22
+img3, img1, img2
+H31, H32 
+
+Om base: 
+img = 1 -> H = H1x
+img = 2 -> H = H2x
+img = 3 -> H = H3x
+
+
+
+5.
+Demo Select imageSet interface
