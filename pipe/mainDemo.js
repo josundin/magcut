@@ -41,7 +41,7 @@ var homographies = [];
 var allHomographies = [homographiesBike2H1,homographiesBike2H2,homographiesBike2H3];
 
 var stitch = {};
-
+var mouse = {};
 var canvasDiv = 'CANVAS';
 var imagesReady = false;
 var result_canvas;  
@@ -148,9 +148,12 @@ function blobStuff(){
     console.log("Length of overlap data ", overlapData.length);
     var myblobs1 = [];
     var blobSelected = {};
-    var mouse = {};
     var bmaps = findBlobs();
     var blobMaps = [];
+    var o_offseted = [];
+    for (var ib= 1; ib < bmaps.length + 1; ib++) {
+        o_offseted[ib] = { x: 0, y: 0 };
+    }
 
     $('#btn1').hide();
     createButton1();
@@ -207,7 +210,7 @@ function blobStuff(){
     }
 
     result_canvas = loadCanvas("blobs");
-    redrawScrean(bmaps, overlapData, blobSelected);
+    redrawScrean(bmaps, overlapData, blobSelected, o_offseted);
 
     $('#ComputingBlobs').hide();
     $('#blobInterface').show();
@@ -241,7 +244,7 @@ function blobStuff(){
             blobSelected[xii + 1] = false;
         }
         mouse.setNblobs(blobMaps, overlapData, blobSelected);
-        redrawScrean(blobMaps, overlapData, blobSelected);      
+        redrawScrean(blobMaps, overlapData, blobSelected, mouse.getOffset());      
     };
 
         // thresholdfunc.onFinishChange(function(value) {
@@ -283,7 +286,7 @@ function blobStuff(){
         for (var xii = 0; xii < _.size(blobSelected); xii++){
             blobSelected[xii + 1] = false;
         }
-        redrawScrean(bmaps, overlapData, blobSelected); 
+        redrawScrean(bmaps, overlapData, blobSelected, o_offseted); 
         var el = document.getElementById('blobs');
         el.scrollIntoView(true);
     }

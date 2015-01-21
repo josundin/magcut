@@ -9,6 +9,7 @@ var imgData = [], blobData = [];
     _this['interactMouse'] = function(overlap, imgs, selectedBlobs, w, h){
         var numBlobs = 0, dragging = false;
         var is_mixing_gradients = true;
+        var p_offseted = [];
         blobSelected = selectedBlobs;
         cwidth = w;
         cheight = h;
@@ -79,8 +80,10 @@ var imgData = [], blobData = [];
 
             var lastPos = null;
             var currPos = null;
+            var p_lastPos = null;
+            var p_currPos = null;
             var canvas = null;
-
+        
             return function(id,onChange){
                 var localOnChange = (function(onChange){ return function(){
                     onChange();
@@ -102,6 +105,8 @@ var imgData = [], blobData = [];
 
                     lastPos = getPointerPositionsIn(e);
                     currPos = lastPos;
+                    p_lastPos = lastPos;
+                    p_currPos = lastPos;
                     //Finout if we have a hit
                     console.log("mosue touchstart", currPos[0].x,currPos[0].y ,  result_canvas.width, result_canvas.height);
                     //find which shape was clicked
@@ -115,7 +120,7 @@ var imgData = [], blobData = [];
                             //break;
                         }
                     }
-                    redrawScrean(blobData, imgData, blobSelected);
+                    redrawScrean(blobData, imgData, blobSelected, p_offseted);
 
                 }).on('touchmove mousemove',function(e){
                     if( lastPos ){
@@ -137,7 +142,12 @@ var imgData = [], blobData = [];
                         }
 
                         else if(dragging){
-                            console.log(currPos[0].x,currPos[0].y, "flyttad:", dx, dy);
+                            p_currPos = getPointerPositionsIn(e,canvas.element);
+
+                            var ddx = p_currPos[0].x - p_lastPos[0].x;
+                            var ddy = p_currPos[0].y - p_lastPos[0].y;
+
+                            console.log("Blobb nr",dragging,"flyttad:", dx, dy, ddx, ddy);
                             //gör om blob mappen
                             var dptr_s = 0;
                             var blobDatatmp = zeros(blobData[0][0].length);
@@ -151,14 +161,13 @@ var imgData = [], blobData = [];
                                     }
                                 }
                             }
-                            blobData[dragging - 1][0] = blobDatatmp;
+                            p_offseted[dragging].x = ddx;
+                            p_offseted[dragging].y = ddy;
+                            // blobData[dragging - 1][0] = blobDatatmp;
                             //OBS också src datan
-                            redrawScrean(blobData, imgData, blobSelected);
-
+                            redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
-            
                     }
-
                     if( e.preventDefault ){
                         e.preventDefault();
                     }
@@ -177,6 +186,9 @@ var imgData = [], blobData = [];
             numBlobs = overlap.length;
             blobData = overlap;
             imgData = imgs;
+            for (var ij= 1; ij < numBlobs + 1; ij++){
+                    p_offseted[ij] = { x: 0, y: 0 };          
+            }
 
             setupOverlay('#blobs',function(){
             });
@@ -196,6 +208,13 @@ var imgData = [], blobData = [];
                 blobData = overlap1;
                 imgData = imgs1;
                 blobSelected = selectedBlobs;
+
+                for (var ij= 1; ij < numBlobs + 1; ij++){
+                    p_offseted[ij] = { x: 0, y: 0 };
+                }
+            },
+            getOffset: function(){
+                return p_offseted;
             }
         };
     };
@@ -219,6 +238,7 @@ function blend(){
     var src_ctx = srccanvas.getContext("2d");
     var new_ctx = newcanvas.getContext("2d");
     var final_ctx = finalcanvas.getContext("2d");
+    var offset = mouse.getOffset();
 
     var firstImg = true;
     for (var i = 0; i <= _.size(blobSelected); i++){
@@ -236,8 +256,8 @@ function blend(){
             var mask_pixels = blobData[blobNr -1][0];
             var srcData = src_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
             var mask_data = getMask(mask_pixels, srcData, blobNr);
-
-            poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas);
+            console.log("start Blending", blobNr);
+            poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset[blobNr]);
         }
     }
 }

@@ -44,10 +44,10 @@ var setupOverlaySelectView = (function(){
             //prevents the mouse down from having an effect on the main browser window:
             if (e.preventDefault) {
                 e.preventDefault();
-            } //standard
+            }
             else if (e.returnValue) {
                 e.returnValue = false;
-            } //older IE
+            }
             console.log("down, scrollValue:", scrollValue);
             el.style.display = 'block';
         }).on('touchend mouseup',function(e){            // $('#ComputingBlobs').show();
@@ -89,7 +89,6 @@ function selectview(id, mosaicin){
 }
 
 function viewMosaic(mosaic){
-///////////////////////////////
     b2 = loadCanvas("selectViewContainer");
 
     b2.width=mosaic[0].width;
@@ -101,9 +100,6 @@ function viewMosaic(mosaic){
     for (var i = 0; i < mosaics.length; i++){
         b2ctx.drawImage(mosaics[i],0,0);
     }
-
-    // b2ctx.drawImage(mosaic[1],0,0);
-    // b2ctx.drawImage(mosaic[0],0,0);
 }
 
 function putMosaic(val){
@@ -122,9 +118,5 @@ function putMosaic(val){
     //Put the selected image on top.
      b2ctx.globalAlpha = 1;
      b2ctx.drawImage(mosaics[val],0,0);
-        // .on("click", function()
-        //     {
-        //         console.log("clicked id : " + val);
-        //     }); 
 }
 

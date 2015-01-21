@@ -34,7 +34,7 @@ function adjustBlendPosition() {
  f*: base_pixels
  ---> Blend result is result_pixels
 -----------------------------------------*/
-function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas){
+function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset){
 
 	var base_ctx 	= newcanvas.getContext("2d");
 	src_ctx  	= srccanvas.getContext("2d");
@@ -42,19 +42,13 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas){
 	result_ctx 	= finalcanvas.getContext("2d");
 	base_size.width  =  srccanvas.width;
 	base_size.height = 	srccanvas.height;
+	blend_position_offset = offset;
 	adjustBlendPosition();
 
 	var base_pixels = base_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
 	var src_pixels = src_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
 	var mask_pixels = mask_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
 	var result_pixels = result_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
-
-	// //////////////////////Johan test/////////////////////////////////////////////////////////////
-	// var extraCanvas =  loadCanvas("extra2-canvas");
-	// extraCanvas.width = srccanvas.width; extraCanvas.height = srccanvas.height;
-	//var extraCtx = extraCanvas.getContext("2d");
-	//var test_pixels = extraCtx.getImageData(0, 0, srccanvas.width, srccanvas.height);
-	// ////////////////////////////////////////////////////////////////////////////////////
 
 	var is_mixing_gradients = false;
 
