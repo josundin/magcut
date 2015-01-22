@@ -1,4 +1,4 @@
-// Let's you draw (via mouse/touch) on a canvas
+// mouse(/touch) on a canvas
 
 var blobSelected = {};
 var cwidth, cheight;
@@ -10,6 +10,8 @@ var imgData = [], blobData = [];
         var numBlobs = 0, dragging = false;
         var is_mixing_gradients = true;
         var p_offseted = [];
+        var ddx = 0, ddy = 0;
+        var tmp_ddx = 0, tmp_ddy = 0;
         blobSelected = selectedBlobs;
         cwidth = w;
         cheight = h;
@@ -107,13 +109,12 @@ var imgData = [], blobData = [];
                     currPos = lastPos;
                     p_lastPos = lastPos;
                     p_currPos = lastPos;
-                    //Finout if we have a hit
-                    console.log("mosue touchstart", currPos[0].x,currPos[0].y ,  result_canvas.width, result_canvas.height);
-                    //find which shape was clicked
+                    //Finout if we have a hit and which shape was clicked
                     for (var i= 1; i < numBlobs + 1; i++) {
-                        //console.log(blobData[i - 1][0]);
-                        //Positionen
-                        if( blobData[i - 1][0][(currPos[0].y*result_canvas.width) + currPos[0].x] === i) {
+                        //the Position
+                        if( blobData[i - 1][0][(Math.abs(currPos[0].y - p_offseted[i].y) *(result_canvas.width)) + Math.abs(currPos[0].x - p_offseted[i].x)] === i) 
+                        // if( blobData[i - 1][0][(currPos[0].y*result_canvas.width) + currPos[0].x] === i) 
+                        {
                             dragging = i;
                             console.log("HITT", i, "on", (currPos[0].y*result_canvas.width) + currPos[0].x);
                             blobSelected[i] = !blobSelected[i];
@@ -125,16 +126,15 @@ var imgData = [], blobData = [];
                 }).on('touchmove mousemove',function(e){
                     if( lastPos ){
                         var tmp = lastPos;
-                        var doneDraw = false;
                         lastPos = currPos;
                         currPos = getPointerPositionsIn(e,canvas.element);
             
                         ////////////////////////////////////////////////////////////////////////////
-                        // Only handle stuff if delta is longer than 5 units
+                        // Only handle stuff if delta is longer than 8 unit pixels
                         ////////////////////////////////////////////////////////////////////////////
                         var dx = currPos[0].x - lastPos[0].x;
                         var dy = currPos[0].y - lastPos[0].y;
-                        // 32 = 5 
+                        // 32 = 5 (unit pixels)
                         if( dx*dx + dy*dy < 64 ){
                          currPos = lastPos;
                          lastPos = tmp;
@@ -143,28 +143,16 @@ var imgData = [], blobData = [];
 
                         else if(dragging){
                             p_currPos = getPointerPositionsIn(e,canvas.element);
+                            ddx = 0; //p_currPos[0].x - p_lastPos[0].x; 
+                            ddy = p_currPos[0].y - p_lastPos[0].y;
 
-                            var ddx = p_currPos[0].x - p_lastPos[0].x;
-                            var ddy = p_currPos[0].y - p_lastPos[0].y;
+                            // p_offseted[dragging].x = Math.abs(ddx - tmp_ddx);
+                            p_offseted[dragging].y = ddy + tmp_ddy;
 
-                            console.log("Blobb nr",dragging,"flyttad:", dx, dy, ddx, ddy);
-                            //gör om blob mappen
-                            var dptr_s = 0;
-                            var blobDatatmp = zeros(blobData[0][0].length);
+                            // tmp_ddy = ddy + tmp_ddy;
 
-                            //1 loopa igenom alla indx
-                            for (var y = 0; y < result_canvas.height; y++) {
-                                for (var x = 0; x < result_canvas.width; x++, dptr_s+=1) {
-                                    if( blobData[dragging - 1][0][(y*result_canvas.width) + x] === dragging){             
-                                        blobDatatmp[( (y + dy) *(result_canvas.width)) + (x + dx)] = dragging;
-                                        // console.log(dptr_s, (y*result_canvas.width) + x, dx, dy);
-                                    }
-                                }
-                            }
-                            p_offseted[dragging].x = ddx;
-                            p_offseted[dragging].y = ddy;
-                            // blobData[dragging - 1][0] = blobDatatmp;
-                            //OBS också src datan
+                            console.log(ddy);
+                            
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
                     }
@@ -172,10 +160,11 @@ var imgData = [], blobData = [];
                         e.preventDefault();
                     }
                 }).on('touchend mouseup mouseout',function(e){
-                    lastPos = null;
-                    currPos = lastPos;
-                    localOnChange();
                     if(dragging){
+
+                        tmp_ddy = ddy + tmp_ddy;
+                        console.log(ddy, tmp_ddy);
+                         // p_offseted[dragging].y = tmp_ddy;
                         dragging = false; 
                     }
                 });
@@ -261,7 +250,6 @@ function blend(){
         }
     }
 }
-
 
 function getMask(mask_pixels, src_pixels, blobNr){
 

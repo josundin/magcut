@@ -128,10 +128,9 @@ function createImgObj(val){
 
     imagesRef = imagesRefTmp;
 
+    // stitch = imagewarp(canvasDiv, homographies, imagesRef, blobStuff);
 
-    stitch = imagewarp(canvasDiv, homographies, imagesRef, blobStuff);
-
-    //blobStuff();
+    blobStuff();
 }
 
 var finalcanvas =  loadCanvas("final-canvas");
@@ -150,10 +149,6 @@ function blobStuff(){
     var blobSelected = {};
     var bmaps = findBlobs();
     var blobMaps = [];
-    var o_offseted = [];
-    for (var ib= 1; ib < bmaps.length + 1; ib++) {
-        o_offseted[ib] = { x: 0, y: 0 };
-    }
 
     $('#btn1').hide();
     createButton1();
@@ -209,16 +204,15 @@ function blobStuff(){
         return blobMaps;
     }
 
-    result_canvas = loadCanvas("blobs");
-    redrawScrean(bmaps, overlapData, blobSelected, o_offseted);
-
     $('#ComputingBlobs').hide();
     $('#blobInterface').show();
 
+    mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
+    result_canvas = loadCanvas("blobs");
+    redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
+
     var el = document.getElementById('blobs');
     el.scrollIntoView(true);
-    console.log("setup mouse");
-    mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
 
     function getThemBlobs(tvalues){
         globalNumberOfUnique = 0;
@@ -286,7 +280,7 @@ function blobStuff(){
         for (var xii = 0; xii < _.size(blobSelected); xii++){
             blobSelected[xii + 1] = false;
         }
-        redrawScrean(bmaps, overlapData, blobSelected, o_offseted); 
+        redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset()); 
         var el = document.getElementById('blobs');
         el.scrollIntoView(true);
     }
