@@ -10,8 +10,8 @@ var imgData = [], blobData = [];
         var numBlobs = 0, dragging = false;
         var is_mixing_gradients = true;
         var p_offseted = [];
+        var tmp_offseted = [];
         var ddx = 0, ddy = 0;
-        var tmp_ddx = 0, tmp_ddy = 0;
         blobSelected = selectedBlobs;
         cwidth = w;
         cheight = h;
@@ -112,9 +112,7 @@ var imgData = [], blobData = [];
                     //Finout if we have a hit and which shape was clicked
                     for (var i= 1; i < numBlobs + 1; i++) {
                         //the Position
-                        if( blobData[i - 1][0][(Math.abs(currPos[0].y - p_offseted[i].y) *(result_canvas.width)) + Math.abs(currPos[0].x - p_offseted[i].x)] === i) 
-                        // if( blobData[i - 1][0][(currPos[0].y*result_canvas.width) + currPos[0].x] === i) 
-                        {
+                        if( blobData[i - 1][0][(Math.abs(currPos[0].y - p_offseted[i].y) *(result_canvas.width)) + Math.abs(currPos[0].x - p_offseted[i].x)] === i){
                             dragging = i;
                             console.log("HITT", i, "on", (currPos[0].y*result_canvas.width) + currPos[0].x);
                             blobSelected[i] = !blobSelected[i];
@@ -129,12 +127,10 @@ var imgData = [], blobData = [];
                         lastPos = currPos;
                         currPos = getPointerPositionsIn(e,canvas.element);
             
-                        ////////////////////////////////////////////////////////////////////////////
-                        // Only handle stuff if delta is longer than 8 unit pixels
-                        ////////////////////////////////////////////////////////////////////////////
+                        // Only handle stuff if delta is longer than 8 unit 
                         var dx = currPos[0].x - lastPos[0].x;
                         var dy = currPos[0].y - lastPos[0].y;
-                        // 32 = 5 (unit pixels)
+                        // 32 = 5 (unit)
                         if( dx*dx + dy*dy < 64 ){
                          currPos = lastPos;
                          lastPos = tmp;
@@ -143,16 +139,10 @@ var imgData = [], blobData = [];
 
                         else if(dragging){
                             p_currPos = getPointerPositionsIn(e,canvas.element);
-                            ddx = 0; //p_currPos[0].x - p_lastPos[0].x; 
+                            ddx = p_currPos[0].x - p_lastPos[0].x; 
                             ddy = p_currPos[0].y - p_lastPos[0].y;
-
-                            // p_offseted[dragging].x = Math.abs(ddx - tmp_ddx);
-                            p_offseted[dragging].y = ddy + tmp_ddy;
-
-                            // tmp_ddy = ddy + tmp_ddy;
-
-                            console.log(ddy);
-                            
+                            p_offseted[dragging].y = ddy + tmp_offseted[dragging].y;
+                            p_offseted[dragging].x = ddx + tmp_offseted[dragging].x;
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
                     }
@@ -162,9 +152,9 @@ var imgData = [], blobData = [];
                 }).on('touchend mouseup mouseout',function(e){
                     if(dragging){
 
-                        tmp_ddy = ddy + tmp_ddy;
-                        console.log(ddy, tmp_ddy);
-                         // p_offseted[dragging].y = tmp_ddy;
+                        tmp_offseted[dragging].y = ddy + tmp_offseted[dragging].y;
+                        tmp_offseted[dragging].x = ddx + tmp_offseted[dragging].x;
+                        console.log(ddy, tmp_offseted[dragging].y);
                         dragging = false; 
                     }
                 });
@@ -176,7 +166,8 @@ var imgData = [], blobData = [];
             blobData = overlap;
             imgData = imgs;
             for (var ij= 1; ij < numBlobs + 1; ij++){
-                    p_offseted[ij] = { x: 0, y: 0 };          
+                    p_offseted[ij] = { x: 0, y: 0 };
+                    tmp_offseted[ij] = { x: 0, y: 0 };          
             }
 
             setupOverlay('#blobs',function(){
@@ -200,6 +191,7 @@ var imgData = [], blobData = [];
 
                 for (var ij= 1; ij < numBlobs + 1; ij++){
                     p_offseted[ij] = { x: 0, y: 0 };
+                    tmp_offseted[ij] = { x: 0, y: 0 };
                 }
             },
             getOffset: function(){

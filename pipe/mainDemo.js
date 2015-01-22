@@ -128,9 +128,9 @@ function createImgObj(val){
 
     imagesRef = imagesRefTmp;
 
-    // stitch = imagewarp(canvasDiv, homographies, imagesRef, blobStuff);
+    stitch = imagewarp(canvasDiv, homographies, imagesRef, blobStuff);
 
-    blobStuff();
+    // blobStuff();
 }
 
 var finalcanvas =  loadCanvas("final-canvas");
