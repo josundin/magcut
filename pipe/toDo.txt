@@ -48,4 +48,6 @@ img = 3 -> H = H3x
 
 5.
 Demo Select imageSet interface
+Select image set interface
 
+http://localhost:8000/public/magcut/pipe/selScene_img1.html

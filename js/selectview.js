@@ -95,7 +95,7 @@ function viewMosaic(mosaic){
     b2.height=mosaic[0].height;
     
     b2ctx = b2.getContext("2d");
-    b2ctx.globalAlpha = 0.5;
+    b2ctx.globalAlpha = 0.7;
 
     for (var i = 0; i < mosaics.length; i++){
         b2ctx.drawImage(mosaics[i],0,0);

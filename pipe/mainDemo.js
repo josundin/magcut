@@ -103,6 +103,11 @@ function loadCanvas(id){
 
 function selView(){
     console.log("selView");
+    if(!localStorage.getItem('num')) {
+        console.log("Non set", localStorage.getItem('num'));
+    } else {
+        console.log("number", localStorage.getItem('num'));
+    }
     var mosaic2 = stitch.getMosaic2();
     selectview('canvas', mosaic2);
 };
