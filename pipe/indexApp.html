@@ -30,12 +30,17 @@
   </head>
 <body>
 
-
 <script type="text/javascript" src="../ext_js/jsfeat-min.js"></script>
 <script type="text/javascript" src="../ext_js/numeric-1.2.6.min.js"></script>
 <script type="text/javascript" src="../ext_js/norms.js"></script>
 <script type="text/javascript" src="../ext_js/underscore-min.js"></script>
+<script type="text/javascript" src="../ext_js/dat.gui.min.js"></script>
+<script type="text/javascript" src="../js/findBlobs.js"></script>
+<script type="text/javascript" src="../js/findDiff.js"></script>
 <script type="text/javascript" src="../js/imagewarp.js"></script>
+<script type="text/javascript" src="../js/blobMan.js"></script>
+<script type="text/javascript" src="../js/interactMouse.js"></script>
+<script type="text/javascript" src="../js/poisson.js"></script> 
 <script type="text/javascript" src="../js/layout.js"></script>
 <script type="text/javascript" src="../js/orbObj.js"></script>
 <script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
@@ -86,50 +91,61 @@
       </div> 
     </div>
 
-    <div class="row">
+    <div class="row" id="stitching" style="display:none;">
 
       <div class="span12">
 
-        <div id="stitching" style="display:none;">
-          <h2>Now stitching! :</h2>
-          <p>
-            Time to compute depend on your device and your browser all computation are done in JavaScript in your browsern.
-          </p>
-        </div>  
-
-        <!--div id="stitched" style="display:none;">
-          <div id="result"></div>
-          <div id="the_canvas"></div>
-        </div-->
+        <h2>Now stitching! :</h2>
+        <p>
+          Time to compute depend on your device and your browser all computation are done in JavaScript in your browsern.
+        </p>
       </div>
     </div>
 
+  <div class="row" id="poststitch" style="display:none;">
+    <div class="col-md-8">
+        <div id="tmpCanvas" ></div> 
+        <h2>Select reference view</h2>
+        <div id="selectViewContainer"></div>
+    </div>
+    <div class="col-md-4">
+      Scroll inside the images to select a reference view
+      <div id="ComputingBlobs" style="display:none;">
+        <h2>Computing Differences: </h2>  
+      </div>
+    </div>
+  </div>
 
-    <div class="row">
-
-        <div class="span12">
-          <h2>2 Stitch</h2>
-            <!--div id="divStitched" style="display:none;"></div--> 
-          <div id="tmpCanvas" ></div>       
-          <div id="divStitched" ></div>
-          <div id="results" style="display:none;">
-                <h2> Result </h2>
-                <p>
-                    As we can observe from the stitched images the orb descriptors are invariant to viewpoint changes. It is also faster to compute the Orb matching than the floating point based HOG like descriptors
-                </p>
-
-
-                <p>
-                    <strong>Try it for yourself with the
-                    <a href="../camapp/">CamApp</a>
-                    </strong> <br>
-                    <a href="../">Back to index</a>
-                </p>
-          </div>        
-        </div>
+  <!-------------------------------------------------------------->
+  <div id="blobInterface" class="row" style="display:none;">
+    <div class="col-md-8">
+      <p>The fuond blobs</p> <br>
+      Select the colored regions by click them to blend
+      <div id="blobs"></div>
     </div>
 
+    <div class="col-md-4">
+      <p>Threshold interface</p>
+      <div id="thresblobs"></div>
+      <br> <br>
+            When the regions are selected, click 
+        <button name="adjustBtn" onclick="blend()">HERE</button>.       
+    </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div id="final-canvas"></div> 
+    </div>
+    <div class="col-md-4">
+      <div id="btn1"></div>
+    </div>
+  </div>
+
+  </div>
+<script type="text/javascript" src="../js/selectview.js" ></script>
+<script type="text/javascript" src="common.js"></script>
 <script type="text/javascript" src="mainApp.js"></script>
+
 </body>
 </html>

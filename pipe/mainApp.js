@@ -3,11 +3,14 @@
   var canvas =  loadCanvas("tmpCanvas");//document.getElementById('canvas');
   var imgSrcs = [];
   var images = [];
+  var imagesRef = [];
   var selDiv = "";
   var index = 0, hindex = 0;
   var homographies = [];
   var orb = {};
+  var stitch = {};
   var stitchImgs = [];
+  var allHomographies = [];
   var stat2 = new profiler();
   stat2.add("features");   
 
@@ -90,18 +93,12 @@
 
   function start(){
     $('#stitching').show();
-    //start_stitch();
-    $('#stitched').show();
     var el = document.getElementById("stitching");
     el.scrollIntoView(true);
-    console.log("img list:", imgSrcs);
-
 
     images = imgSrcs;
     baseImg(otherImg);   
 
-    //Obs ladda bilderna i en ctx
-    // computeFeatures(imgSrcs[indx++]);
     return false;
   }
 
@@ -164,7 +161,7 @@ function otherImg(){
             homographies[hindex++] = orb.getHomograph();
             stitchImgs.push(images[index]);
             
-            console.log("homographies",homographies[0]);
+            console.log("homographies",homographies);
         }
         else{
             console.log("nada", orb.getNumMatches());
@@ -180,7 +177,8 @@ function otherImg(){
             otherImg();
         }
         else{
-            var stitch = imagewarp("divStitched", homographies, stitchImgs, blobStuff);
+            allHomographies.push(homographies);
+            stitch = imagewarp('CANVAS', homographies, stitchImgs, selView);
             // indx = 1;
             canvas.width = 0;
             canvas.height = 0;
@@ -189,21 +187,21 @@ function otherImg(){
     }
 };
 
+function selView(){
+    imagesRef = imgSrcs;
+    var mosaic2 = stitch.getMosaic2();
+    selectview('canvas', mosaic2);
+    $('#stitching').hide();
+    $('#poststitch').show();
 
-function blobStuff(){
-$('#results').show();
-var el = document.getElementById('results');
-el.scrollIntoView(true); 
-console.log("Now do the blob stuff")
-}
+    var el = document.getElementById('selectViewContainer');
+    el.scrollIntoView(true);
 
+};
 
-        function loadCanvas(id){
-            var canvas = document.createElement('canvas');
-            //canvas.style=("border:1px solid #000000;");
-            var div = document.getElementById(id); 
-            canvas.id     = "tmpCanvas";
-            div.appendChild(canvas);
-
-            return canvas;
-        };
+// function blobStuff(){
+// $('#results').show();
+// var el = document.getElementById('results');
+// el.scrollIntoView(true); 
+// console.log("Now do the blob stuff")
+// }
