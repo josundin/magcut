@@ -15,38 +15,73 @@ function createImgObj(val){
 
     //beroende på val, så sätter vi också H
 
-    imagesRefTmp[rindx++] = imagesRef[val];
-    for (var i = 0; i < imagesRef.length; i++){
-        if (i != val){
-            imagesRefTmp[rindx++] = imagesRef[i]; 
-        }
+    if(!computedHs[val].val){
+    	imagesRefTmp[rindx++] = imagesRef[val];
+	    computedHs[val].val = true;
+	    for (var i = 0; i < imagesRef.length; i++){
+	        if (i != val){
+	            imagesRefTmp[rindx++] = imagesRef[i];
+	            computedHs[i].val = false; 
+	        }
+	    }
+
+        console.log("old", imagesRef);
+	    console.log("new", imagesRefTmp);
+	    console.log("val", val);
+	    console.log("Secound", computedHs);
+	    imagesRef = imagesRefTmp;
     }
-
-    homographies = allHomographies[val];
-
-    console.log("old", imagesRef);
-    console.log("new", imagesRefTmp);
-    console.log("val", val);
-
-    imagesRef = imagesRefTmp;
-
-    // om vi inte redan har räknat ut H för denna kombination
+    
+    if(computedHs[val].bool){
+    	console.log("DO NORMAL");
+    	stitch = imagewarp('CANVAS', computedHs[val].H, imagesRef, blobStuff);
+ 	 
+    }
+    else{
+    	console.log("DO OTHER STUFF");
+    	imgSrcs = imagesRef;
+    	index = 0; 
+    	hindex = 0;
+    	start();
+    	// stitch = imagewarp('CANVAS', computedHs[val].H, imagesRef, blobStuff);
+    }
     //stitch = imagewarp('CANVAS', homographies, imagesRef, blobStuff);
+}
 
-    //Annars
-    blobStuff();
+function hComputed(){
+    for (var i = 0; i < imagesRef.length; i++){
+        if (computedHs[i].val){
+            //computedHs[i].val = false;
+            computedHs[i] = { val: true, bool: true, H: homographies };
+        }
+        else{
+        	computedHs[i].val = false;
+        }
+
+    }
+    console.log("third", computedHs);
+    stitch = imagewarp('CANVAS', homographies, imagesRef, blobStuff);
 }
 
 
 var finalcanvas =  loadCanvas("final-canvas");
+var blobCanvas = loadCanvas("blobs");
+result_canvas = loadCanvas("blobs");
+
+function resetView(){
+	mouse = {};
+	// finalcanvas.width  = 0;
+	// blobCanvas.width  = 0;
+	// result_canvas.width  = 0;
+}
+
+
 function blobStuff(){
 
     var demo_opt = function(blobimg){
         this.threshold = 10;
         this.blobMap = blobimg;
     }
-
-    var blobCanvas = loadCanvas("blobs");
 
     var overlapData = stitch.getOverlap();
     console.log("Length of overlap data ", overlapData.length);
@@ -113,7 +148,6 @@ function blobStuff(){
     $('#blobInterface').show();
 
     mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
-    result_canvas = loadCanvas("blobs");
     redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
 
     var el = document.getElementById('blobs');

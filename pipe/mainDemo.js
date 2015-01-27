@@ -64,19 +64,19 @@ $(window).load(function() {
 var selDiv1 = document.querySelector("#selectedF1");
 placeimgs(imagesRef, selDiv1);
 
-for (var i = 0;i < images.length;i++) {
-	$("#"+images[i]).load(function(obj) {
-		var elementId = obj.target.id;
+// for (var i = 0;i < images.length;i++) {
+// 	$("#"+images[i]).load(function(obj) {
+// 		var elementId = obj.target.id;
 
-		// copy the images to canvases
-		var imagecanvas = document.createElement('CANVAS');
-		// var imagecanvas = loadCanvas("blobs");
-		imagecanvas.width = obj.target.width;
-		imagecanvas.height = obj.target.height;
-		imagecanvas.getContext('2d').drawImage(obj.target,0,0);
-		imageCanvases[elementId] = imagecanvas;
-	});
-}
+// 		// copy the images to canvases
+// 		var imagecanvas = document.createElement('CANVAS');
+// 		// var imagecanvas = loadCanvas("blobs");
+// 		imagecanvas.width = obj.target.width;
+// 		imagecanvas.height = obj.target.height;
+// 		imagecanvas.getContext('2d').drawImage(obj.target,0,0);
+// 		imageCanvases[elementId] = imagecanvas;
+// 	});
+// }
 
 function placeimgs(images, wdiv){
 	var filesArr = Array.prototype.slice.call(images);

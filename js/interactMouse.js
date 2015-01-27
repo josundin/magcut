@@ -7,6 +7,9 @@ var imgData = [], blobData = [];
 "use strict";
 
     _this['interactMouse'] = function(overlap, imgs, selectedBlobs, w, h){
+        console.log("width", w, "height", h);
+        console.log(overlap,selectedBlobs);
+
         var numBlobs = 0, dragging = false;
         var is_mixing_gradients = true;
         var p_offseted = [];
@@ -40,7 +43,6 @@ var imgData = [], blobData = [];
                 element.children.blobs.remove();
                 self.on = on;
                 self.element = element;
-                console.log("self",self);
 
                 return self;
             }

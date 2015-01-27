@@ -11,6 +11,7 @@
   var stitch = {};
   var stitchImgs = [];
   var allHomographies = [];
+  var computedHs = {};
   var stat2 = new profiler();
   stat2.add("features");   
 
@@ -95,12 +96,32 @@
     $('#stitching').show();
     var el = document.getElementById("stitching");
     el.scrollIntoView(true);
+    console.log("LENGTH OF IMAGES", imgSrcs.length);
 
+    if(isEmpty(computedHs)){
+        console.log("IS EMPTY");
+        for (var i = 0; i < imgSrcs.length; i++){
+            computedHs[i] = { val: false, bool: false, H: [] };
+        }
+    }
     images = imgSrcs;
-    baseImg(otherImg);   
+    baseImg(otherImg);
 
     return false;
   }
+
+// function isEmpty(obj) {
+//     return Object.keys(obj).length === 0;
+// }
+
+function isEmpty(obj) {
+    for(var prop in obj) {
+        if(obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
+}
 
   function handleDragOver(evt) {
       evt.stopPropagation();
@@ -177,8 +198,17 @@ function otherImg(){
             otherImg();
         }
         else{
-            allHomographies.push(homographies);
-            stitch = imagewarp('CANVAS', homographies, stitchImgs, selView);
+            allHomographies[0] = homographies;
+            var tmp_var = computedHs[0].bool;
+            console.log("First", tmp_var);
+            if(!computedHs[0].bool){
+                console.log("INIT NOT DONE"); 
+                stitch = imagewarp('CANVAS', homographies, stitchImgs, selView);
+            }
+            else{
+                console.log("INIT DONE");
+                hComputed();
+            }
             // indx = 1;
             canvas.width = 0;
             canvas.height = 0;
@@ -188,6 +218,8 @@ function otherImg(){
 };
 
 function selView(){
+    computedHs[0] = { val: true, bool: true, H: homographies };
+    allHomographies = new Array(imgSrcs.length - 1);
     imagesRef = imgSrcs;
     var mosaic2 = stitch.getMosaic2();
     selectview('canvas', mosaic2);
