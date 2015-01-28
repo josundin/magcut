@@ -109,7 +109,7 @@ function blobStuff(){
         }
         for (var xii = 1; xii < images.length; xii++){
             var options = new demo_opt(xii);
-            var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
+            var thresholdfunc = gui.add(options, "threshold", 5, 40).step(1);
             
             thresholdfunc.onChange(function(value) {
                 thresValues[this.object.blobMap] = value;
