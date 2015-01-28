@@ -1,14 +1,14 @@
 "use strict";
 
-var imagesRefBike = ["../imgs/IMG_0050.jpg", "../imgs/IMG_0053.jpg"];
-var imagesRefBike2 = ["../imgs/IMG_0050.jpg", "../imgs/IMG_0051.jpg", "../imgs/IMG_0053.jpg"];
-var imagesRefSiencePark = ["../imgs/P1100328.jpg", "../imgs/P1100329.jpg"];
-var imagesRefBird = ["../imgs/P1.jpg", "../imgs/P2.jpg"];
+// var imagesRefBike = ["../imgs/IMG_0050.jpg", "../imgs/IMG_0053.jpg"];
+// var imagesRefBike2 = ["../imgs/IMG_0050.jpg", "../imgs/IMG_0051.jpg", "../imgs/IMG_0053.jpg"];
+// var imagesRefSiencePark = ["../imgs/P1100328.jpg", "../imgs/P1100329.jpg"];
+// var imagesRefBird = ["../imgs/P1.jpg", "../imgs/P2.jpg"];
 
-var imagesBike = ["IMG_0050", "IMG_0053"];
-var imagesBike2 = ["IMG_0050", "IMG_0051", "IMG_0053"];
-var imagesSiencePark = ["P1100328","P1100329"];
-var imagesBird = ["P1","P2"];
+// var imagesBike = ["IMG_0050", "IMG_0053"];
+// var imagesBike2 = ["IMG_0050", "IMG_0051", "IMG_0053"];
+// var imagesSiencePark = ["P1100328","P1100329"];
+// var imagesBird = ["P1","P2"];
 
 // 50-53
 var homographiesBike = [[0.9562448859214783, -0.04059208929538727, 55.0452766418457, 0.002029840601608157, 0.9665254354476929, 11.779176712036133, -0.00005650325692840852, -0.00007099410140654072, 0.9958619475364685]];
@@ -22,10 +22,13 @@ var homographiesBike2H2 = [[ 0.9660865664482117, -0.008302299305796623, 45.14383
 var homographiesBike2H3 = [[1.0311598777770996, 0.0011012349277734756, -54.12679672241211, -0.0024361235555261374, 1.0119781494140625, -11.21747875213623, 0.00006324340938590467, -0.000037644367694156244, 0.9971030950546265],
                         [1.0898643732070923, 0.06088623031973839, -113.0201416015625, -0.008569265715777874, 1.0580685138702393, -22.7808895111084, 0.00014498442760668695, 0.00005467134542413987, 0.983923614025116]];
 
-//bird
-var homographiesBird = [[1.0095304250717163, -0.016554025933146477, 8.953278541564941, 0.03932776674628258, 1.01807701587677, -168.96636962890625, -0.000007351650765485829, 0.00010901226050918922, 0.9818366169929504]];
+// //bird
+var homographiesBirdH1 = [[1.0095304250717163, -0.016554025933146477, 8.953278541564941, 0.03932776674628258, 1.01807701587677, -168.96636962890625, -0.000007351650765485829, 0.00010901226050918922, 0.9818366169929504]];
+var homographiesBirdH2 = [[0.97413450479507451, 0.016616482287645342, -6.2873034477233893, -0.0358386412262916564, 0.94844388961791995, 163.438446044921886, 0.0000127089397210511387, -0.000101570847618859268, 0.9824137687683105]];
 // 28-29
-var homographiesSiencePark = [[1.3479026556015015, 0.008745760656893253, -210.18344116210938, 0.15344436466693878, 1.1760369539260864, -84.88064575195312, 0.0006413722294382751, 0.00006606439274037257, 0.896777331829071]];
+var homographiesSienceParkH1 = [[1.3479026556015015, 0.008745760656893253, -210.18344116210938, 0.15344436466693878, 1.1760369539260864, -84.88064575195312, 0.0006413722294382751, 0.00006606439274037257, 0.896777331829071]];
+var homographiesSienceParkH2 = [[0.59467011690139771, -0.023367745801806452, 140.587615966796883, -0.104356661438941964, 0.7485773563385015, 45.653278350830086, -0.00041533523472025997, -0.000075649084465112548, 0.8931218385696411]];
+///////////////////////////////////////////////////////////////////////////////////////
 
 // var images = imagesSiencePark;
 // var imagesRef = imagesRefSiencePark; 
@@ -35,10 +38,29 @@ var homographiesSiencePark = [[1.3479026556015015, 0.008745760656893253, -210.18
 // var imagesRef = imagesRefBird; 
 // var homographies = homographiesBird;
 
-var images = imagesBike2;
-var imagesRef = imagesRefBike2; 
-var homographies = [];
-var allHomographies = [homographiesBike2H1,homographiesBike2H2,homographiesBike2H3];
+// var images = imagesBike2;
+// var imagesRef = imagesRefBike2; 
+var imageSet = 0, imagesRef = 0, allHomographies = [];
+
+if(localStorage.getItem('selectSceneNum')){
+    imageSet = localStorage.getItem('selectSceneNum');
+}else{
+    imageSet = 1;
+}
+
+if(imageSet == 1){
+    console.log("image Set 1");
+    allHomographies = [homographiesBike2H1,homographiesBike2H2,homographiesBike2H3];  
+    imagesRef = ["../imgs/IMG_0050.jpg", "../imgs/IMG_0051.jpg", "../imgs/IMG_0053.jpg"];
+}else if(imageSet == 2){
+    console.log("image Set 2");
+    allHomographies = [homographiesSienceParkH1,homographiesSienceParkH2];  
+    imagesRef = ["../imgs/P1100328.jpg", "../imgs/P1100329.jpg"];
+}else if(imageSet == 3){
+    imagesRef = ["../imgs/P1.jpg", "../imgs/P2.jpg"];
+    allHomographies = [homographiesBirdH1,homographiesBirdH2];  
+}
+
 
 var stitch = {};
 var mouse = {};
@@ -52,7 +74,7 @@ function enablestart() {
 		// var startbutton = document.getElementById('startbutton');
 		// startbutton.value = "start";
 		// startbutton.disabled = null;
-		stitch = imagewarp(canvasDiv, homographiesBike2H1, imagesRef, selView);
+		stitch = imagewarp(canvasDiv, allHomographies[0], imagesRef, selView);
 	}
 }
 
@@ -64,19 +86,6 @@ $(window).load(function() {
 var selDiv1 = document.querySelector("#selectedF1");
 placeimgs(imagesRef, selDiv1);
 
-// for (var i = 0;i < images.length;i++) {
-// 	$("#"+images[i]).load(function(obj) {
-// 		var elementId = obj.target.id;
-
-// 		// copy the images to canvases
-// 		var imagecanvas = document.createElement('CANVAS');
-// 		// var imagecanvas = loadCanvas("blobs");
-// 		imagecanvas.width = obj.target.width;
-// 		imagecanvas.height = obj.target.height;
-// 		imagecanvas.getContext('2d').drawImage(obj.target,0,0);
-// 		imageCanvases[elementId] = imagecanvas;
-// 	});
-// }
 
 function placeimgs(images, wdiv){
 	var filesArr = Array.prototype.slice.call(images);
@@ -125,15 +134,13 @@ function createImgObj(val){
         }
     }
 
-    homographies = allHomographies[val];
-
     console.log("old", imagesRef);
     console.log("new", imagesRefTmp);
     console.log("val", val);
 
     imagesRef = imagesRefTmp;
 
-    stitch = imagewarp(canvasDiv, homographies, imagesRef, blobStuff);
+    stitch = imagewarp(canvasDiv, allHomographies[val], imagesRef, blobStuff);
 
     // blobStuff();
 }
@@ -169,10 +176,10 @@ function blobStuff(){
         customContainer.appendChild(gui.domElement);
 
         var thresValues = {};
-        for (var xii = 1; xii < images.length; xii++){
+        for (var xii = 1; xii < imagesRef.length; xii++){
             thresValues[xii] = 10;
         }
-        for (var xii = 1; xii < images.length; xii++){
+        for (var xii = 1; xii < imagesRef.length; xii++){
             var options = new demo_opt(xii);
             var thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
             
@@ -223,7 +230,7 @@ function blobStuff(){
         globalNumberOfUnique = 0;
         blobMaps = [];
 
-        for (var xii = 1; xii < images.length; xii++){
+        for (var xii = 1; xii < imagesRef.length; xii++){
             var overlap = overlapData[xii];
             overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
             for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
