@@ -1,6 +1,6 @@
 //blobMan.js
 function redrawScrean(maps, odata, blobSelected, blend_position_offset){
-    // console.log("redrawScrean:", blend_position_offset[9].x, blend_position_offset[9].y);
+    console.log("redrawScrean length:", maps.length);
     var baseImgData = odata[0];
 
 	result_canvas.width = baseImgData.width;

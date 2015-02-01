@@ -7,8 +7,8 @@ var imgData = [], blobData = [];
 "use strict";
 
     _this['interactMouse'] = function(overlap, imgs, selectedBlobs, w, h){
-        console.log("width", w, "height", h);
-        console.log(overlap,selectedBlobs);
+        console.log("width:", w, "height:", h);
+        console.log("overlap length:", overlap.length);
 
         var numBlobs = 0, dragging = false;
         var is_mixing_gradients = true;
@@ -40,7 +40,7 @@ var imgData = [], blobData = [];
                     }
                     return self;
                 };
-                element.children.blobs.remove();
+                // element.children.blobs.remove();
                 self.on = on;
                 self.element = element;
 
@@ -165,8 +165,8 @@ var imgData = [], blobData = [];
 
         (function(){    
             numBlobs = overlap.length;
-            blobData = overlap;
-            imgData = imgs;
+            blobData = overlap.slice();
+            imgData = imgs.slice();
             for (var ij= 1; ij < numBlobs + 1; ij++){
                     p_offseted[ij] = { x: 0, y: 0 };
                     tmp_offseted[ij] = { x: 0, y: 0 };          
@@ -187,8 +187,8 @@ var imgData = [], blobData = [];
         return{
             setNblobs: function(overlap1, imgs1, selectedBlobs){
                 numBlobs = overlap1.length;
-                blobData = overlap1;
-                imgData = imgs1;
+                blobData = overlap1.slice();
+                imgData = imgs1.slice();
                 blobSelected = selectedBlobs;
 
                 for (var ij= 1; ij < numBlobs + 1; ij++){

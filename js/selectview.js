@@ -52,7 +52,7 @@ var setupOverlaySelectView = (function(){
             el.style.display = 'block';
         }).on('touchend mouseup',function(e){            // $('#ComputingBlobs').show();
             el.scrollIntoView(true);
-        	console.log("upp, call function in main2.js");
+        	console.log("upp, call function in main");
 
             createImgObj(scrollValue);
         }).on('DOMMouseScroll mousewheel',function(e){

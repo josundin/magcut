@@ -54,7 +54,6 @@
             matches = [];
 
             var i = w*h;
-            var mrKuk = new jsfeat.keypoint_t(0,0,0,0,-1);
             while(--i >= 0) {
                 screen_corners[i] = new jsfeat.keypoint_t(0,0,0,0,-1);
                 matches[i] = new match_t();

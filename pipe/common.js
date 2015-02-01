@@ -70,9 +70,18 @@ result_canvas = loadCanvas("blobs");
 
 function resetView(){
 	mouse = {};
-	// finalcanvas.width  = 0;
-	// blobCanvas.width  = 0;
-	// result_canvas.width  = 0;
+	finalcanvas.width  = 0;
+	blobCanvas.width  = 0;
+	result_canvas.width  = 0;
+
+    hindex = 0;
+    index = 0;
+    stitchImgs = [];
+
+    computedHs[0].bool = false;
+    // computedHs[0].val = false;
+    allHomographies = [];
+    start();
 }
 
 
@@ -146,6 +155,7 @@ function blobStuff(){
 
     $('#ComputingBlobs').hide();
     $('#blobInterface').show();
+    $('#poststitch').hide(); 
 
     mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
     redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
