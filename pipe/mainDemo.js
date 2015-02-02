@@ -53,16 +53,19 @@ if(imageSet == 1){
 
 
 var stitch = {};
+var computedHs = {};
 var canvasDiv = 'CANVAS';
 var imagesReady = false;
-var result_canvas = loadCanvas("blobs");
+var result_canvas;
 
 var imageCanvases = {};
 function enablestart() {
 	if (imagesReady) {
-		// var startbutton = document.getElementById('startbutton');
-		// startbutton.value = "start";
-		// startbutton.disabled = null;
+
+        for (var i = 0; i < imagesRef.length; i++){
+            computedHs[i] = { val: false, bool: false, H: allHomographies[i] };
+        }
+
 		stitch = imagewarp(canvasDiv, allHomographies[0], imagesRef, selView);
 	}
 }
@@ -112,27 +115,23 @@ function selView(){
 
 var blob;
 function createImgObj(val){
-    var imagesRefTmp = new Array(imagesRef.length);
+    var currentImagesRef = new Array(imagesRef.length);
     var rindx = 0;
 
-    //beroende på val, så sätter vi också H
-
-    imagesRefTmp[rindx++] = imagesRef[val];
-    for (var i = 0; i < imagesRef.length; i++){
-        if (i != val){
-            imagesRefTmp[rindx++] = imagesRef[i]; 
+    if(!computedHs[val].val){
+        currentImagesRef[rindx++] = imagesRef[val];
+        computedHs[val].val = true;
+        for (var i = 0; i < imagesRef.length; i++){
+            if (i != val){
+                currentImagesRef[rindx++] = imagesRef[i];
+                computedHs[i].val = false; 
+            }
         }
-    }
-
-    console.log("old", imagesRef);
-    console.log("new", imagesRefTmp);
-    console.log("val", val);
-
-    imagesRef = imagesRefTmp.slice();;
-
-    stitch = imagewarp(canvasDiv, allHomographies[val], imagesRef, blobStuff);
+        console.log( currentImagesRef ,"Create img ooobj:",computedHs[val].H);
+        // imagesRef = currentImagesRef.slice();
+        stitch = imagewarp(canvasDiv, computedHs[val].H, currentImagesRef, blobStuff);
+    }   
 }
-
 
 var TMP_opt = function(blobimg){
     this.threshold = 11;
@@ -141,12 +140,11 @@ var TMP_opt = function(blobimg){
 
 function blobStuff(){
     if(!blob){
-        // console.log("not init:", blob);
-        // blob = new TMP_opt(0);
         blob = blobObj();
+        blob.createBlobView();
     }else{
-        console.log("init:", blob);
         blob.remove();
+        blob.createBlobView();
     }
 }
 

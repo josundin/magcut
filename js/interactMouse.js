@@ -1,12 +1,13 @@
 // mouse(/touch) on a canvas
 
-var blobSelected = {};
 var cwidth, cheight;
 var imgData = [], blobData = [];
 (function(_this){
 "use strict";
 
     _this['interactMouse'] = function(overlap, imgs, selectedBlobs, w, h){
+var blobSelected = {};
+
         console.log("width:", w, "height:", h);
         console.log("overlap length:", overlap.length);
 
@@ -20,14 +21,12 @@ var imgData = [], blobData = [];
         cheight = h;
         var setupOverlay = (function(){
             function $(selector){
-                console.log("SELECTOR", selector);
                 var c = selector.charAt(0);
                 if( c === '#' ){
                     var element = document.getElementById(selector.slice(1,selector.length));
                 }else{
                     var element = document.getElementById(selector);
                 }
-                console.log("ELEMENT", element);
 
                 var self = {}
                 var on = function(eventStr,callback){
@@ -113,7 +112,7 @@ var imgData = [], blobData = [];
                     currPos = lastPos;
                     p_lastPos = lastPos;
                     p_currPos = lastPos;
-                    //Finout if we have a hit and which shape was clicked
+                    //Find out if we have a hit and which shape was clicked
                     for (var i= 1; i < numBlobs + 1; i++) {
                         //the Position
                         if( blobData[i - 1][0][(Math.abs(currPos[0].y - p_offseted[i].y) *(result_canvas.width)) + Math.abs(currPos[0].x - p_offseted[i].x)] === i){
@@ -165,18 +164,18 @@ var imgData = [], blobData = [];
             };
         })();
 
-        (function(){    
-            numBlobs = overlap.length;
-            blobData = overlap.slice();
-            imgData = imgs.slice();
-            for (var ij= 1; ij < numBlobs + 1; ij++){
-                    p_offseted[ij] = { x: 0, y: 0 };
-                    tmp_offseted[ij] = { x: 0, y: 0 };          
-            }
+        // (function(){    
+        //     numBlobs = overlap.length;
+        //     blobData = overlap.slice();
+        //     imgData = imgs.slice();
+        //     for (var ij= 1; ij < numBlobs + 1; ij++){
+        //             p_offseted[ij] = { x: 0, y: 0 };
+        //             tmp_offseted[ij] = { x: 0, y: 0 };          
+        //     }
 
-            setupOverlay('#blobs',function(){
-            });
-        })();
+        //     setupOverlay('#blobs',function(){
+        //     });
+        // })();
 
         function zeros(size) {
             var array = new Array(size);
@@ -187,6 +186,20 @@ var imgData = [], blobData = [];
         };
 
         return{
+            setup: function() {
+                (function(){    
+                    numBlobs = overlap.length;
+                    blobData = overlap.slice();
+                    imgData = imgs.slice();
+                    for (var ij= 1; ij < numBlobs + 1; ij++){
+                            p_offseted[ij] = { x: 0, y: 0 };
+                            tmp_offseted[ij] = { x: 0, y: 0 };          
+                    }
+
+                    setupOverlay('#blobs',function(){
+                    });
+                })();
+            },
             setNblobs: function(overlap1, imgs1, selectedBlobs){
                 numBlobs = overlap1.length;
                 blobData = overlap1.slice();
@@ -200,13 +213,16 @@ var imgData = [], blobData = [];
             },
             getOffset: function(){
                 return p_offseted;
+            },
+            getBlobSelected: function(){
+                return blobSelected;
             }
         };
     };
 }(this));
 
 function blend(){
-    var cont = _.contains(blobSelected, true);
+    var cont = _.contains(mouse.getBlobSelected(), true);
     if(cont !== true){    
         alert("First, select which regions to blend by click them in the image");
         return 0;    
@@ -214,9 +230,9 @@ function blend(){
     
     $('#btn1').show();
 
-    var newcanvas =  document.createElement('CANVAS');//loadCanvas("new-canvas");
-    var srccanvas =  document.createElement('CANVAS');//loadCanvas("src-canvas");
-    // var finalcanvas =  loadCanvas("final-canvas");
+    //if you would like to see wats going on, choose the out commented lines
+    var newcanvas =  document.createElement('CANVAS');//newcanvas = loadCanvas("new-canvas");
+    var srccanvas =  document.createElement('CANVAS');//srccanvas = loadCanvas("src-canvas");
     newcanvas.width = srccanvas.width = finalcanvas.width = cwidth;
     newcanvas.height = srccanvas.height = finalcanvas.height = cheight;
 
@@ -226,8 +242,8 @@ function blend(){
     var offset = mouse.getOffset();
 
     var firstImg = true;
-    for (var i = 0; i <= _.size(blobSelected); i++){
-        if(blobSelected[i] === true){
+    for (var i = 0; i <= _.size(mouse.getBlobSelected()); i++){
+        if(mouse.getBlobSelected()[i] === true){
             var blobNr = i;
 
             // src_ctx.putImageData(imgData[1], 0, 0);

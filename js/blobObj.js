@@ -18,26 +18,15 @@ var mouse = {};
             this.blobMap = blobimg;
         }
 
-        var overlapData = stitch.getOverlap();
-        console.log("Length of overlap data ", overlapData.length);
+        var overlapData = {}; 
         var myblobs1 = [];
         var blobSelected = {};
-        var bmaps = findBlobs();
+        var bmaps = {}; 
         var blobMaps = [];
 
         $('#btn1').hide();
         createButton1();
         var globalNumberOfUnique = 0;
-
-        $('#ComputingBlobs').hide();
-        $('#blobInterface').show();
-
-        mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
-        redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
-
-        var el = document.getElementById('blobs');
-        el.scrollIntoView(true);
-
 
         function findBlobs(){
             globalNumberOfUnique = 0;
@@ -154,6 +143,25 @@ var mouse = {};
             el.scrollIntoView(true);
         }
         return{
+            createBlobView: function() {
+
+                result_canvas = loadCanvas("blobs");
+                overlapData = stitch.getOverlap();
+                console.log("Length of overlap data ", overlapData.length);
+                bmaps = findBlobs();
+
+                $('#ComputingBlobs').hide();
+                $('#blobInterface').show();
+
+                mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
+                mouse.setup();
+                redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
+
+                var el = document.getElementById('blobs');
+                el.scrollIntoView(true);
+
+                return 1;
+            },
             getData: function() {
                 return 1;
             },
@@ -166,6 +174,15 @@ var mouse = {};
                 }
                 var element = document.getElementById('blobs');
                 element.children.blobs.remove();
+                result_canvas = {};
+                blobSelected = {};
+
+
+                overlapData = {}; 
+                myblobs1 = [];
+                bmaps = {}; 
+                blobMaps = [];
+
                 return 1;
             }
         };
