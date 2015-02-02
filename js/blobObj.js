@@ -1,15 +1,15 @@
 //blobObj
 var finalcanvas =  loadCanvas("final-canvas");
-
+var mouse = {};
 
 (function(_this){
 "use strict";
 
     _this['blobObj'] = function(){
-    //function blobObj(){
-
-        var thresholdfunc;
+    
+        var thresholdfunc = {};
         var gui = new dat.GUI({ autoPlace: false });
+
         var customContainer = document.getElementById('thresblobs');
         customContainer.appendChild(gui.domElement);
 
@@ -29,18 +29,21 @@ var finalcanvas =  loadCanvas("final-canvas");
         createButton1();
         var globalNumberOfUnique = 0;
 
+        $('#ComputingBlobs').hide();
+        $('#blobInterface').show();
+
+        mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
+        redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
+
+        var el = document.getElementById('blobs');
+        el.scrollIntoView(true);
+
+
         function findBlobs(){
             globalNumberOfUnique = 0;
             var overlapBase = overlapData[0];
             var imgBaseChanels = getChanels(overlapBase);
             blobMaps = [];
-            // var gui = new dat.GUI({ autoPlace: false });
-            // var customContainer = document.getElementById('thresblobs');
-            // customContainer.appendChild(gui.domElement);
-            if(thresholdfunc){
-                //gui.remove(thresholdfunc);
-                console.log("thresholdfunc:",thresholdfunc);
-            }
 
             var thresValues = {};
             for (var xii = 1; xii < imagesRef.length; xii++){
@@ -48,9 +51,9 @@ var finalcanvas =  loadCanvas("final-canvas");
             }
             for (var xii = 1; xii < imagesRef.length; xii++){
                 var options = new demo_opt(xii);
-                thresholdfunc = gui.add(options, "threshold", 5, 20).step(1);
+                thresholdfunc[xii] = gui.add(options, "threshold", 5, 20).step(1);
                 
-                thresholdfunc.onChange(function(value) {
+                thresholdfunc[xii].onChange(function(value) {
                     thresValues[this.object.blobMap] = value;
                     getThemBlobs(thresValues)
                 });
@@ -83,16 +86,6 @@ var finalcanvas =  loadCanvas("final-canvas");
             return blobMaps;
         }
 
-        $('#ComputingBlobs').hide();
-        $('#blobInterface').show();
-
-        mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
-        // result_canvas = loadCanvas("blobs");
-        redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
-
-        var el = document.getElementById('blobs');
-        el.scrollIntoView(true);
-
         function getThemBlobs(tvalues){
             console.log("tvalues", tvalues);
             globalNumberOfUnique = 0;
@@ -119,11 +112,7 @@ var finalcanvas =  loadCanvas("final-canvas");
             }
             mouse.setNblobs(blobMaps, overlapData, blobSelected);
             redrawScrean(blobMaps, overlapData, blobSelected, mouse.getOffset());      
-        };
-
-            // thresholdfunc.onFinishChange(function(value) {
-            //   // Fires when a controller loses focus.
-            // });    
+        }; 
 
         function getChanels(imageDatar){
             var dptr=0, dptrSingle=0;
@@ -166,6 +155,17 @@ var finalcanvas =  loadCanvas("final-canvas");
         }
         return{
             getData: function() {
+                return 1;
+            },
+            remove: function() {
+                for (var xii = 1; xii < imagesRef.length; xii++){
+                    console.log("REMOVE:", xii);
+                    if(thresholdfunc[xii]){
+                        gui.remove(thresholdfunc[xii]);
+                    }
+                }
+                var element = document.getElementById('blobs');
+                element.children.blobs.remove();
                 return 1;
             }
         };

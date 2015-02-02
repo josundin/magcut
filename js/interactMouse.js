@@ -20,12 +20,14 @@ var imgData = [], blobData = [];
         cheight = h;
         var setupOverlay = (function(){
             function $(selector){
+                console.log("SELECTOR", selector);
                 var c = selector.charAt(0);
                 if( c === '#' ){
                     var element = document.getElementById(selector.slice(1,selector.length));
                 }else{
                     var element = document.getElementById(selector);
                 }
+                console.log("ELEMENT", element);
 
                 var self = {}
                 var on = function(eventStr,callback){

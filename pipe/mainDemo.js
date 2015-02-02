@@ -30,16 +30,6 @@ var homographiesSienceParkH1 = [[1.3479026556015015, 0.008745760656893253, -210.
 var homographiesSienceParkH2 = [[0.59467011690139771, -0.023367745801806452, 140.587615966796883, -0.104356661438941964, 0.7485773563385015, 45.653278350830086, -0.00041533523472025997, -0.000075649084465112548, 0.8931218385696411]];
 ///////////////////////////////////////////////////////////////////////////////////////
 
-// var images = imagesSiencePark;
-// var imagesRef = imagesRefSiencePark; 
-// var homographies = homographiesSiencePark;
-
-// var images = imagesBird;
-// var imagesRef = imagesRefBird; 
-// var homographies = homographiesBird;
-
-// var images = imagesBike2;
-// var imagesRef = imagesRefBike2; 
 var imageSet = 0, imagesRef = 0, allHomographies = [];
 
 if(localStorage.getItem('selectSceneNum')){
@@ -63,7 +53,6 @@ if(imageSet == 1){
 
 
 var stitch = {};
-var mouse = {};
 var canvasDiv = 'CANVAS';
 var imagesReady = false;
 var result_canvas = loadCanvas("blobs");
@@ -111,7 +100,6 @@ function loadCanvas(id){
 };
 
 function selView(){
-    console.log("selView");
     if(!localStorage.getItem('num')) {
         console.log("Non set", localStorage.getItem('num'));
     } else {
@@ -157,7 +145,8 @@ function blobStuff(){
         // blob = new TMP_opt(0);
         blob = blobObj();
     }else{
-        console.log("init:", blob); 
+        console.log("init:", blob);
+        blob.remove();
     }
 }
 
