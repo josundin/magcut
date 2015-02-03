@@ -8,14 +8,42 @@ module.exports = function(grunt) {
             },
             dist: {
               src: [ 'ext_js/jquery-1.9.1.min.js','js/extracted.js','ext_js/jsfeat-min.js', 'ext_js/numeric-1.2.6.min.js', 'ext_js/dat.gui.min.js', 
-              "js/imagewarp.js",'js/findDiff.js', 'js/findBlobs.js', 'js/blobMan.js', 'js/selectview.js', 'js/interactMouse.js', 'js/poisson.js'],
+              "js/imagewarp.js",'js/findDiff.js', 'js/findBlobs.js', 'js/blobMan.js', 'js/interactMouse.js', 'js/poisson.js'],
               dest: 'dist/magcut.js',
             },
+
+            dist1: {
+              src: [ 'ext_js/jquery-1.9.1.min.js','ext_js/jsfeat-min.js','ext_js/numeric-1.2.6.min.js','ext_js/underscore.js','ext_js/dat.gui.min.js',"js/imagewarp.js",'js/findDiff.js','js/findBlobs.js','js/blobMan.js','js/interactMouse.js','js/poisson.js','js/layout.js','js/orbObj.js','ext_js/profiler.js'],
+              dest: 'dist/magcutApp.js',
+            },
+
+            dist2: {
+              src: [ 'js/selectview.js', 'pipe/mainDemo.js', 'js/blobObj.js'],
+              dest: 'dist/mainDemo.js',
+            },
+
+            dist3: {
+              src: [ 'js/selectview.js', 'pipe/mainApp.js', 'js/blobObj.js'],
+              dest: 'dist/mainApp.js',
+            }
+
           },
           uglify: {
             build: {
                 src: 'dist/magcut.js',
                 dest:'../josundin.github.io/magcut/magcut.min.js'
+            },
+            build1: {
+                src: 'dist/magcutApp.js',
+                dest:'../josundin.github.io/magcut/magcutApp.min.js'
+            },
+            build2: {
+                src: 'dist/mainDemo.js',
+                dest:'dist/mainDemo.min.js'
+            },
+            build3: {
+                src: 'dist/mainApp.js',
+                dest:'dist/mainApp.min.js'
             }
           }
     });
