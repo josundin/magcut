@@ -64,14 +64,11 @@ var setupOverlaySelectView = (function(){
             }
 			var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
 
-			// console.log("delta ner", delta, e.wheelDelta, e.detail);
 			if(delta > 0 && scrollValue < (mosaics.length -1) ){
                 scrollValue = scrollValue + 1;
-                console.log("scrollValue", scrollValue);
                 putMosaic(scrollValue);
             }else if(delta < 0 && scrollValue > 0){
                 scrollValue = scrollValue - 1;
-                console.log("scrollValue", scrollValue);
                 putMosaic(scrollValue);
             }
         });

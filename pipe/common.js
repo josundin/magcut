@@ -57,7 +57,6 @@ function hComputed(){
         else{
         	computedHs[i].val = false;
         }
-
     }
     console.log("third", computedHs);
     stitch = imagewarp('CANVAS', homographies, imagesRef, blobStuff);

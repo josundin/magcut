@@ -2,7 +2,8 @@
   // lets do some fun
   var canvas =  loadCanvas("tmpCanvas");//document.getElementById('canvas');
   var imgSrcs = [];
-  var images = [];
+
+  var orbImages = [];
   var imagesRef = [];
   var selDiv = "";
   var index = 0, hindex = 0;
@@ -10,9 +11,9 @@
   var orb = {};
   var stitch = {};
   var stitchImgs = [];
-  var allHomographies = [];
   var computedHs = {};
   var stat2 = new profiler();
+  var result_canvas;
   stat2.add("features");   
 
   document.addEventListener("DOMContentLoaded", init, false);
@@ -93,26 +94,23 @@
   }
 
   function start(){
+    stitchImgs = [];
     $('#stitching').show();
     var el = document.getElementById("stitching");
     el.scrollIntoView(true);
     console.log("LENGTH OF IMAGES", imgSrcs.length);
 
     if(isEmpty(computedHs)){
-        console.log("IS EMPTY");
+        imagesRef = imgSrcs.slice();
         for (var i = 0; i < imgSrcs.length; i++){
             computedHs[i] = { val: false, bool: false, H: [] };
         }
     }
-    images = imgSrcs;
+    orbImages = imgSrcs.slice();
     baseImg(otherImg);
 
     return false;
   }
-
-// function isEmpty(obj) {
-//     return Object.keys(obj).length === 0;
-// }
 
 function isEmpty(obj) {
     for(var prop in obj) {
@@ -128,12 +126,11 @@ function isEmpty(obj) {
       evt.preventDefault();
       evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
   }
-//////////////////////////////////////
 
 function baseImg(callback){
 
     var img = new Image();
-    img.src = images[index++];
+    img.src = orbImages[index++];
     stitchImgs.push(img.src);
     img.onload = function() {
 
@@ -161,7 +158,7 @@ function baseImg(callback){
 function otherImg(){
 
     var img2 = new Image();
-    img2.src = images[index];
+    img2.src = orbImages[index];
     // console.log("features base img:", stat2.log(1), "ms. found", num_corners );
     img2.onload = function() { 
         stat2.start("features");
@@ -180,27 +177,22 @@ function otherImg(){
         orb.setOrbOther(imageData, myImageW, myImageH);
         if(orb.getNumMatches() > 27){
             homographies[hindex++] = orb.getHomograph();
-            stitchImgs.push(images[index]);
+            stitchImgs.push(orbImages[index]);
             
             console.log("homographies",homographies);
         }
         else{
             console.log("nada", orb.getNumMatches());
         }
-        // homographies[0] = orb.getHomograph();
         stat2.stop("features");
         console.log("features other img:", stat2.log(1), "ms");
 
         //check if done with imgLisst
-       if(index < (images.length - 1)){
-            console.log("index", index, images.length);
+       if(index < (orbImages.length - 1)){
             ++index;
             otherImg();
         }
         else{
-            allHomographies[0] = homographies;
-            var tmp_var = computedHs[0].bool;
-            console.log("First", tmp_var);
             if(!computedHs[0].bool){
                 console.log("INIT NOT DONE"); 
                 stitch = imagewarp('CANVAS', homographies, stitchImgs, selView);
@@ -209,18 +201,14 @@ function otherImg(){
                 console.log("INIT DONE");
                 hComputed();
             }
-            // indx = 1;
             canvas.width = 0;
             canvas.height = 0;
-            // doneComputeFeatures();
         }
     }
 };
 
 function selView(){
-    computedHs[0] = { val: true, bool: true, H: homographies };
-    allHomographies = new Array(imgSrcs.length - 1);
-    imagesRef = imgSrcs;
+    computedHs[0] = { val: false, bool: true, H: homographies.slice() };
     var mosaic2 = stitch.getMosaic2();
     selectview('canvas', mosaic2);
     $('#stitching').hide();
@@ -231,9 +219,67 @@ function selView(){
 
 };
 
-// function blobStuff(){
-// $('#results').show();
-// var el = document.getElementById('results');
-// el.scrollIntoView(true); 
-// console.log("Now do the blob stuff")
-// }
+function hComputed(){
+    for (var i = 0; i < imgSrcs.length; i++){
+        if (computedHs[i].val){
+            computedHs[i] = {val: true, bool: true, H: homographies.slice() };
+        }
+        else{
+          computedHs[i].val = false;
+        }
+    }
+    stitch = imagewarp('CANVAS', homographies, stitchImgs, blobStuff);
+}
+
+function loadCanvas(id){
+    var canvas = document.createElement('canvas');
+    var div = document.getElementById(id); 
+    canvas.id     = id;
+    div.appendChild(canvas);
+
+    return canvas;
+};
+
+var blob;
+function createImgObj(val){
+    var currentImagesRef = new Array(imagesRef.length);
+    var rindx = 0;
+
+    if(!computedHs[val].val){
+      currentImagesRef[rindx++] = imagesRef[val]; 
+      computedHs[val].val = true;
+      for (var i = 0; i < imagesRef.length; i++){
+          if (i != val){
+              currentImagesRef[rindx++] = imagesRef[i];
+              computedHs[i].val = false; 
+          }
+      }
+      imgSrcs = currentImagesRef.slice();
+      if(computedHs[val].bool){;
+        stitch = imagewarp('CANVAS', computedHs[val].H, currentImagesRef, blobStuff);
+
+      }
+      else{
+        console.log("!bool");
+        index = 0; 
+        hindex = 0;
+        start();
+      }
+    }
+    else{
+      console.log("VAL else");
+    }
+
+}
+
+function blobStuff(){
+    if(!blob){
+        blob = blobObj();
+        blob.createBlobView();
+    }else{
+        blob.remove();
+        blob.createBlobView();
+    }
+}
+
+

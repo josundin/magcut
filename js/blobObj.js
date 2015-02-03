@@ -76,7 +76,6 @@ var mouse = {};
         }
 
         function getThemBlobs(tvalues){
-            console.log("tvalues", tvalues);
             globalNumberOfUnique = 0;
             blobMaps = [];
 
@@ -176,8 +175,6 @@ var mouse = {};
                 element.children.blobs.remove();
                 result_canvas = {};
                 blobSelected = {};
-
-
                 overlapData = {}; 
                 myblobs1 = [];
                 bmaps = {}; 

@@ -133,11 +133,6 @@ function createImgObj(val){
     }   
 }
 
-var TMP_opt = function(blobimg){
-    this.threshold = 11;
-    this.blobMap = blobimg;
-}
-
 function blobStuff(){
     if(!blob){
         blob = blobObj();
