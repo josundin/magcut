@@ -1,9 +1,33 @@
-<!DOCTYPE HTML>
 <html>
 <head>
-<meta charset="utf-8">
-<title>The Demo</title>
+<link rel=StyleSheet Type="text/css" href="style.css">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<title>Magcut.js</title>
+
+</head>
 <style>
+#thumb255{
+    display: table;
+    float: left;
+    text-align: center;
+    vertical-align: middle;
+    width: 225px;
+    margin: 0px 0px 0px 20px;
+    position: relative;
+    background: #fff;
+}
+#thumb185{
+    display: table;
+    float: left;
+    text-align: center;
+    vertical-align: middle;
+    width: 185px;
+    margin: 0px 0px 0px 10px;
+    position: relative;
+    background: #fff;
+}
+
 	.selectedFiles img {
 		max-width: 100;
 		max-height: 100px;
@@ -50,26 +74,93 @@
 	}
 }
 
-
 </style>
-
-	<link rel="stylesheet" href="../libs/twitter-bootstrap/bootstrap.min.css">
-</head>
 <body>
+<script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
+
+<center>
+<br><br><br>
+<div style="font-size: 40px; font-weight: bold;">Web tool for burst images</div>
+<br><br><br>
+
+<div style="height: 400px;">
+	<div id="teaser1" style="background-color: white; position: absolute; width: 100%;">
+		<center>
+		<table>
+		<tr>
+			<td><center><img src="../imgs/EandL/ut480.png"><br>Output</td>
+			<td>
+				<table>
+				<tr>
+					<td><center><div id="thumb255"> <img src="../imgs/EandL/P1180178_t.jpg"><br>Input 1</td></div>
+				</tr>
+				<tr>
+					<td><center><div id="thumb255"><img src="../imgs/EandL/P1180179_t.jpg"><br>Input 2</td></div>
+				</tr>
+				</table>
+			</td>
+		</table>
+	</div>
+
+	<div id="teaser2" style="display: none; background-color: white; position: absolute; width: 100%; margin: 0px 0px 0px 20px;">
+	<br><br>
+		<center>
+		<table>
+		<tr>
+			<td><center><img src="../imgs/ski/ut425.png"><br>Output</td>
+			<td>
+				<table>
+				<tr>
+					<!--td><center><div id="thumb185"> <img src="../imgs/ski/ski1_t.jpg"><br>Input 1</td></div-->
+					<td><center><div id="thumb185"> <img src="../imgs/ski/ski2_t.jpg"><br>Input 2</td></div>
+					<td><center><div id="thumb185"><img src="../imgs/ski/ski3_t.jpg"><br>Input 3</td></div>
+
+				</tr>
+				<tr>
+					<td><center><div id="thumb185"><img src="../imgs/ski/ski4_t.jpg"><br>Input 4</td></div>
+					<td><center><div id="thumb185"><img src="../imgs/ski/ski5_t.jpg"><br>Input 5</td></div>
+
+				</tr>
+				</table>
+			</td>
+		</table>
+	</div>
+
+</div>
+
+<script>
+function fade()
+{
+	$('#teaser1').fadeToggle(1000);
+	$('#teaser2').fadeToggle(1000);
+}
+
+window.setInterval(fade, 5000);
+</script>
+
+<table width="800px">
+<tr>
+	<td>
+This is the Magcut web tool for burst images. It is an Interactive Photo editing tool that find differences in aligned images. 
+To stitch the images we use orb descriptors (lank). From jsfeat. 
+	</td>
+</tr>
+</table>
+
+</center>
 <nav class="navbar navbar-default" role="navigation">
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
-      <li class="active"><a href="indexDemo.html">Demo</a></li>
-      <li><a href="selScene.html">Select Scene</a></li>
+      <li class="active"><a href="selScene.html">Select Scene </a></li>
+      <li><a href="indexDemo.html">Demo</a></li>
       <li><a href="indexApp.html">App</a></li>
     </ul>
 
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#">Link</a></li>
+      <li><a href="https://github.com/josundin/magcut">Link</a></li>
 
     </ul>
   </div><!-- /.navbar-collapse -->
 </nav>
-
 </body>
 </html>

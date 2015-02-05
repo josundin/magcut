@@ -94,6 +94,8 @@
   }
 
   function start(){
+    $('#chooseFiles').hide();
+    $('#runAlgo').hide();
     stitchImgs = [];
     $('#stitching').show();
     var el = document.getElementById("stitching");

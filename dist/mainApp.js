@@ -213,6 +213,8 @@ function putMosaic(val){
   }
 
   function start(){
+    $('#chooseFiles').hide();
+    $('#runAlgo').hide();
     stitchImgs = [];
     $('#stitching').show();
     var el = document.getElementById("stitching");
@@ -575,6 +577,7 @@ var mouse = {};
                         gui.remove(thresholdfunc[xii]);
                     }
                 }
+                reset();
                 var element = document.getElementById('blobs');
                 element.children.blobs.remove();
                 result_canvas = {};

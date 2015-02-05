@@ -171,6 +171,7 @@ var mouse = {};
                         gui.remove(thresholdfunc[xii]);
                     }
                 }
+                reset();
                 var element = document.getElementById('blobs');
                 element.children.blobs.remove();
                 result_canvas = {};

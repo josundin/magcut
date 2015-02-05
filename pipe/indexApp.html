@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="utf-8" />
-  <title>STITCH APP</title>
+  <title>Magcut APP</title>
   <style>
     #drop_zone {
       border: 2px dashed #bbb;
@@ -51,25 +51,22 @@
   <div class="container">
 
     <header>
-      <h1>Image Stitching - Web-tool</h1>
-      <p>If you are new to this app or to panoramas and you have not yet seen the demo please do see the <strong> <a href="../demo/">Demo</a>
-        </strong> first. <br>
-        <a href="../">Back to index</a>
+      <div class="page-header"> <h1>A web tool for burst images</h1> </div>
+      <p>This is the Magcut web application for burst images. It is an Interactive Photo editing tool that find differences in aligned images. </p>
     </header>
 
-    <div class="row">
+    <div class="row" id="chooseFiles">
       <div class="span12">
         <p>
-          Stitch two or more images by File Browse: <input type="file" id="files" name="files" multiple accept="image/*"><br/>
+         Start by Stitch two or more images ether with File Browse: <input type="file" id="files" name="files" multiple accept="image/*"><br/>
         </p>
         <p>
-          or Drop the images on the following box. The results will show up when computed.
+          or Drop the images on the following box.
         </p>
       </div>
 
+      <div id="drop_zone">Drop images here</div>
     </div>
-  
-  <div id="drop_zone">Drop images here</div>
 
     <div class="row">
       <div class="span12">
@@ -86,8 +83,8 @@
       <div class="span12">
         <div id="pre-stitch2" style="display:none;">
           <p>
-            <strong>You have selected the above images. Run the algorithm to <button type="button" onclick="start();" class="btn btn-primary" id="example-images">stitch the images</button>
-            </strong> Or Select new ones. 
+            <strong>You have selected the above images. <div id="runAlgo" > Run the algorithm to <button type="button" onclick="start();" class="btn btn-primary" id="example-images">stitch the images</button> Or Select new ones. </div>
+            </strong>  
           </p>
         </div>
       </div> 
@@ -107,7 +104,7 @@
   <div class="row" id="poststitch" style="display:none;">
     <div class="col-md-8">
         <div id="tmpCanvas" ></div> 
-        <h2>Select reference view</h2>
+        <h2>Select a reference view</h2>
         <div id="selectViewContainer"></div>
     </div>
     <div class="col-md-4">
