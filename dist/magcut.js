@@ -601,7 +601,7 @@ And some stuff
 			//Post blur
 	        jsfeat.imgproc.gaussian_blur(diff_u8, diffGaus_u8, kernelSizePost, sigmaPost);  	
 
-			var blobs = findBlobs(diffGaus_u8.data, myImageW, myImageH, 11);
+			var blobs = findBlobs(diffGaus_u8.data, myImageW, myImageH, 14);
 			gGauss = diffGaus_u8.data;
 			
 			return blobs;

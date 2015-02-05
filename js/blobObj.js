@@ -14,7 +14,7 @@ var mouse = {};
         customContainer.appendChild(gui.domElement);
 
         var demo_opt = function(blobimg){
-            this.threshold = 11;
+            this.threshold = 14;
             this.blobMap = blobimg;
         }
 
@@ -36,11 +36,11 @@ var mouse = {};
 
             var thresValues = {};
             for (var xii = 1; xii < imagesRef.length; xii++){
-                thresValues[xii] = 11;
+                thresValues[xii] = 14;
             }
             for (var xii = 1; xii < imagesRef.length; xii++){
                 var options = new demo_opt(xii);
-                thresholdfunc[xii] = gui.add(options, "threshold", 5, 20).step(1);
+                thresholdfunc[xii] = gui.add(options, "threshold", 5, 45).step(1);
                 
                 thresholdfunc[xii].onChange(function(value) {
                     thresValues[this.object.blobMap] = value;
