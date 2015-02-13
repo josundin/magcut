@@ -1,0 +1,90 @@
+body
+{
+	color: #444444;
+	font-size: 11px;
+	font-family: Arial, Helvetica, sans-serif;
+	line-height: 17px;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+#sidebar{
+    display: inline;
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    width: 60px;
+    overflow: hidden;
+}
+
+a:link
+{
+	color: #0000ff;
+	text-decoration: underlined;
+}
+
+a:visited
+{
+	color: #0000ff;
+	text-decoration: underlined;
+}
+
+a:hover, a:active
+{
+	color: #f60;
+	text-decoration: underlined;
+}
+
+.small
+{
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.medium
+{
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.title
+{
+	font-size: 40px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.author
+{
+	font-size: 15px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.affiliation
+{
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.rightlink
+{
+	font-size: 13px;
+}
+
+.works, .works a, .works a:visited{
+	font-size: 20px;
+	font-weight: bold;
+	text-align: left;
+    color: #3AB596;
+    text-decoration: none;
+    color: #3AB596;
+    text-decoration: none;
+}.biohover a:hover{   
+     background: #B12024;
+     color: #BEC8A5;
+}

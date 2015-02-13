@@ -1,6 +1,7 @@
 <html>
 <head>
 <link rel=StyleSheet Type="text/css" href="style.css">
+<!--link rel=StyleSheet Type="text/css" href="crap.css"-->
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
 <title>Magcut.js</title>
@@ -56,7 +57,7 @@
 
 	.navbar
 	{
-		max-width:150px;
+		max-width:100px;
 		margin-right: 0;
 		margin-left: 0;
 	}	
@@ -80,11 +81,11 @@
 
 <center>
 <br><br><br>
-<div style="font-size: 40px; font-weight: bold;">Web tool for burst images</div>
+<div style="font-size: 40px; font-weight: bold;">Online Web tool for burst images</div>
 <br><br><br>
 
 <div style="height: 400px;">
-	<div id="teaser1" style="background-color: white; position: absolute; width: 100%;">
+	<div id="teaser1" style= " background-color: white; position: absolute; width: 100%;">
 		<center>
 		<table>
 		<tr>
@@ -102,30 +103,11 @@
 		</table>
 	</div>
 
-	<div id="teaser2" style="display: none; background-color: white; position: absolute; width: 100%; margin: 0px 0px 0px 20px;">
+	<div id="teaser2" style= "display: none; background-color: white; position: absolute; width: 100%;">
 	<br><br>
 		<center>
-		<table>
-		<tr>
-			<td><center><img src="../imgs/ski/ut425.png"><br>Output</td>
-			<td>
-				<table>
-				<tr>
-					<!--td><center><div id="thumb185"> <img src="../imgs/ski/ski1_t.jpg"><br>Input 1</td></div-->
-					<td><center><div id="thumb185"> <img src="../imgs/ski/ski2_t.jpg"><br>Input 2</td></div>
-					<td><center><div id="thumb185"><img src="../imgs/ski/ski3_t.jpg"><br>Input 3</td></div>
-
-				</tr>
-				<tr>
-					<td><center><div id="thumb185"><img src="../imgs/ski/ski4_t.jpg"><br>Input 4</td></div>
-					<td><center><div id="thumb185"><img src="../imgs/ski/ski5_t.jpg"><br>Input 5</td></div>
-
-				</tr>
-				</table>
-			</td>
-		</table>
+		 <img src="../imgs/ski/montage.jpg">
 	</div>
-
 </div>
 
 <script>
@@ -135,17 +117,37 @@ function fade()
 	$('#teaser2').fadeToggle(1000);
 }
 
-window.setInterval(fade, 5000);
+ window.setInterval(fade, 5000);
 </script>
 
 <table width="800px">
 <tr>
 	<td>
-This is the Magcut web tool for burst images. It is an Interactive Photo editing tool that find differences in aligned images. 
-To stitch the images we use orb descriptors (lank). From jsfeat. 
+Burst mode is a good choise when it comes to photographing moving subjects. One example is shooting sports. Sports photography can be hard because sports move fast, the athletes move fast and the fields are big. With the camera in burst mode we can hold down the shutter and pan the camera along with the athletes movement.
+
+Putting the camera settings in to burst mode are good in other situations too.  Animals and children are similar to athletes in the way that the move fast.  
+
+You often only get one chance to capture a snapshot and to do this in a situation where many things  happening at ones, to freezing the moment of a dynamic scene when everything looks right can be a harsh task. 
+
+The success rate is usually low and therefore photographers need good software to to edit down the number of candidates to do post-processing in. It is here where our proposal comes into play.
+
+Tes1
+Magcut is an image editor that let the user rearrange the photographed scene to maximize the visibility or to change the composition. This can be done in several ways either by adding and moving objects or by removing objects within the scene. 
+
+Tes2
+Our application is suited for dynamic scenes where objects are moving it also allows the camera to move slightly within a scene. We assume that the burst of images provided by the user contains some differences. That is, differences between each single image.
 	</td>
 </tr>
 </table>
+
+<div id="sidebar">
+	<img src="../imgs/side.png"><br>
+
+	<br>
+	<span class="works biohover"><a href="selScene.html">Demo</a><br></span>
+	<span class="works biohover"><a href="indexApp.html">App</a><br></span>
+
+</div>
 
 </center>
 <nav class="navbar navbar-default" role="navigation">
