@@ -2466,7 +2466,7 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
       returnValues.data[pos] = labelTable[label];
     }
   }
-console.log(thresBlob, unique(returnValues.data));
+// console.log(thresBlob, unique(returnValues.data));
   // Return the blob data:
   return returnValues;
 
@@ -2740,23 +2740,14 @@ var imgData = [], modImgData = [], blobData = [];
                     }
                     var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
                     dDelta += delta;
-                    console.log("delta", dDelta, dDelta > prevdDelta);
-
-                    // SPARA blob
-                    // blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].compareSingleBlob(scrollThresh, clicked, previousScrollThresh);
-                    // redrawScrean(blobData, imgData, blobSelected, p_offseted);
-
-
+                    // console.log("delta", dDelta, dDelta > prevdDelta);
                     if(clicked){
-                        console.log("clicked", clicked);
                         if(dDelta > prevdDelta){
-                            console.log("decreasing");
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdDecreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
 
 
                         }else if(dDelta < prevdDelta){
-                            console.log("increasing"); 
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }

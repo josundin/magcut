@@ -31,6 +31,7 @@ module.exports = function(grunt) {
               'ext_js/vector.js',
               'ext_js/profiler.js',
 
+              "js/orbObj.js",
               "js/imagewarp.js",
               'js/findDiff.js',
               'js/findBlobs.js',

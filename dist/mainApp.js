@@ -97,7 +97,6 @@ var TSTEP = 1;
                 return this.id;
             },
             updateThresholdIncreas: function() {
-                console.log("The ID is:", myId);
 				subtactOne(dists, myXsize, myYsize, decIndx, decVal);
 
     //     		if(dists.length == 100){
@@ -110,8 +109,6 @@ var TSTEP = 1;
 				myBlob = dists.slice(); 
 				makeBlob(myBlob, myId, xSize, ySize);
 
-				console.log("myBlob");
-
         		if(dists.length == 100){
 					printa10(myBlob, 10);
 				}
@@ -121,7 +118,7 @@ var TSTEP = 1;
 				return myBlob;
             },
             updateThresholdDecreas: function() {
-                console.log("The ID is:", myId);
+                // console.log("The ID is:", myId);
 				addOne(dists, myXsize, myYsize, decIndx, decVal);
 
     //     		if(dists.length == 100){
@@ -134,7 +131,7 @@ var TSTEP = 1;
 				myBlob = dists.slice(); 
 				makeBlob(myBlob, myId, xSize, ySize);
 
-				console.log("myBlob");
+				// console.log("myBlob");
 
         		if(dists.length == 100){
 					printa10(myBlob, 10);
@@ -176,7 +173,6 @@ function makeBlob(myBlob, myId, xSize, ySize){
 			}
 		}
 	}
-	console.log("blobSize" , blobSize ,"px");
 }
 
 function addOne(mydists, xSize, ySize, decIndx, decVal){
