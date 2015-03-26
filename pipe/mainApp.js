@@ -275,6 +275,7 @@ function createImgObj(val){
 }
 
 function blobStuff(){
+    console.log("do blob Stuff");
     if(!blob){
         blob = blobObj();
         blob.createBlobView();

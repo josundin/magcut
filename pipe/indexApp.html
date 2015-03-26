@@ -30,7 +30,7 @@
   </head>
 <body>
 
-<!--script type="text/javascript" src="../ext_js/jsfeat-min.js"></script>
+<script type="text/javascript" src="../ext_js/jsfeat-min.js"></script>
 <script type="text/javascript" src="../ext_js/numeric-1.2.6.min.js"></script>
 <script type="text/javascript" src="../ext_js/underscore-min.js"></script>
 <script type="text/javascript" src="../ext_js/dat.gui.min.js"></script>
@@ -43,9 +43,10 @@
 <script type="text/javascript" src="../js/layout.js"></script>
 <script type="text/javascript" src="../js/orbObj.js"></script>
 <script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="../ext_js/profiler.js"></script-->
+<script type="text/javascript" src="../ext_js/vector.js"></script>
+<script type="text/javascript" src="../ext_js/profiler.js"></script>
 
-<script type="text/javascript" src="../dist/magcutApp.js"></script> 
+<!-- <script type="text/javascript" src="../dist/magcutApp.js"></script>  -->
 
 
   <div class="container">
@@ -124,13 +125,26 @@
     </div>
 
     <div class="col-md-4">
-      <p>Threshold interface</p>
+      <p>When clicked in the image</p>
       <div id="thresblobs"></div>
+
+      <form id="myForm" role="form">
+        <div class="radio">
+          <label><input type="radio" name="optradio" value="1" checked>Select Blob</label>
+        </div>
+        <div class="radio">
+          <label><input type="radio" name="optradio" value="2" >Paint Out</label>
+        </div>
+        <div class="radio">
+          <label><input type="radio" name="optradio" value="3">Paint In</label>
+        </div>
+      </form>
+
       <br> <br>
             When the regions are selected, click 
-        <button name="adjustBtn" onclick="blend()">HERE</button>
-
+        <button class="btn btn-primary" name="adjustBtn" onclick="blend()">HERE</button> To blend.        
     </div>
+
   </div>
 
   <div class="row">
@@ -143,6 +157,7 @@
   </div>
 
   </div>
+<script src="../js/relativeBlobTreshold.js" type="text/javascript"></script>
 <script type="text/javascript" src="../js/selectview.js" ></script>
 <script type="text/javascript" src="mainApp.js"></script>
 <script type="text/javascript" src="../js/blobObj.js" ></script>

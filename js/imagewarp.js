@@ -24,6 +24,7 @@ And some stuff
         // This is the warp images, loop and pusch them to the ImageList
         var imagesList = [];
         var overlapList = [0];
+        var modoverlapList = [0];
         for (var i=0; i<images.length - 1; i++)
         {
             imagesList.push(new imgOpt(images[i + 1]));
@@ -39,35 +40,28 @@ And some stuff
             canvasHeight = baseImage.img.height * scale |0;  //480;//642;
                        
             applyWarp(id, imagesList);
+
+            // stopppp()
             callback();
-        };
-
-        function createcanvas(id){
-            var tmpCanvas = document.createElement('canvas');
-            tmpCanvas.width = imageW;
-            tmpCanvas.height = imageH;
-            if(0 === id.localeCompare('CANVAS') || 0 === id.localeCompare('canvas')  ){}
-            else{
-                var div = document.getElementById(id); 
-                div.appendChild(tmpCanvas);
-            }
-
-            return tmpCanvas;
         };
 
         function applyWarp(id, warpImages) {
             //Create a canvas, to temporary draw the warp
-            canvas = createcanvas(id);
+            canvas = createcanvas('canvas', imageW, imageH);
             ctx = canvas.getContext('2d');
 
             // Calculate the offsets
             var canvasOffset = new canvasOpt(homographies); //Homography
 
             //Create the final canvas
-            var canvas2 = createcanvas(id);
+            var canvas2 = createcanvas(id, imageW, imageH);
             canvas2.width =  canvasOffset.maxW;
             canvas2.height =  canvasOffset.maxH;
             var ctx2 = canvas2.getContext('2d');
+
+            //create histogram for base img
+            console.log("images", images);
+            var targetHistograms = getHisograms(images[0]);
 
 
             ////////////////////////
@@ -75,26 +69,46 @@ And some stuff
             ///////////////////////
             for (var i=0; i<warpImages.length; i++)
             {
+                //START histogram matching
+                var srcHistograms = getHisograms(images[i + 1]);
+                var mapTables = new Array(3);
+                for(var j = 0; j <mapTables.length ; ++j){
+
+                    var pr_k = srcHistograms[j];
+                    var specified_histogram_p_z = targetHistograms[j];
+
+                    var s_k = histogramEqualizationTransform(pr_k);
+                    var Gz_q = histogramEqualizationTransform(specified_histogram_p_z);
+
+                    mapTables[j] = step3(s_k, Gz_q);
+                }
+
+                console.log("mapTables", mapTables);
+                var modifiedImageData = ctx.getImageData(0, 0, imageW , imageH );
+                // END histogram matching
+                
                 //Draw the image
                 ctx.drawImage(warpImages[i].img, 0, 0, canvasWidth, canvasHeight);
+
                 //Copy the image data into a var
                 var imageData = ctx.getImageData(0, 0, imageW , imageH );
-                
+                correctImg(mapTables, imageData, modifiedImageData);
+
                 // Reset canvas, optional
                 canvas.width = canvasOffset.maxW;//max_img_size[0];
                 canvas.height= canvasOffset.maxH;//max_img_size[1];
 
                 // create the warp data, where we will store the warped image
                 warpImages[i].warpData = ctx.getImageData(0, 0, canvasOffset.maxW,canvasOffset.maxH);
-                // warpImages[i].warpData = ctx.getImageData(canvasOffset.minW, 0, canvasOffset.maxW, 480);
+                var modifiedWarpData = ctx.getImageData(0, 0, canvasOffset.maxW,canvasOffset.maxH);
 
-                //console.log(homographies[i], i);
 
                 // multiply the homographie with the transaltion matrix
                 var h_dot = H_times_offset(homographies[i]);
 
                 // Apply the warp
                 warp_perspective_color(imageData, warpImages[i].warpData, h_dot);
+                warp_perspective_color(modifiedImageData, modifiedWarpData, h_dot);
 
                 // Update the context with newly-modified data
                 ctx.putImageData(warpImages[i].warpData, 0, 0);
@@ -116,7 +130,9 @@ And some stuff
                 overlapList.push(test);
                 // ctx2.putImageData(test, 0, 0);
                 // console.log(test);
-                // wqr()
+                ctx.putImageData(modifiedWarpData, 0, 0);
+                var test = ctx.getImageData(- canvasOffset.minW , - canvasOffset.minH, imageW,imageH);
+                modoverlapList.push(test);
             }
 
             // Draw the base image at the offset
@@ -136,8 +152,8 @@ And some stuff
             mosaicImgs[0] = imagecanvas;
 
             //hide the first canvas
-            canvas.width = 0;
-            canvas.height = 0;
+            // canvas.width = 0;
+            // canvas.height = 0;
             //canvas.style = ('visibility', 'hidden');
 
             
@@ -243,7 +259,12 @@ And some stuff
         };
         return{
             getOverlap: function() {
+                console.log("Datan vi blendar fins i overlapList", overlapList);
                 return overlapList;
+            },
+            getModOverlap: function() {
+                
+                return modoverlapList;
             },
             getMosaic: function() {
                 //return the mosaic data
@@ -256,3 +277,168 @@ And some stuff
         };
     };
 }(this));
+
+function createcanvas(id, imageW, imageH){
+    var tmpCanvas = document.createElement('canvas');
+    tmpCanvas.width = imageW;
+    tmpCanvas.height = imageH;
+    if(0 === id.localeCompare('CANVAS') || 0 === id.localeCompare('canvas')  ){}
+    else{
+        var div = document.getElementById(id); 
+        div.appendChild(tmpCanvas);
+    }
+
+    return tmpCanvas;
+};
+
+/////////Functions for histogram matching
+
+function getHisograms(imgRef){
+
+      //the target histogra img
+        var image = new Image();
+        image.src = imgRef;
+        var canvas = createcanvas("canvas", image.width, image.height); //document.getElementById("canvas"); 
+        var ctx = canvas.getContext('2d');
+              
+        ctx.drawImage(image, 0, 0);
+        var imageData = ctx.getImageData(0, 0, image.width, image.height);
+        console.log(" W * H", image.width * image.height)
+        var img1_RGBA = getChanels_U8(imageData);
+        // console.log("RGBA", img1_RGBA, "MAX", _.max(img1_RGBA[0]), "MIN", _.min(img1_RGBA[0]));
+
+        var histR = get_histogram(img1_RGBA[0]);
+        var histG = get_histogram(img1_RGBA[1]);
+        var histB = get_histogram(img1_RGBA[2]);
+       
+        normalize(histR, image.width * image.height);
+        normalize(histG, image.width * image.height);
+        normalize(histB, image.width * image.height);
+
+        return [histR, histG, histB];
+}
+
+function getChanels_U8(imageDatar){
+    var dptr=0, dptrSingle=0;
+    var imgR_u8 = new jsfeat.matrix_t(imageDatar.width, imageDatar.height, jsfeat.U8_t | jsfeat.C1_t);
+    var imgG_u8 = new jsfeat.matrix_t(imageDatar.width, imageDatar.height, jsfeat.U8_t | jsfeat.C1_t);
+    var imgB_u8 = new jsfeat.matrix_t(imageDatar.width, imageDatar.height, jsfeat.U8_t | jsfeat.C1_t);
+    var imgAlpha = new jsfeat.matrix_t(imageDatar.width, imageDatar.height, jsfeat.U8_t | jsfeat.C1_t);
+
+    for (var y = 0; y < imageDatar.height; y++) {
+        for (var x = 0; x < imageDatar.width; x++, dptr+=4, dptrSingle+=1) {
+            imgR_u8.data[dptrSingle] = imageDatar.data[dptr];
+            imgG_u8.data[dptrSingle] = imageDatar.data[dptr + 1];
+            imgB_u8.data[dptrSingle] = imageDatar.data[dptr + 2];
+            imgAlpha.data[dptrSingle] = imageDatar.data[dptr + 3];
+        }
+    }
+    return [imgR_u8.data, imgG_u8.data, imgB_u8.data, imgAlpha.data];
+};
+
+function get_histogram(src){
+
+    var hist = new Array(256);
+    for(var i = 0; i <256 ; ++i) hist[i] = 0;
+    for (var i = 0; i < src.length; ++i) {
+        ++hist[src[i]];
+    }
+    return hist;
+}
+
+function normalize(hist, NM){
+    for(var i = 0; i <hist.length ; ++i) hist[i] = hist[i] / NM;
+}
+
+function histogramEqualizationTransform(hist){
+    var prevValue = 0;
+    var s_k = new Array(hist.length);
+    for(var i = 0; i <hist.length ; ++i){
+        s_k[i] = (hist.length - 1) * hist[i] + prevValue;
+        prevValue = s_k[i];
+        s_k[i] = Math.round(s_k[i]);
+    }
+    return s_k;
+}
+
+//Step 3. that is: For every value of s_k, k = 0,1,2 ... L -1, use the stored value og G to find 
+//the corresponding value of z_q so that G_z is closest to sk and store the mapping from s to z.
+//When more then one value of z_q satisfies the given s_k choose the smallest value.
+function step3(s_k, Gz_q){
+    var mapTable = new Array(s_k.length);
+    // for(var i = 0; i <s_k.length ; ++i) hist[i] = 0;
+
+    for(var i = 0; i <s_k.length ; ++i){
+        // console.log("find the closest of ", s_k[i], " in", Gz_q);
+        mapTable[i] = findClosest( s_k[i], Gz_q, i);
+    }
+
+    return mapTable;
+}
+
+function findClosest(val, arr, s_kIndx){
+
+    var min = 9999;
+    var indx = 0;
+
+    for(var i = 0; i <arr.length ; ++i){
+        var error = val - arr[i];
+        error = error >= 0 ? error : -error;
+        if(error < min){
+            min = error;
+            indx = i;
+        }
+    }
+    ///////////////////////////
+    var sameVal = [];
+    for(var ii = 0; ii <arr.length ; ++ii){
+        var error2 = val - arr[ii];
+        error2 = error2 >= 0 ? error2 : -error2;
+        if(error2 === min && ii !== indx){
+            //console.log("saaaaaaaaame", val, s_kIndx,  " indx", ii, "or", indx, error2);
+            sameVal.push(ii);
+        }
+    }
+    // if(sameVal.length > 0){
+        sameVal.push(indx);
+        //console.log("sameVal does exsist", sameVal.length, sameVal);
+        min = 9999;
+        for(var ii = 0; ii <sameVal.length ; ++ii){
+            var error = s_kIndx - sameVal[ii];
+            error = error >= 0 ? error : -error;
+            if(error <= min){
+                min = error;
+                indx = sameVal[ii];
+            }
+        }
+        //To prevent local negative clipping
+        if(min > 10){
+            // console.log("Too High diff", min , val, s_kIndx,  " ->", indx);
+            indx = s_kIndx;
+        }
+
+
+        // console.log(indx, "Choosen");
+    // }
+    //////////////////////////7
+    return indx;
+}
+
+//apply the map
+function correctImg(maps, srcImageData, dstImageData){
+    
+    var dptr=0, dptrSingle=0;
+    console.log("w", srcImageData.width, "h", srcImageData.height);
+
+    for (var y = 0; y < srcImageData.height; y++) {
+        for (var x = 0; x < srcImageData.width; x++, dptr+=4, dptrSingle+=1) {
+            dstImageData.data[dptr]   = maps[0][srcImageData.data[dptr]];
+            dstImageData.data[dptr+1] = maps[1][srcImageData.data[dptr + 1]];
+            dstImageData.data[dptr+2] = maps[2][srcImageData.data[dptr + 2]];
+            dstImageData.data[dptr+3] = srcImageData.data[dptr+3];
+        }
+    }
+    // return modifiedImageData;
+}
+
+///END of Functions for histogram matching

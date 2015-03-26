@@ -19,10 +19,10 @@ function redrawScrean(maps, odata, blobSelected, blend_position_offset){
             for (var yi = 0; yi < maps.length; yi++){
                 if(maps[yi][0][dptr_s] === yi + 1){
                     var offseted = dptr + 4*((blend_position_offset[yi + 1].y)*baseImgData.width+blend_position_offset[yi + 1].x);
-                    imageDatar.data[offseted] = blobSelected[yi + 1] ? 0 : odata[maps[yi][1]].data[dptr];
-                    imageDatar.data[offseted + 1] = blobSelected[yi + 1] ? odata[maps[yi][1]].data[dptr + 1] : 0 ;
-                    imageDatar.data[offseted + 2] = 0;
-                    imageDatar.data[offseted + 3] = 200;
+                    imageDatar.data[offseted]     = blobSelected[yi + 1] ? 0 : odata[maps[yi][1]].data[dptr]; //odata[maps[yi][1]].data[dptr ] ;//
+                    imageDatar.data[offseted + 1] =  blobSelected[yi + 1] ? odata[maps[yi][1]].data[dptr + 1] : 0 ;// odata[maps[yi][1]].data[dptr + 1]//
+                    imageDatar.data[offseted + 2] = odata[maps[yi][1]].data[dptr + 2];//0
+                    imageDatar.data[offseted + 3] = blobSelected[yi + 1] ? 255 : 200;
                 }
             }            
         }
@@ -38,3 +38,5 @@ function zeros(size) {
     }
     return array;
 };
+
+

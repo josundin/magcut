@@ -28,6 +28,7 @@ function adjustBlendPosition() {
 	result_ctx.putImageData(result_pixels, 0, 0);
 }
 
+//from: http://takuti.me/dev/poisson/demo/
 /*-----------------------------------------
  Blend Images
  g : src_pixels (using mask_pixels)
@@ -40,6 +41,7 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 	src_ctx  	= srccanvas.getContext("2d");
 	mask_ctx 	= mask_data.getContext("2d");
 	result_ctx 	= finalcanvas.getContext("2d");
+
 	base_size.width  =  srccanvas.width;
 	base_size.height = 	srccanvas.height;
 	blend_position_offset = offset;
@@ -48,8 +50,11 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 	var base_pixels = base_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
 	var src_pixels = src_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
 	var mask_pixels = mask_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
-	var result_pixels = result_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
 
+	//The inintial layer to blend
+	// var result_pixels = base_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
+	var result_pixels = result_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
+	// saf()
 	var is_mixing_gradients = false;
 
 	var dx, absx, previous_epsilon=1.0;
@@ -66,12 +71,6 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 				// Mask area is painted rgba(0,255,0,1.0)
 				if(mask_pixels.data[p+0]==0 && mask_pixels.data[p+1]==255 &&
 						mask_pixels.data[p+2]==0 && mask_pixels.data[p+3]==255) {
-					cntMask++;
-
-					// test_pixels.data[p+0] = src_pixels.data[p+0];
-					// test_pixels.data[p+1] = src_pixels.data[p+1];
-					// test_pixels.data[p+2] = src_pixels.data[p+2];
-					// test_pixels.data[p+3] = src_pixels.data[p+3];
 
 					var p_offseted = p + 4*(blend_position_offset.y*base_size.width+blend_position_offset.x);
 
@@ -90,7 +89,6 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 
 							if(mask_pixels.data[q[i]+0]==0 && mask_pixels.data[q[i]+1]==255 &&
 									mask_pixels.data[q[i]+2]==0 && mask_pixels.data[q[i]+3]==255) {
-								cntNeigbour++;
 								sum_fq += result_pixels.data[q_offseted+rgb];
 							} else {
 								sum_boundary += base_pixels.data[q_offseted+rgb];
@@ -111,11 +109,11 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 				}
 			}
 		}
+		// console.log(dx, absx);
 		cnt++;
 		var epsilon = dx/absx;
-		// console.log(epsilon, dx, absx);
-		// break;
 		if(!epsilon || previous_epsilon-epsilon === 0) break; // convergence
+		// if( cnt > 1000) break;
 		else previous_epsilon = epsilon;
 	} while(true);
 	///////////////////////////////////////////////////////////////////////////////////
@@ -123,7 +121,7 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 	// extraCtx.putImageData(test_pixels, 0, 0);
 	///////////////////////////////////////////////////////////////////////////////////////
 	result_ctx.putImageData(result_pixels, 0, 0);
-	console.log(cnt+" times iterated.", cntMask , cntNeigbour);
+	console.log(cnt+" times iterated. ?", epsilon , previous_epsilon);
 
 	//scroll to canvas
 	var el = document.getElementById('final-canvas');

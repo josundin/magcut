@@ -30,20 +30,23 @@
 <img id="P1" class="masks" src="../imgs/P1.jpg"></img>
 <img id="P2" class="masks" src="../imgs/P2.jpg"></img-->
 
-<!--script type="text/javascript" src="../ext_js/underscore-min.js"></script>
-<script type="text/javascript" src="../ext_js/underscore_dev.js"></script-->
+<!--script type="text/javascript" src="../ext_js/underscore-min.js"></script-->
+<script type="text/javascript" src="../ext_js/underscore_dev.js"></script>
 
 <script type="text/javascript" src="../ext_js/jsfeat-min.js"></script>
 <script type="text/javascript" src="../ext_js/numeric-1.2.6.min.js"></script>
-<script type="text/javascript" src="../js/extracted.js"></script>
-<script type="text/javascript" src="../ext_js/dat.gui.min.js"></script>
+<!-- <script type="text/javascript" src="../js/extracted.js"></script> -->
+<!--script type="text/javascript" src="../ext_js/dat.gui.min.js"></script-->
 <script type="text/javascript" src="../js/findBlobs.js"></script>
+<!-- <script type="text/javascript" src="../js/findBlobs2.js"></script> -->
 <script type="text/javascript" src="../js/findDiff.js"></script>
 <script type="text/javascript" src="../js/imagewarp.js"></script>
 <script type="text/javascript" src="../js/blobMan.js"></script>	
 <script type="text/javascript" src="../js/interactMouse.js"></script>	
 <script type="text/javascript" src="../js/poisson.js"></script>	
 <script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../ext_js/vector.js"></script>
+<script type="text/javascript" src="../ext_js/profiler.js"></script>
 
 <!--script type="text/javascript" src="../dist/magcut.js"></script-->	
 
@@ -77,23 +80,45 @@
 	  </div>
 
 	  <div class="col-md-4">
-		  <p>Threshold interface</p>
+		  <p>When clicked in the image</p>
 		  <div id="thresblobs"></div>
+
+		  <form id="myForm" role="form">
+		    <div class="radio">
+		      <label><input type="radio" name="optradio" value="1" checked>Select Blob</label>
+		    </div>
+		    <div class="radio">
+		      <label><input type="radio" name="optradio" value="2" >Paint Out</label>
+		    </div>
+		    <div class="radio">
+		      <label><input type="radio" name="optradio" value="3">Paint In</label>
+		    </div>
+  		</form>
+
 		  <br> <br>
 	  		    When the regions are selected, click 
-		    <button name="adjustBtn" onclick="blend()">HERE</button>.		    
+		    <button class="btn btn-primary" name="adjustBtn" onclick="blend()">HERE</button> To blend.		    
 	  </div>
 	</div>
 
 	<div class="row">
 	  <div class="col-md-8">
+	  		final
 	  	<div id="final-canvas"></div> 
 	  </div>
+
+	  <!--div class="col-md-8">
+	  		new-canvas
+	  	<div id="new-canvas"></div> 
+	  	src-canvas
+	  	<div id="src-canvas"></div>
+	  </div-->
 	  <div class="col-md-4">
 	  	<div id="btn1"></div>
 	  </div>
 	</div>
 </div>
+<script src="../js/relativeBlobTreshold.js" type="text/javascript"></script>
 <script type="text/javascript" src="../js/selectview.js" ></script>
 <script type="text/javascript" src="mainDemo.js"></script>
 <script type="text/javascript" src="../js/blobObj.js" ></script>

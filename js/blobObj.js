@@ -1,17 +1,14 @@
 //blobObj
 var finalcanvas =  loadCanvas("final-canvas");
 var mouse = {};
-
+var myblobs1 = [];
 (function(_this){
 "use strict";
 
     _this['blobObj'] = function(){
     
         var thresholdfunc = {};
-        var gui = new dat.GUI({ autoPlace: false });
 
-        var customContainer = document.getElementById('thresblobs');
-        customContainer.appendChild(gui.domElement);
 
         var demo_opt = function(blobimg){
             this.threshold = 14;
@@ -19,7 +16,7 @@ var mouse = {};
         }
 
         var overlapData = {}; 
-        var myblobs1 = [];
+        
         var blobSelected = {};
         var bmaps = {}; 
         var blobMaps = [];
@@ -39,22 +36,13 @@ var mouse = {};
                 thresValues[xii] = 14;
             }
             for (var xii = 1; xii < imagesRef.length; xii++){
-                var options = new demo_opt(xii);
-                thresholdfunc[xii] = gui.add(options, "threshold", 5, 45).step(1);
-                
-                thresholdfunc[xii].onChange(function(value) {
-                    console.log("this", this);
-                    thresValues[this.object.blobMap] = value;
-                    getThemBlobs(thresValues)
-                });
-                
-                //Denna ska loopa igenom alla element
                 var overlap = overlapData[xii];
                 var img1Chanels = getChanels(overlap);
 
                 ////// Go find them blobs //////////
-                myblobs1[xii] = findDiff(imgBaseChanels, img1Chanels, overlap.width, overlap.height);
+                myblobs1[xii] = findDiff(imgBaseChanels, img1Chanels, overlap.width, overlap.height, xii);
                 overlap.blobs = myblobs1[xii].getData();
+                console.log("getData", overlap.blobs);
                 // Separate the aryes
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
                     
@@ -77,7 +65,9 @@ var mouse = {};
         }
 
         function getThemBlobs(tvalues){
-            console.log(tvalues);
+
+            console.log("get them Blobs");
+
             globalNumberOfUnique = 0;
             blobMaps = [];
 
@@ -102,9 +92,6 @@ var mouse = {};
             }
             mouse.setNblobs(blobMaps, overlapData, blobSelected);
             redrawScrean(blobMaps, overlapData, blobSelected, mouse.getOffset());      
-        
-            console.log("globalNumberOfUnique", globalNumberOfUnique);  
-            console.log("blobMaps", blobMaps);  
         }; 
 
         function getChanels(imageDatar){
@@ -148,17 +135,19 @@ var mouse = {};
         }
         return{
             createBlobView: function() {
+                console.log("create blob view");
 
                 result_canvas = loadCanvas("blobs");
                 overlapData = stitch.getOverlap();
-                console.log("Length of overlap data ", overlapData.length);
+                var ModOverlapData = stitch.getModOverlap();
+                 
                 bmaps = findBlobs();
 
                 $('#ComputingBlobs').hide();
                 $('#blobInterface').show();
 
-                mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height);
-                mouse.setup();
+                mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height, ModOverlapData);
+                mouse.setup(0);
                 redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
 
                 var el = document.getElementById('blobs');
@@ -177,6 +166,7 @@ var mouse = {};
                     }
                 }
                 reset();
+                //Remove element
                 var element = document.getElementById('blobs');
                 element.children.blobs.remove();
                 result_canvas = {};

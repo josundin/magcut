@@ -156,7 +156,7 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
       returnValues.data[pos] = labelTable[label];
     }
   }
-
+console.log(thresBlob, unique(returnValues.data));
   // Return the blob data:
   return returnValues;
 
