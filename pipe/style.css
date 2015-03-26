@@ -110,3 +110,22 @@ a:hover, a:active
      color: #BEC8A5;
 }
 
+}.works, .works a, .works a:visited{
+    color: #3AB596;
+    text-decoration: none;
+}.workshover a:hover{   
+     background: #3AB596;
+     color: #8A181B;
+}.bio, .bio a, .bio a:visited{
+    color: #B12024;
+    text-decoration: none;
+}.biohover a:hover{   
+     background: #B12024;
+     color: #BEC8A5;
+}.press, .press a, .press a:visited{
+    color: #D2B12A;
+    text-decoration: none;
+}.presshover a:hover{   
+     background: #D2B12A;
+     color: #100C0D;
+}

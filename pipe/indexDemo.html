@@ -2,7 +2,8 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>The indexDev Demo</title>
+<title>Image Editing Demo</title>
+<link rel="stylesheet" href="../libs/twitter-bootstrap/bootstrap.min.css">
 <style>
 	.selectedFiles img {
 		max-width: 100;
@@ -14,9 +15,31 @@
 	.masks {
 		display: none;
 	}
+
+	#sidebar{
+    display: inline;
+    position: fixed;
+    left: 20px;
+    top: 450px;
+    width: 60px;
+    overflow: hidden;
+}
+.vericaltext{
+	font-size: 30px;
+	font-weight: bold;
+    display: inline;
+    position: fixed;
+    width:1px;
+  	left: 40px;
+    top: 175px;
+
+    word-wrap: break-word;
+    font-family: monospace;
+    position:inside;
+}
 </style>
 
-<link rel="stylesheet" href="../libs/twitter-bootstrap/bootstrap.min.css">
+
 </head>
 <body>
 
@@ -30,28 +53,26 @@
 <img id="P1" class="masks" src="../imgs/P1.jpg"></img>
 <img id="P2" class="masks" src="../imgs/P2.jpg"></img-->
 
-<!--script type="text/javascript" src="../ext_js/underscore-min.js"></script-->
 <script type="text/javascript" src="../ext_js/underscore_dev.js"></script>
-
 <script type="text/javascript" src="../ext_js/jsfeat-min.js"></script>
 <script type="text/javascript" src="../ext_js/numeric-1.2.6.min.js"></script>
-<!-- <script type="text/javascript" src="../js/extracted.js"></script> -->
-<!--script type="text/javascript" src="../ext_js/dat.gui.min.js"></script-->
+
+<script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="../ext_js/vector.js"></script>
+<script type="text/javascript" src="../ext_js/profiler.js"></script>
+
 <script type="text/javascript" src="../js/findBlobs.js"></script>
-<!-- <script type="text/javascript" src="../js/findBlobs2.js"></script> -->
 <script type="text/javascript" src="../js/findDiff.js"></script>
 <script type="text/javascript" src="../js/imagewarp.js"></script>
 <script type="text/javascript" src="../js/blobMan.js"></script>	
 <script type="text/javascript" src="../js/interactMouse.js"></script>	
 <script type="text/javascript" src="../js/poisson.js"></script>	
-<script type="text/javascript" src="../ext_js/jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="../ext_js/vector.js"></script>
-<script type="text/javascript" src="../ext_js/profiler.js"></script>
+
 
 <!--script type="text/javascript" src="../dist/magcut.js"></script-->	
-
-
+  
 <div class="container">
+<h2>Image Editing Demo on the Web</a></h2>
 	<div class="row">
 		<div class="span12">
 			<p>The input images</p>			
@@ -103,7 +124,6 @@
 
 	<div class="row">
 	  <div class="col-md-8">
-	  		final
 	  	<div id="final-canvas"></div> 
 	  </div>
 
@@ -124,6 +144,16 @@
 <script type="text/javascript" src="../js/blobObj.js" ></script>
 
 <!--script type="text/javascript" src="../dist/mainDemo.min.js" ></script-->
+<!-- <p class="vericaltext">
+magcut
+</p>
+<div id="sidebar">
+	<br>
+	<span class="works biohover"><a href="selScene.html">Demo</a><br></span>
+	<span class="works biohover"><a href="indexApp.html">App</a><br></span>
+
+</div> -->
+
 
 </body>
 </html>
