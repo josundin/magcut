@@ -139,7 +139,6 @@ var blobSelected = {};
                          lastPos = tmp;
                          //return;
                         }
-
                         else if(dragging){
                             p_currPos = getPointerPositionsIn(e,canvas.element);
                             ddx = p_currPos[0].x - p_lastPos[0].x; 

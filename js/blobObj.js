@@ -43,6 +43,7 @@ var mouse = {};
                 thresholdfunc[xii] = gui.add(options, "threshold", 5, 45).step(1);
                 
                 thresholdfunc[xii].onChange(function(value) {
+                    console.log("this", this);
                     thresValues[this.object.blobMap] = value;
                     getThemBlobs(thresValues)
                 });
@@ -76,6 +77,7 @@ var mouse = {};
         }
 
         function getThemBlobs(tvalues){
+            console.log(tvalues);
             globalNumberOfUnique = 0;
             blobMaps = [];
 
@@ -100,6 +102,9 @@ var mouse = {};
             }
             mouse.setNblobs(blobMaps, overlapData, blobSelected);
             redrawScrean(blobMaps, overlapData, blobSelected, mouse.getOffset());      
+        
+            console.log("globalNumberOfUnique", globalNumberOfUnique);  
+            console.log("blobMaps", blobMaps);  
         }; 
 
         function getChanels(imageDatar){
