@@ -136,6 +136,8 @@ var imgData = [], modImgData = [], blobData = [];
                                 clicked = i;
                                 console.log("HITT", i, "on", ourPos);
                                 console.log("gauss indx",  blobData[clicked - 1][1]);
+                                console.log("blobData length",  blobData.length);
+                                console.log("blobData",  blobData);
                                 console.log( myblobs1);
                                 blobSelected[i] = !blobSelected[i];
 
