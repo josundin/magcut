@@ -12,7 +12,8 @@ module.exports = function(grunt) {
               'ext_js/numeric-1.2.6.min.js',
               'ext_js/underscore.js',  
               'ext_js/vector.js', 
-              'ext_js/profiler.js', 
+              'ext_js/profiler.js',
+              'ext_js/UntidyPriorityQueue.js', 
 
               "js/imagewarp.js",
               'js/findDiff.js', 
@@ -30,6 +31,7 @@ module.exports = function(grunt) {
               'ext_js/underscore.js',
               'ext_js/vector.js',
               'ext_js/profiler.js',
+              'ext_js/UntidyPriorityQueue.js', 
 
               "js/orbObj.js",
               "js/imagewarp.js",

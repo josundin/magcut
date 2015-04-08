@@ -561,8 +561,6 @@ function getDistanceswQue(src, distances, xSize, ySize, indexDone, genImageData)
 	    addDistance(curPixel, r, c);
 	    indexDone[curPixel] = 1;
     }
-
-	console.log("conArea", conArea, "indexDone", unique(distances));
 }
 
 

@@ -1705,7 +1705,146 @@ var profiler = (function() {
     }
 
     return profiler;
-})();;/*
+})();;// This is a port of the UntidyPriorityQueue/PseudoPriorityQueue as written by Jerome Piovano.
+// http://www-sop.inria.fr/members/Jerome.Piovano/LevelSet/classlevelset_1_1PriorityQueue.html
+
+function UntidyPriorityQueue(_size, _inc_max) {
+	this.m_tab = new Array(_size);
+	for (var i=0; i < _size; i++) {
+		this.m_tab[i] = [];
+	}
+	this.m_size = _size;
+	this.m_nb_elem = 0;
+	this.m_t0 = 0;
+	this.m_i0 = 0;
+	this.m_delta = _inc_max / _size;
+	this.m_inc_max = _inc_max;
+
+	this.empty = function() {
+		return (this.m_nb_elem == 0);
+	}
+
+	this.push = function(e, t) {
+		var i = 0;
+		if (this.empty()) {
+			this.m_t0 = t;
+			this.m_i0 = 0;
+		}
+		else {
+
+			// test to prevent errors
+			if (t - this.m_t0 > this.m_inc_max) {
+				console.log("Error: Increment="+(t - this.m_t0)+" >> Inc max "+this.m_inc_max);
+				console.log("       e="+e+", t="+t+", m_t0="+this.m_t0);
+			}
+
+			// compute the indice in the circular array.
+			i = Math.floor((t - this.m_t0) * this.m_size / this.m_inc_max);
+
+			// compute the true indice in the regular array.
+			if (i >= 0) {
+				i = (i >= this.m_size) ? this.m_size - 1 : i;
+				i = (i + this.m_i0) % this.m_size;
+			}
+			else {
+				// if t < m_t0, compute new values for m_i0, m_t0, and verify that the end of the circular array is empty of at least |i| bucket.
+				while (i++ < 0) {
+					this.m_i0 = (this.m_i0 > 0) ? this.m_i0 - 1 : this.m_i0 - 1 + this.m_size;
+					this.m_t0 -= this.m_delta;
+
+					if (this.m_tab[this.m_i0].length) {
+						console.log("Error : While shifting the begining of the queue, circular array not empty at the end");
+						console.log("        e="+e+", t="+t);
+						this.m_i0 = (this.m_i0 + 1) % this.m_size;
+						this.m_t0 += this.m_delta;
+						break;
+					}
+				}
+				i = this.m_i0;
+			}
+		}
+
+		this.m_nb_elem++;
+		this.m_tab[i].push(e);
+		return i;
+	}
+
+	this.pop = function() {
+		if (this.empty()) return;
+		
+		// shift m_i0 in order to be on a non empty level of quantization
+		while (!this.m_tab[this.m_i0].length) {
+			this.m_i0 = (this.m_i0 + 1) % this.m_size;
+			this.m_t0 += this.m_delta;
+		}
+
+		this.m_nb_elem--;
+		return this.m_tab[this.m_i0].shift();
+	}
+
+	this.top = function() {
+		if (this.empty()) return;
+		
+		// shift m_i0 in order to be on a non empty level of quantization
+		while (!this.m_tab[this.m_i0].length) {
+			this.m_i0 = (this.m_i0 + 1) % this.m_size;
+			this.m_t0 += this.m_delta;
+		}
+
+		this.m_nb_elem--;
+		return this.m_tab[this.m_i0][0];
+	}
+
+	this.increase_priority = function(e, bucket, t_new) {
+		if (Math.abs(t_new - this.m_t0) > this.m_inc_max) {
+			console.log("Error : Increment="+(t_new - this.m_t0)+" >> Inc max "+this.m_inc_max);
+			console.log("        e="+e+", t="+t_new+", m_t0"+this.m_t0);
+		}
+
+		// compute the indice in the circular array
+		var i = Math.floor((t_new-this.m_t0) * this.m_size / this.m_inc_max);
+
+		// compute the true indice in the regular array.
+		if (i >= 0) {
+			i = (i >= this.m_size) ? this.m_size - 1 : i;
+			i = (i + this.m_i0) % this.m_size;
+		}
+		else {
+			// if t < m_t0, compute new values for m_i0, m_t0, and verify that the end of the circular array is empty of at least |i| bucket.
+			while (i++ < 0) {
+				this.m_i0 = (this.m_i0 > 0) ? this.m_i0 - 1 : this.m_i0 - 1 + this.m_size;
+				this.m_t0 -= this.m_delta;
+
+				if (this.m_tab[this.m_i0].length) {
+					console.log("Error : While shifting the begining of the queue, circular array not empty at the end");
+					console.log("        e="+e+", t="+t_new);
+					this.m_i0 = (this.m_i0 + 1) % this.m_size;
+					this.m_t0 += this.m_delta;
+					break;
+				}
+			}
+			i = this.m_i0;
+		}
+
+		this.m_tab[bucket].splice(this.m_tab[bucket].indexOf(e), 1);
+		this.m_tab[i].push(e);
+
+		return i;
+	}
+
+	this.clear = function() {
+		this.m_nb_elem = 0;
+		this.m_t0 = 0;
+		this.m_i0 = 0;
+		for (var i=0; i<this.m_size; i++) {
+			this.m_tab[i].splice(0, this.m_tab[i].length);
+		}
+	}
+
+	this.size = function() {
+		return this.m_nb_elem;
+	}
+};/*
 imageWarp
 And some stuff
 */
@@ -1767,7 +1906,6 @@ And some stuff
             var ctx2 = canvas2.getContext('2d');
 
             //create histogram for base img
-            console.log("images", images);
             var targetHistograms = getHisograms(images[0]);
 
 
@@ -1789,8 +1927,6 @@ And some stuff
 
                     mapTables[j] = step3(s_k, Gz_q);
                 }
-
-                console.log("mapTables", mapTables);
                 var modifiedImageData = ctx.getImageData(0, 0, imageW , imageH );
                 // END histogram matching
                 
@@ -1966,7 +2102,7 @@ And some stuff
         };
         return{
             getOverlap: function() {
-                console.log("Datan vi blendar fins i overlapList", overlapList);
+                // console.log("Datan vi blendar fins i overlapList", overlapList);
                 return overlapList;
             },
             getModOverlap: function() {
@@ -2010,7 +2146,6 @@ function getHisograms(imgRef){
               
         ctx.drawImage(image, 0, 0);
         var imageData = ctx.getImageData(0, 0, image.width, image.height);
-        console.log(" W * H", image.width * image.height)
         var img1_RGBA = getChanels_U8(imageData);
         // console.log("RGBA", img1_RGBA, "MAX", _.max(img1_RGBA[0]), "MIN", _.min(img1_RGBA[0]));
 
@@ -2135,7 +2270,6 @@ function findClosest(val, arr, s_kIndx){
 function correctImg(maps, srcImageData, dstImageData){
     
     var dptr=0, dptrSingle=0;
-    console.log("w", srcImageData.width, "h", srcImageData.height);
 
     for (var y = 0; y < srcImageData.height; y++) {
         for (var x = 0; x < srcImageData.width; x++, dptr+=4, dptrSingle+=1) {
@@ -2154,21 +2288,30 @@ function correctImg(maps, srcImageData, dstImageData){
 
 (function(_this){
 "use strict";
-
-	// _this['findDiff'] = function(img1, im2, canvas, callback){
 	_this['findDiff'] = function(img1, img2, myImageW, myImageH, iid){
 		
+		var statdiff = new profiler();
+		statdiff.add("statdiff");  
+		statdiff.start("statdiff");
 		var id = iid;
-		var myBlobs = computeGaussians();
-		var gGauss;
+
+		var gGauss, rGauss;
 		var gW = myImageW;
 		var gH = myImageH;
+
+		var myBlobs = computeGaussians();
+					statdiff.stop("statdiff");
+			console.log("Bluring done in:", statdiff.log(1), "ms"); 
+
 
 		function computeGaussians(){
 			var kernelSizePre = 5;
 			var sigmaPre = 0.5;
-			var kernelSizePost = 161; //50
-			var sigmaPost = 20; //5 
+			var kernelSizePost_Relative = 25; //6
+			var sigmaPost_Relative = 3; //1
+
+			var kernelSizePost = 120;//161; // 25
+			var sigmaPost = 15;//20; // 3
 
 	        var diff = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
 
@@ -2196,6 +2339,7 @@ function correctImg(maps, srcImageData, dstImageData){
 
 			var diff_u8 = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
 			var diffGaus_u8 = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
+			var diffGaus_u8_r = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
 
 			diff_u8.data = numeric.floor(diff.data);
 			
@@ -2209,15 +2353,19 @@ function correctImg(maps, srcImageData, dstImageData){
 
 	        jsfeat.imgproc.gaussian_blur(diff_u8, diffGaus_u8, kernelSizePost, sigmaPost); 	
 	        //					   diff_u8, diffGaus_u8
-			var blobs = findBlobs(diffGaus_u8.data, myImageW, myImageH, 14);
+			var blobs = findBlobs(diffGaus_u8.data, myImageW, myImageH, 24);
 			gGauss = diffGaus_u8.data;
+
+			jsfeat.imgproc.gaussian_blur(diff_u8, diffGaus_u8_r, kernelSizePost_Relative, sigmaPost_Relative);
+			rGauss = diffGaus_u8_r.data;
+			// printa32(numeric.round(gGauss), 32);
 			return blobs;
 
 		};
 		
 		return{
         	getGauss: function() {
-				return gGauss;
+				return {"g":gGauss, "r":rGauss}; 
         	},
         	getData: function() {
 				return myBlobs;
@@ -2225,6 +2373,10 @@ function correctImg(maps, srcImageData, dstImageData){
         	compareToThres: function(cmpThreshold) {
         		myBlobs = findBlobs(gGauss, gW, gH, cmpThreshold);
 				return myBlobs;
+        	},
+        	getSize: function(blobNr) {
+        		var tmp = unique(myBlobs.data);
+				return tmp[blobNr];
         	},
         	compareSingleBlob: function(cmpThreshold, blobNr, prevCmpThreshold) {
         		var myBlobsTmp = findBlobs2(myBlobs.data, gGauss, blobNr, gW, gH, cmpThreshold, prevCmpThreshold);
@@ -2286,9 +2438,6 @@ function correctImg(maps, srcImageData, dstImageData){
 		        	console.log("utanför");
 		        }
 
-
-
-
         		// console.log(clicked, xpos, ypos, eee, myBlobs.data.length);
         		// printa(myBlobs.data, 16);
 
@@ -2320,7 +2469,6 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
     this.data = new Array(xSize * ySize);
   }
 
-  
   var x, y; 
   var pos = 1;
   // var numberOfUnique = 0;
@@ -2336,8 +2484,6 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
   // The labelTable remember when blobs of differen labels merge
   // so labelTabel[1] = 2; means that label 1 and 2 are the same blob
   var labelTable = [0];
-
-  
 
   // Start by labeling every pixel as blob 0
   for(y=0; y<ySize; y++){
@@ -2366,7 +2512,7 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
         pos = (y*xSize+x);
         //pos += 1;
 
-        isVisible = (srcPixels[pos] > thresBlob);
+        isVisible = (srcPixels[pos] >= thresBlob);
         
 
         if( isVisible ){
@@ -2509,11 +2655,11 @@ function redrawScrean(maps, odata, blobSelected, blend_position_offset){
     for (var y = 0; y < baseImgData.height; y++) {
         for (var x = 0; x < baseImgData.width; x++, dptr+=4, dptr_s+=1) {
             for (var yi = 0; yi < maps.length; yi++){
-                if(maps[yi][0][dptr_s] === yi + 1){
+                if(maps[yi][0][dptr_s] === yi + 1 &&  odata[maps[yi][1]].data[dptr + 3] != 0){
                     var offseted = dptr + 4*((blend_position_offset[yi + 1].y)*baseImgData.width+blend_position_offset[yi + 1].x);
                     imageDatar.data[offseted]     = blobSelected[yi + 1] ? 0 : odata[maps[yi][1]].data[dptr]; //odata[maps[yi][1]].data[dptr ] ;//
                     imageDatar.data[offseted + 1] =  blobSelected[yi + 1] ? odata[maps[yi][1]].data[dptr + 1] : 0 ;// odata[maps[yi][1]].data[dptr + 1]//
-                    imageDatar.data[offseted + 2] = odata[maps[yi][1]].data[dptr + 2];//0
+                    imageDatar.data[offseted + 2] = 0;//odata[maps[yi][1]].data[dptr + 2];//0
                     imageDatar.data[offseted + 3] = blobSelected[yi + 1] ? 255 : 200;
                 }
             }            
@@ -2541,7 +2687,7 @@ var imgData = [], modImgData = [], blobData = [];
 
     _this['interactMouse'] = function(overlap, imgs, selectedBlobs, w, h, modImgs){
         var blobSelected = {};
-        var scrollThresh = 14, previousScrollThresh = 14;
+        var scrollThresh = 24, previousScrollThresh = 24;
         // var myblobs1 = [];
 
         var relativeBlobs = [];
@@ -2556,9 +2702,6 @@ var imgData = [], modImgData = [], blobData = [];
             radio = $('input[name=optradio]:checked', '#myForm').val(); 
             console.log(radio); 
         });
-
-        console.log("width:", w, "height:", h);
-        console.log("overlap length:", overlap.length);
 
         var numBlobs = 0, dragging = false;
         var clicked = false;
@@ -2669,26 +2812,47 @@ var imgData = [], modImgData = [], blobData = [];
                                 dragging = i;
                                 clicked = i;
                                 console.log("HITT", i, "on", ourPos);
-                                console.log("gauss indx",  blobData[clicked - 1][1]);
-                                console.log( myblobs1);
                                 blobSelected[i] = !blobSelected[i];
-
 
                                 if(relativeBlobs[i]){
                                     console.log("already exist");
                                 }
 
                                 else{
-                                    console.log("does not exist, create");
-                                    relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas.width, result_canvas.height, scrollThresh, ourPos);
-                                    // relativeBlobs[i] = new relativeBlobTreshold(i, testData, 10, 10, scrollThresh, 45);
-                                }
+                                    console.log("does not exist, create relative blob");
+                                    console.log("imd indx",  blobData[clicked - 1][1]);
 
+                                    console.log("imgData",  imgData);
+
+                                    if(blobData[clicked - 1][1] > 1){
+
+                                        var nrBlobsBefore = 0;
+                                        for (var j = 0; j < i; j++){
+
+                                            if(blobData[j][1] < blobData[clicked - 1][1])
+                                                nrBlobsBefore++;
+
+                                            console.log("loop", blobData[j][1], j);
+                                        }
+                                        console.log("nrBlobsBefore", nrBlobsBefore ,"ger:", clicked - nrBlobsBefore);
+                                        var theBlobNr = clicked - nrBlobsBefore;
+                                        relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas.width, result_canvas.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(theBlobNr), imgData[blobData[clicked - 1][1]].data);     
+
+                                    }
+                                    else{
+                                        relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas.width, result_canvas.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(clicked), imgData[blobData[clicked - 1][1]].data);                                             
+                                    }                                                                                                
+                                    //save the new blob
+                                    blobData[i - 1][0] = relativeBlobs[i].getBlob();
+                                    redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                                    // stopheeeeere();
+                                }
 
                                 //break;
                             }
                         }
                         redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                        // stophere()
                     }
                     else if(radio == PAINTIN || radio == PAINTOUT){
 
@@ -2740,27 +2904,36 @@ var imgData = [], modImgData = [], blobData = [];
                     }
                     var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
                     dDelta += delta;
-                    // console.log("delta", dDelta, dDelta > prevdDelta);
+                    console.log("thres", scrollThresh, "delta", dDelta, dDelta > prevdDelta);
+
+                    // SPARA blob
+                    // blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].compareSingleBlob(scrollThresh, clicked, previousScrollThresh);
+                    // redrawScrean(blobData, imgData, blobSelected, p_offseted);
+
+
                     if(clicked){
+                        console.log("clicked", clicked);
                         if(dDelta > prevdDelta){
+                            console.log("decreasing");
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdDecreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
 
 
                         }else if(dDelta < prevdDelta){
+                            console.log("increasing"); 
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
                     }
                     else{
-                        if(delta > 0 && scrollThresh < (50) ){
+                        if(delta > 0 && scrollThresh < (550) ){
                             scrollThresh = scrollThresh + 1;
                             
                             
                             getThemBlobs(scrollThresh);
                             
                             previousScrollThresh = scrollThresh;   
-                        }else if(delta < 0 && scrollThresh > 5){
+                        }else if(delta < 0 && scrollThresh >= 0){
                             scrollThresh = scrollThresh - 1;
                             getThemBlobs(scrollThresh);
                             
@@ -2781,6 +2954,7 @@ var imgData = [], modImgData = [], blobData = [];
         };
 
         function getThemBlobs(tvalues){
+            console.log(" get them, ");
             var globalNumberOfUnique = 0;
             blobData = [];
 
@@ -2788,7 +2962,7 @@ var imgData = [], modImgData = [], blobData = [];
                 var overlap = imgData[xii];
                 // overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
                 overlap.blobs = myblobs1[xii].compareToThres(tvalues);
-                // console.log("compareToThres", xii,overlap.blobs);
+                console.log("compareToThres", xii,overlap.blobs);
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
                     var currentblobindx = y + 1;
                     var blobtmp = zeros(overlap.blobs.data.length);
