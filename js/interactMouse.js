@@ -7,7 +7,7 @@ var imgData = [], modImgData = [], blobData = [];
 
     _this['interactMouse'] = function(overlap, imgs, selectedBlobs, w, h, modImgs){
         var blobSelected = {};
-        var scrollThresh = 14, previousScrollThresh = 14;
+        var scrollThresh = 24, previousScrollThresh = 24;
         // var myblobs1 = [];
 
         var relativeBlobs = [];
@@ -22,9 +22,6 @@ var imgData = [], modImgData = [], blobData = [];
             radio = $('input[name=optradio]:checked', '#myForm').val(); 
             console.log(radio); 
         });
-
-        console.log("width:", w, "height:", h);
-        console.log("overlap length:", overlap.length);
 
         var numBlobs = 0, dragging = false;
         var clicked = false;
@@ -135,28 +132,47 @@ var imgData = [], modImgData = [], blobData = [];
                                 dragging = i;
                                 clicked = i;
                                 console.log("HITT", i, "on", ourPos);
-                                console.log("gauss indx",  blobData[clicked - 1][1]);
-                                console.log("blobData length",  blobData.length);
-                                console.log("blobData",  blobData);
-                                console.log( myblobs1);
                                 blobSelected[i] = !blobSelected[i];
-
 
                                 if(relativeBlobs[i]){
                                     console.log("already exist");
                                 }
 
                                 else{
-                                    console.log("does not exist, create");
-                                    relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas.width, result_canvas.height, scrollThresh, ourPos);
-                                    // relativeBlobs[i] = new relativeBlobTreshold(i, testData, 10, 10, scrollThresh, 45);
-                                }
+                                    console.log("does not exist, create relative blob");
+                                    console.log("imd indx",  blobData[clicked - 1][1]);
 
+                                    console.log("imgData",  imgData);
+
+                                    if(blobData[clicked - 1][1] > 1){
+
+                                        var nrBlobsBefore = 0;
+                                        for (var j = 0; j < i; j++){
+
+                                            if(blobData[j][1] < blobData[clicked - 1][1])
+                                                nrBlobsBefore++;
+
+                                            console.log("loop", blobData[j][1], j);
+                                        }
+                                        console.log("nrBlobsBefore", nrBlobsBefore ,"ger:", clicked - nrBlobsBefore);
+                                        var theBlobNr = clicked - nrBlobsBefore;
+                                        relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas.width, result_canvas.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(theBlobNr), imgData[blobData[clicked - 1][1]].data);     
+
+                                    }
+                                    else{
+                                        relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas.width, result_canvas.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(clicked), imgData[blobData[clicked - 1][1]].data);                                             
+                                    }                                                                                                
+                                    //save the new blob
+                                    blobData[i - 1][0] = relativeBlobs[i].getBlob();
+                                    redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                                    // stopheeeeere();
+                                }
 
                                 //break;
                             }
                         }
                         redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                        // stophere()
                     }
                     else if(radio == PAINTIN || radio == PAINTOUT){
 
@@ -208,27 +224,36 @@ var imgData = [], modImgData = [], blobData = [];
                     }
                     var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
                     dDelta += delta;
-                    // console.log("delta", dDelta, dDelta > prevdDelta);
+                    console.log("thres", scrollThresh, "delta", dDelta, dDelta > prevdDelta);
+
+                    // SPARA blob
+                    // blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].compareSingleBlob(scrollThresh, clicked, previousScrollThresh);
+                    // redrawScrean(blobData, imgData, blobSelected, p_offseted);
+
+
                     if(clicked){
+                        console.log("clicked", clicked);
                         if(dDelta > prevdDelta){
+                            console.log("decreasing");
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdDecreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
 
 
                         }else if(dDelta < prevdDelta){
+                            console.log("increasing"); 
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
                     }
                     else{
-                        if(delta > 0 && scrollThresh < (50) ){
+                        if(delta > 0 && scrollThresh < (550) ){
                             scrollThresh = scrollThresh + 1;
                             
                             
                             getThemBlobs(scrollThresh);
                             
                             previousScrollThresh = scrollThresh;   
-                        }else if(delta < 0 && scrollThresh > 5){
+                        }else if(delta < 0 && scrollThresh >= 0){
                             scrollThresh = scrollThresh - 1;
                             getThemBlobs(scrollThresh);
                             
@@ -249,6 +274,7 @@ var imgData = [], modImgData = [], blobData = [];
         };
 
         function getThemBlobs(tvalues){
+            console.log(" get them, ");
             var globalNumberOfUnique = 0;
             blobData = [];
 
@@ -256,7 +282,7 @@ var imgData = [], modImgData = [], blobData = [];
                 var overlap = imgData[xii];
                 // overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
                 overlap.blobs = myblobs1[xii].compareToThres(tvalues);
-                // console.log("compareToThres", xii,overlap.blobs);
+                console.log("compareToThres", xii,overlap.blobs);
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
                     var currentblobindx = y + 1;
                     var blobtmp = zeros(overlap.blobs.data.length);

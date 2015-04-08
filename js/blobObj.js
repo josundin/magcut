@@ -42,7 +42,7 @@ var myblobs1 = [];
                 ////// Go find them blobs //////////
                 myblobs1[xii] = findDiff(imgBaseChanels, img1Chanels, overlap.width, overlap.height, xii);
                 overlap.blobs = myblobs1[xii].getData();
-                console.log("getData", overlap.blobs);
+                console.log(" num unique",overlap.blobs.numberOfUnique, "length", overlap.blobs.data.length);
                 // Separate the aryes
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
                     
@@ -57,7 +57,6 @@ var myblobs1 = [];
                 }
                 globalNumberOfUnique += overlap.blobs.numberOfUnique;
             }
-            console.log("globalNumberOfUnique", globalNumberOfUnique);
             for (var xii = 0; xii < globalNumberOfUnique; xii++){
                 blobSelected[xii + 1] = false;
             }
@@ -65,8 +64,6 @@ var myblobs1 = [];
         }
 
         function getThemBlobs(tvalues){
-
-            console.log("get them Blobs");
 
             globalNumberOfUnique = 0;
             blobMaps = [];
@@ -135,7 +132,6 @@ var myblobs1 = [];
         }
         return{
             createBlobView: function() {
-                console.log("create blob view");
 
                 result_canvas = loadCanvas("blobs");
                 overlapData = stitch.getOverlap();

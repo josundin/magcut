@@ -4,21 +4,30 @@
 
 (function(_this){
 "use strict";
-
-	// _this['findDiff'] = function(img1, im2, canvas, callback){
 	_this['findDiff'] = function(img1, img2, myImageW, myImageH, iid){
 		
+		var statdiff = new profiler();
+		statdiff.add("statdiff");  
+		statdiff.start("statdiff");
 		var id = iid;
-		var myBlobs = computeGaussians();
-		var gGauss;
+
+		var gGauss, rGauss;
 		var gW = myImageW;
 		var gH = myImageH;
+
+		var myBlobs = computeGaussians();
+					statdiff.stop("statdiff");
+			console.log("Bluring done in:", statdiff.log(1), "ms"); 
+
 
 		function computeGaussians(){
 			var kernelSizePre = 5;
 			var sigmaPre = 0.5;
-			var kernelSizePost = 161; //50
-			var sigmaPost = 20; //5 
+			var kernelSizePost_Relative = 25; //6
+			var sigmaPost_Relative = 3; //1
+
+			var kernelSizePost = 120;//161; // 25
+			var sigmaPost = 15;//20; // 3
 
 	        var diff = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
 
@@ -46,6 +55,7 @@
 
 			var diff_u8 = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
 			var diffGaus_u8 = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
+			var diffGaus_u8_r = new jsfeat.matrix_t(myImageW, myImageH, jsfeat.F32_t | jsfeat.C1_t);
 
 			diff_u8.data = numeric.floor(diff.data);
 			
@@ -59,15 +69,19 @@
 
 	        jsfeat.imgproc.gaussian_blur(diff_u8, diffGaus_u8, kernelSizePost, sigmaPost); 	
 	        //					   diff_u8, diffGaus_u8
-			var blobs = findBlobs(diffGaus_u8.data, myImageW, myImageH, 14);
+			var blobs = findBlobs(diffGaus_u8.data, myImageW, myImageH, 24);
 			gGauss = diffGaus_u8.data;
+
+			jsfeat.imgproc.gaussian_blur(diff_u8, diffGaus_u8_r, kernelSizePost_Relative, sigmaPost_Relative);
+			rGauss = diffGaus_u8_r.data;
+			// printa32(numeric.round(gGauss), 32);
 			return blobs;
 
 		};
 		
 		return{
         	getGauss: function() {
-				return gGauss;
+				return {"g":gGauss, "r":rGauss}; 
         	},
         	getData: function() {
 				return myBlobs;
@@ -75,6 +89,10 @@
         	compareToThres: function(cmpThreshold) {
         		myBlobs = findBlobs(gGauss, gW, gH, cmpThreshold);
 				return myBlobs;
+        	},
+        	getSize: function(blobNr) {
+        		var tmp = unique(myBlobs.data);
+				return tmp[blobNr];
         	},
         	compareSingleBlob: function(cmpThreshold, blobNr, prevCmpThreshold) {
         		var myBlobsTmp = findBlobs2(myBlobs.data, gGauss, blobNr, gW, gH, cmpThreshold, prevCmpThreshold);
@@ -135,9 +153,6 @@
 		        else{
 		        	console.log("utanför");
 		        }
-
-
-
 
         		// console.log(clicked, xpos, ypos, eee, myBlobs.data.length);
         		// printa(myBlobs.data, 16);

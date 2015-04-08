@@ -60,7 +60,6 @@ And some stuff
             var ctx2 = canvas2.getContext('2d');
 
             //create histogram for base img
-            console.log("images", images);
             var targetHistograms = getHisograms(images[0]);
 
 
@@ -82,8 +81,6 @@ And some stuff
 
                     mapTables[j] = step3(s_k, Gz_q);
                 }
-
-                console.log("mapTables", mapTables);
                 var modifiedImageData = ctx.getImageData(0, 0, imageW , imageH );
                 // END histogram matching
                 
@@ -259,7 +256,7 @@ And some stuff
         };
         return{
             getOverlap: function() {
-                console.log("Datan vi blendar fins i overlapList", overlapList);
+                // console.log("Datan vi blendar fins i overlapList", overlapList);
                 return overlapList;
             },
             getModOverlap: function() {
@@ -303,7 +300,6 @@ function getHisograms(imgRef){
               
         ctx.drawImage(image, 0, 0);
         var imageData = ctx.getImageData(0, 0, image.width, image.height);
-        console.log(" W * H", image.width * image.height)
         var img1_RGBA = getChanels_U8(imageData);
         // console.log("RGBA", img1_RGBA, "MAX", _.max(img1_RGBA[0]), "MIN", _.min(img1_RGBA[0]));
 
@@ -428,7 +424,6 @@ function findClosest(val, arr, s_kIndx){
 function correctImg(maps, srcImageData, dstImageData){
     
     var dptr=0, dptrSingle=0;
-    console.log("w", srcImageData.width, "h", srcImageData.height);
 
     for (var y = 0; y < srcImageData.height; y++) {
         for (var x = 0; x < srcImageData.width; x++, dptr+=4, dptrSingle+=1) {

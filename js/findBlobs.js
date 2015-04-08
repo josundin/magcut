@@ -10,7 +10,6 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
     this.data = new Array(xSize * ySize);
   }
 
-  
   var x, y; 
   var pos = 1;
   // var numberOfUnique = 0;
@@ -26,8 +25,6 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
   // The labelTable remember when blobs of differen labels merge
   // so labelTabel[1] = 2; means that label 1 and 2 are the same blob
   var labelTable = [0];
-
-  
 
   // Start by labeling every pixel as blob 0
   for(y=0; y<ySize; y++){
@@ -56,7 +53,7 @@ function findBlobs(srcPixels, xSize, ySize, thresBlob){
         pos = (y*xSize+x);
         //pos += 1;
 
-        isVisible = (srcPixels[pos] > thresBlob);
+        isVisible = (srcPixels[pos] >= thresBlob);
         
 
         if( isVisible ){
