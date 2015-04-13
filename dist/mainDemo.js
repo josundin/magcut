@@ -810,7 +810,7 @@ else if(imageSet == 3){
     var homographiesHundH1 = [[0.9959573149681091, -0.004883802495896816, 2.678840160369873, 0.005868001375347376, 0.9916155338287354, 1.220236897468567, 0.000002886128186219139, -0.000019482627976685762, 0.9999841451644897 ]]
     var homographiesHundH2 = [[1.0037338733673096, 0.0017153428634628654, -2.2722158432006836, -0.004822799004614353, 1.0045233964920044, -1.1375906467437744, -0.0000012442297929737833, 0.000012024049283354543, 0.9999890923500061]]
     allHomographies = [homographiesHundH1,homographiesHundH2];  
-    imagesRef = ["../imgs/hundar/_DSC6201.jpg", "../imgs/hundar/_DSC6202.jpg"];
+    imagesRef = ["../imgs/hundar/DSC6201.jpg", "../imgs/hundar/DSC6202.jpg"];
 }
 else if(imageSet == 4){
     var homographiesCarH1 =[[1.0406215190887451, -0.0030779337976127863, -140.2157440185547, 0.017164135351777077, 1.0202465057373047, -0.7551611661911011, 0.00009318920638179407, -5.902680300096108e-7, 0.9874429702758789],
@@ -820,7 +820,7 @@ else if(imageSet == 4){
     var homographiesCarH3 =[[0.5839483737945557, -0.034430377185344696, 378.4354553222656, -0.059002310037612915, 0.7470527291297913, -17.07809066772461, -0.000307348178466782, -0.0000905879569472745, 0.7977254986763],
     [0.7873080372810364, 0.02911977842450142, 311.2395935058594, -0.05235334858298302, 0.8844791054725647, -15.283720016479492, -0.0002088312030537054, 0.000021151159671717323, 0.9176208972930908]];
     allHomographies = [homographiesCarH1,homographiesCarH2,homographiesCarH3];  
-    imagesRef = ["../imgs/cars/_DSC1526.jpg", "../imgs/cars/_DSC1533.jpg", "../imgs/cars/_DSC1561.jpg"];
+    imagesRef = ["../imgs/cars/DSC1526.jpg", "../imgs/cars/DSC1533.jpg", "../imgs/cars/DSC1561.jpg"];
 }
 else if(imageSet == 5){
 
@@ -844,7 +844,7 @@ else if(imageSet == 5){
     // imagesRef = ["../imgs/bike/IMG_0050.JPG", "../imgs/bike/IMG_0053.JPG"];
 
     console.log("image Set 5");
-    allHomographies = [homographiesBike2H1,homographiesBike2H2];  
+    allHomographies = [homographiesBike2H1,homographiesBike2H2, homographiesBike2H3];  
     
 }else if(imageSet == 6){
     // 28-29

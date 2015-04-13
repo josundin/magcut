@@ -131,3 +131,62 @@ magcut
 <br><br><br>
 </body>
 </html>
+
+
+
+%*******************************************************************************
+%****************************** Forth Chapter *********************************
+%*******************************************************************************
+
+\chapter{The Image Editing Tool}
+
+\ifpdf
+\graphicspath{{Chapter2/Figs/Raster/}{Chapter2/Figs/PDF/}{Chapter2/Figs/}}
+\else
+\graphicspath{{Chapter2/Figs/Vector/}{Chapter2/Figs/}}
+\fi
+
+\section{Related work}
+Previous work have shown why user interaction is important and how the arisen results of research in the related field can be used alongside with user interaction. 
+\\
+\\
+In the paper of Barnes, et al[] they clarify some scenarios where user interaction is required to obtain the best result, as for example retargeting algorithms. Several methods currently used by photographers provides a control over the outcome where the user is trying to optimize a set of goals that are known to the user and not to the specific algorithm. So authors (Barnes) (Bai) argues that human interaction is absolutely necessary in order to have a framework for these tools. The cause is that it is only through the user input, the best results can be achieved with current algorithms. Users helps to create a target goal in advance which helps to lead the algorithm in the right direction.
+
+Further more in Barnes et al's paper []. When it comes to Image editing, it is often the case that the user has difficulties to in advance exactly specify his/her objectives. In some cases this may even be impossible. Instead the artistic process of creating the desired image is to use trial and error methods. This is because the user aims to optimize the results with respect to personal criteria that are specific to the images under consideration.
+
+They argue that the photo editing tools to be created must be sufficiently flexible to allow users to carry out various goals, while at the same time the tools must be effective enough to be able to show the results immediately so that the user can make the changes as needed.
+
+\section{Use Cases}
+Lets now take a look at what our proposed Image Editing Tool is capable to do by go through a number of use cases that are relevant to use in our application.
+
+\subsection{Example Remove content}
+	
+	\begin{figure}
+		\def\tabularxcolumn#1{m{#1}}
+		\begin{tabularx}{\linewidth}{@{}cXX@{}}
+			%[width=\textwidth]
+			\begin{tabular}{cc} 
+				\subfloat[B]{\includegraphics[width=0.35\textwidth]{EandL/P1180179.jpg}} \\  \subfloat[D]{\includegraphics[width=0.35\textwidth]{EandL/P1180179.jpg}}\\
+			\end{tabular}
+			&
+			\subfloat[G]{\includegraphics[width=0.7\textwidth]{EandL/P1180179.jpg}}	
+		\end{tabularx}
+		\caption{Many figures}\label{foo}
+	\end{figure}
+%\begin{figure}[htbp]
+%	\begin{subfigure}{0.35\textwidth}
+%		\includegraphics[width=\textwidth]{EandL/P1180178.jpg}
+%		\caption{Input 1, the base image} \label{fig:ex1rm_a}
+%	\end{subfigure}%
+%	\\
+%	\begin{subfigure}{0.35\textwidth}
+%		\includegraphics[width=\textwidth]{EandL/P1180179.jpg}
+%		\caption{Input 2} \label{fig:ex1rm_b}
+%	\end{subfigure}%
+%	~
+%	\begin{subfigure}{0.50\textwidth}
+%		\includegraphics[width=\textwidth]{EandL/ut480.png}
+%		\caption{Input 2 Rectified and cropped} \label{fig:ex1rm_c}
+%	\end{subfigure}
+%	\caption{Creation of mosaic}\label{fig:ex1rm}
+%\end{figure}

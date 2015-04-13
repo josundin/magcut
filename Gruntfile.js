@@ -66,11 +66,13 @@ module.exports = function(grunt) {
             },
             build2: {
                 src: 'dist/mainDemo.js',
-                dest:'dist/mainDemo.min.js'
+                // dest:'dist/mainDemo.min.js'
+                dest:'../josundin.github.io/magcut/mainDemo.min.js'      
             },
             build3: {
                 src: 'dist/mainApp.js',
-                dest:'dist/mainApp.min.js'
+                // dest:'dist/mainApp.min.js'
+                dest:'../josundin.github.io/magcut/mainApp.min.js'
             }
           }
     });

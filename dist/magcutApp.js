@@ -3023,7 +3023,7 @@ function redrawScrean(maps, odata, blobSelected, blend_position_offset){
             for (var yi = 0; yi < maps.length; yi++){
                 if(maps[yi][0][dptr_s] === yi + 1 &&  odata[maps[yi][1]].data[dptr + 3] != 0){
                     var offseted = dptr + 4*((blend_position_offset[yi + 1].y)*baseImgData.width+blend_position_offset[yi + 1].x);
-                    imageDatar.data[offseted]     = blobSelected[yi + 1] ? 0 : odata[maps[yi][1]].data[dptr]; //odata[maps[yi][1]].data[dptr ] ;//
+                    imageDatar.data[offseted]     = blobSelected[yi + 1] ? 0 : odata[maps[yi][1]].data[dptr ] ;// 255;
                     imageDatar.data[offseted + 1] =  blobSelected[yi + 1] ? odata[maps[yi][1]].data[dptr + 1] : 0 ;// odata[maps[yi][1]].data[dptr + 1]//
                     imageDatar.data[offseted + 2] = 0;//odata[maps[yi][1]].data[dptr + 2];//0
                     imageDatar.data[offseted + 3] = blobSelected[yi + 1] ? 255 : 200;
@@ -3328,7 +3328,6 @@ var imgData = [], modImgData = [], blobData = [];
                 var overlap = imgData[xii];
                 // overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
                 overlap.blobs = myblobs1[xii].compareToThres(tvalues);
-                console.log("compareToThres", xii,overlap.blobs);
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
                     var currentblobindx = y + 1;
                     var blobtmp = zeros(overlap.blobs.data.length);

@@ -282,7 +282,6 @@ var imgData = [], modImgData = [], blobData = [];
                 var overlap = imgData[xii];
                 // overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
                 overlap.blobs = myblobs1[xii].compareToThres(tvalues);
-                console.log("compareToThres", xii,overlap.blobs);
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
                     var currentblobindx = y + 1;
                     var blobtmp = zeros(overlap.blobs.data.length);
