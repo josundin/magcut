@@ -10,6 +10,12 @@ function redrawScrean(maps, odata, blobSelected, blend_position_offset){
         [0,255,255,255], //C
         [255,0,0,255],  //R
         [0,0,0,255],    //black
+        [0,0,255,255],  //B
+        [255,255,0,255],//Y
+        [255,0,255,255],//P
+        [0,255,255,255], //C
+        [255,0,0,255],  //R
+        [0,0,0,255]     //black
         ];
 
     result_canvas.width = baseImgData.width;
