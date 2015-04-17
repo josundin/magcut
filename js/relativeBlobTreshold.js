@@ -118,7 +118,7 @@ var TSTEP = 1;
 			} while(true);
 
 			theMostSimilarThreshold = 0;
-			if( Math.abs(prevMax - gBlobSize) < Math.abs(maxFound.max - gBlobSize)){
+			if( Math.abs(prevMax - gBlobSize) < Math.abs(maxFound.reg - gBlobSize)){
 				theMostSimilarThreshold = currTf + 1;
 			}
 			else{
