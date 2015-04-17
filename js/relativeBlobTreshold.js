@@ -156,10 +156,12 @@ var TSTEP = 1;
 			}
 		}
 		var utest = unique(relativeLabelsInsideGlobalLabels);
-		console.log(utest); 
+		console.log("blobs inside region:", utest); 
 
 		var label, max = 0, maxLabel = 99999;
+		var labels = [];
 	    for( label in utest ){
+	    	labels.push(Number(label));
 	        if(utest[label] > max){
 	          max = utest[label];
 	          maxLabel = label;
@@ -167,14 +169,17 @@ var TSTEP = 1;
 	    }
 
 	    maxLabel = Number(maxLabel);
-
+	    console.log(labels);
 	    console.log("maxLabel", maxLabel, "compare to", mySeequedLabel);
 
+	    console.log(_.contains(labels, 22));
+// sdkfsdf()
 	    var labledRelative = myBlob.slice();
 	    var indexDone = zeros(myBlob.length);
 		// we need to put -1 i den regionen vi ska utgå ifrån
 		for(var x=0; x<labledRelative.length; x++){
-			if(labledRelative[x] != maxLabel){
+			// if(labledRelative[x] != maxLabel){
+			if(! _.contains(labels, labledRelative[x]) ){	
 				labledRelative[x] = 0;
 				myBlob[x] = 0;
 			}
