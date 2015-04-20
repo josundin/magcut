@@ -26,6 +26,7 @@ var myblobs1 = [];
         var globalNumberOfUnique = 0;
 
         function findBlobs(){
+            console.log("findBlobs *******************************************************************");
             globalNumberOfUnique = 0;
             var overlapBase = overlapData[0];
             var imgBaseChanels = getChanels(overlapBase);
@@ -62,34 +63,6 @@ var myblobs1 = [];
             }
             return blobMaps;
         }
-
-        function getThemBlobs(tvalues){
-
-            globalNumberOfUnique = 0;
-            blobMaps = [];
-
-            for (var xii = 1; xii < imagesRef.length; xii++){
-                var overlap = overlapData[xii];
-                overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
-                for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
-                    var currentblobindx = y + 1;
-                    var blobtmp = zeros(overlap.blobs.data.length);
-                    for (var x = 0; x < overlap.blobs.data.length; x++){
-                        if(currentblobindx === overlap.blobs.data[x]){
-                            blobtmp[x] = currentblobindx + globalNumberOfUnique;
-                        }
-                    }
-                    blobMaps.push([blobtmp, xii]);
-                }
-                globalNumberOfUnique += overlap.blobs.numberOfUnique;
-            }
-            blobSelected = {};
-            for (var xii = 0; xii < globalNumberOfUnique; xii++){
-                blobSelected[xii + 1] = false;
-            }
-            mouse.setNblobs(blobMaps, overlapData, blobSelected);
-            redrawScrean(blobMaps, overlapData, blobSelected, mouse.getOffset());      
-        }; 
 
         function getChanels(imageDatar){
             var dptr=0, dptrSingle=0;

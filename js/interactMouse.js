@@ -206,6 +206,19 @@ var imgData = [], modImgData = [], blobData = [];
                         else{
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
+                    }else {
+                        //check if we are inside a selected blob or not
+                        var dxx = currPos[0].x - lastPos[0].x;
+                        var dyy = currPos[0].y - lastPos[0].y;
+                        if( dxx*dxx + dyy*dyy < 32 ){
+                            currPos = lastPos;
+                            lastPos = tmp;
+                        }
+                        else{
+                            //redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                            console.log("Check Region", dx, dy, blobSelected);
+                        }
+
                     }
 
                     if( e.preventDefault ){

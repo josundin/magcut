@@ -117,12 +117,17 @@ var TSTEP = 1;
 
 			} while(true);
 
+			console.log(Math.abs(prevMax - gBlobSize), "mindre än", Math.abs(maxFound.reg - gBlobSize));
+
 			theMostSimilarThreshold = 0;
 			if( Math.abs(prevMax - gBlobSize) < Math.abs(maxFound.reg - gBlobSize)){
 				theMostSimilarThreshold = currTf + 1;
+				console.log("ja");
 			}
 			else{
 				theMostSimilarThreshold = currTf;
+				console.log("nej");
+
 			}
 
 			console.log("theMostSimilarThreshold", theMostSimilarThreshold, "gave:", maxFound);

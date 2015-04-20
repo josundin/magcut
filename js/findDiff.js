@@ -103,6 +103,7 @@
 				return myBlobsTmp;
         	},
         	paint: function(clicked, xpos, ypos, radioval) {
+        		console.log("paint");
         		
         		var inout = 0;
         		if(radioval == 2)
