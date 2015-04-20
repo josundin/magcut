@@ -95,11 +95,12 @@ var imgData = [], modImgData = [], blobData = [];
                 return locations;
             };
 
-            var lastPos = null;
-            var currPos = null;
+            var lastPos = [];//null;
+            var currPos = [];//null;
             var p_lastPos = null;
             var p_currPos = null;
             var canvas = null;
+            var hoveredIn = 0, previusHoveredIn = 0;
         
             return function(id,onChange){
                 var localOnChange = (function(onChange){ return function(){
@@ -131,7 +132,7 @@ var imgData = [], modImgData = [], blobData = [];
                             if( blobData[i - 1][0][ourPos] === i){
                                 dragging = i;
                                 clicked = i;
-                                console.log("HITT", i, "on", ourPos);
+                                console.log("HIIIIIIIIITT", i, "on", ourPos);
                                 blobSelected[i] = !blobSelected[i];
 
                                 if(relativeBlobs[i]){
@@ -141,8 +142,6 @@ var imgData = [], modImgData = [], blobData = [];
                                 else{
                                     console.log("does not exist, create relative blob");
                                     console.log("imd indx",  blobData[clicked - 1][1]);
-
-                                    console.log("imgData",  imgData);
 
                                     if(blobData[clicked - 1][1] > 1){
 
@@ -206,7 +205,8 @@ var imgData = [], modImgData = [], blobData = [];
                         else{
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
-                    }else {
+                    //om någon blob är clickad
+                    }else if(_.some(blobSelected)){
                         //check if we are inside a selected blob or not
                         var dxx = currPos[0].x - lastPos[0].x;
                         var dyy = currPos[0].y - lastPos[0].y;
@@ -216,7 +216,43 @@ var imgData = [], modImgData = [], blobData = [];
                         }
                         else{
                             //redrawScrean(blobData, imgData, blobSelected, p_offseted);
-                            console.log("Check Region", dx, dy, blobSelected);
+                            var ourPos = dy * result_canvas.width + dx;
+
+                            // om hovered in == 0 || !hovered in ==
+                            // previusHoveredIn = hoveredIn
+                            previusHoveredIn = hoveredIn;
+                            var blobs;
+                            var blobArray = [];
+                            for( blobs in blobSelected){
+                                if(blobSelected[blobs]){
+                                    var hoverOver = Number(blobs);
+                                    if( blobData[hoverOver - 1][0][ourPos] !== 0){
+                                        hoveredIn = hoverOver;
+                                        blobArray.push(1);             
+                                    }
+                                    else {
+                                        blobArray.push(0);
+                                    }
+
+                                }
+                            }
+                            if(!_.contains(blobArray, 1)){
+                                hoveredIn = 0;
+                            }
+
+                            //alt om previus hovered in != hoveredIn 
+                            //then redraw screan
+                            if(previusHoveredIn != hoveredIn){
+                                console.log("***************************************************");
+                                console.log("REDRAW");
+                                console.log(hoveredIn);
+                            }
+                            
+                            // var tes1 = _.countBy(blobSelected , function(num) {
+                            //       return num == true ? 'trues': 'false';
+                            // });
+                            // console.log(tes1['trues'], tes1);
+                            
                         }
 
                     }
@@ -247,13 +283,11 @@ var imgData = [], modImgData = [], blobData = [];
                     if(clicked){
                         console.log("clicked", clicked);
                         if(dDelta > prevdDelta){
-                            console.log("decreasing");
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdDecreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
 
 
                         }else if(dDelta < prevdDelta){
-                            console.log("increasing"); 
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }

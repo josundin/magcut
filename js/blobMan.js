@@ -2,6 +2,7 @@
 function redrawScrean(maps, odata, blobSelected, blend_position_offset){
     var baseImgData = odata[0];
 
+    //each diff image gets one of these colors 
     var colors =    
         [
         [0,0,255,255],  //B
