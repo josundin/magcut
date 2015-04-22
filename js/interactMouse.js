@@ -228,6 +228,7 @@ var imgData = [], modImgData = [], blobData = [];
                                     var hoverOver = Number(blobs);
                                     if( blobData[hoverOver - 1][0][ourPos] !== 0){
                                         hoveredIn = hoverOver;
+                                        clicked   = hoverOver;
                                         blobArray.push(1);             
                                     }
                                     else {
@@ -238,6 +239,7 @@ var imgData = [], modImgData = [], blobData = [];
                             }
                             if(!_.contains(blobArray, 1)){
                                 hoveredIn = 0;
+                                clicked   = 0;
                             }
 
                             //alt om previus hovered in != hoveredIn 
@@ -279,7 +281,6 @@ var imgData = [], modImgData = [], blobData = [];
                     // blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].compareSingleBlob(scrollThresh, clicked, previousScrollThresh);
                     // redrawScrean(blobData, imgData, blobSelected, p_offseted);
 
-
                     if(clicked){
                         console.log("clicked", clicked);
                         if(dDelta > prevdDelta){
@@ -293,6 +294,13 @@ var imgData = [], modImgData = [], blobData = [];
                         }
                     }
                     else{
+
+
+                        if(_.some(blobSelected)){
+                            console.log("Special Case *******************");
+                            //ignore the clicked blobs
+                        }
+
                         if(delta > 0 && scrollThresh < (550) ){
                             scrollThresh = scrollThresh + 1;
                             
@@ -341,10 +349,10 @@ var imgData = [], modImgData = [], blobData = [];
                 }
                 globalNumberOfUnique += overlap.blobs.numberOfUnique;
             }
-            blobSelected = {};
-            for (var xii = 0; xii < globalNumberOfUnique; xii++){
-                blobSelected[xii + 1] = false;
-            }
+            // blobSelected = {};
+            // for (var xii = 0; xii < globalNumberOfUnique; xii++){
+            //     blobSelected[xii + 1] = false;
+            // }
             for (var ij= 1; ij < blobData.length + 1; ij++){
                 p_offseted[ij] = { x: 0, y: 0 };
             }
