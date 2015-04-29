@@ -213,7 +213,6 @@ function selView(){
 
 var blob;
 function createImgObj(val){
-    console.log("choose");
     var currentImagesRef = new Array(imagesRef.length);
     var rindx = 0;
 

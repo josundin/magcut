@@ -26,7 +26,6 @@ var myblobs1 = [];
         var globalNumberOfUnique = 0;
 
         function findBlobs(){
-            console.log("findBlobs *******************************************************************");
             globalNumberOfUnique = 0;
             var overlapBase = overlapData[0];
             var imgBaseChanels = getChanels(overlapBase);

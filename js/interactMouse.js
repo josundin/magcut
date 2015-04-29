@@ -95,12 +95,11 @@ var imgData = [], modImgData = [], blobData = [];
                 return locations;
             };
 
-            var lastPos = [];//null;
-            var currPos = [];//null;
+            var lastPos = null;
+            var currPos = null;
             var p_lastPos = null;
             var p_currPos = null;
             var canvas = null;
-            var hoveredIn = 0, previusHoveredIn = 0;
         
             return function(id,onChange){
                 var localOnChange = (function(onChange){ return function(){
@@ -132,7 +131,7 @@ var imgData = [], modImgData = [], blobData = [];
                             if( blobData[i - 1][0][ourPos] === i){
                                 dragging = i;
                                 clicked = i;
-                                console.log("HIIIIIIIIITT", i, "on", ourPos);
+                                console.log("HITT", i, "on", ourPos);
                                 blobSelected[i] = !blobSelected[i];
 
                                 if(relativeBlobs[i]){
@@ -205,58 +204,6 @@ var imgData = [], modImgData = [], blobData = [];
                         else{
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
-                    //om någon blob är clickad
-                    }else if(_.some(blobSelected)){
-                        //check if we are inside a selected blob or not
-                        var dxx = currPos[0].x - lastPos[0].x;
-                        var dyy = currPos[0].y - lastPos[0].y;
-                        if( dxx*dxx + dyy*dyy < 32 ){
-                            currPos = lastPos;
-                            lastPos = tmp;
-                        }
-                        else{
-                            //redrawScrean(blobData, imgData, blobSelected, p_offseted);
-                            var ourPos = dy * result_canvas.width + dx;
-
-                            // om hovered in == 0 || !hovered in ==
-                            // previusHoveredIn = hoveredIn
-                            previusHoveredIn = hoveredIn;
-                            var blobs;
-                            var blobArray = [];
-                            for( blobs in blobSelected){
-                                if(blobSelected[blobs]){
-                                    var hoverOver = Number(blobs);
-                                    if( blobData[hoverOver - 1][0][ourPos] !== 0){
-                                        hoveredIn = hoverOver;
-                                        clicked   = hoverOver;
-                                        blobArray.push(1);             
-                                    }
-                                    else {
-                                        blobArray.push(0);
-                                    }
-
-                                }
-                            }
-                            if(!_.contains(blobArray, 1)){
-                                hoveredIn = 0;
-                                clicked   = 0;
-                            }
-
-                            //alt om previus hovered in != hoveredIn 
-                            //then redraw screan
-                            if(previusHoveredIn != hoveredIn){
-                                console.log("***************************************************");
-                                console.log("REDRAW");
-                                console.log(hoveredIn);
-                            }
-                            
-                            // var tes1 = _.countBy(blobSelected , function(num) {
-                            //       return num == true ? 'trues': 'false';
-                            // });
-                            // console.log(tes1['trues'], tes1);
-                            
-                        }
-
                     }
 
                     if( e.preventDefault ){
@@ -275,11 +222,11 @@ var imgData = [], modImgData = [], blobData = [];
                     }
                     var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
                     dDelta += delta;
-                    console.log("thres", scrollThresh, "delta", dDelta, dDelta > prevdDelta);
-
+                    console.log("threshold:", scrollThresh);
                     // SPARA blob
                     // blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].compareSingleBlob(scrollThresh, clicked, previousScrollThresh);
                     // redrawScrean(blobData, imgData, blobSelected, p_offseted);
+
 
                     if(clicked){
                         console.log("clicked", clicked);
@@ -288,19 +235,12 @@ var imgData = [], modImgData = [], blobData = [];
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
 
 
-                        }else if(dDelta < prevdDelta){
+                        }else if(dDelta < prevdDelta){ 
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
                             redrawScrean(blobData, imgData, blobSelected, p_offseted);
                         }
                     }
                     else{
-
-
-                        if(_.some(blobSelected)){
-                            console.log("Special Case *******************");
-                            //ignore the clicked blobs
-                        }
-
                         if(delta > 0 && scrollThresh < (550) ){
                             scrollThresh = scrollThresh + 1;
                             
@@ -349,10 +289,10 @@ var imgData = [], modImgData = [], blobData = [];
                 }
                 globalNumberOfUnique += overlap.blobs.numberOfUnique;
             }
-            // blobSelected = {};
-            // for (var xii = 0; xii < globalNumberOfUnique; xii++){
-            //     blobSelected[xii + 1] = false;
-            // }
+            blobSelected = {};
+            for (var xii = 0; xii < globalNumberOfUnique; xii++){
+                blobSelected[xii + 1] = false;
+            }
             for (var ij= 1; ij < blobData.length + 1; ij++){
                 p_offseted[ij] = { x: 0, y: 0 };
             }
@@ -402,6 +342,7 @@ var imgData = [], modImgData = [], blobData = [];
 
 function blend(){
     var cont = _.contains(mouse.getBlobSelected(), true);
+    console.log(mouse.getBlobSelected());
     if(cont !== true){    
         console.log("do naada");
         alert("First, select which regions to blend by click them in the image");
