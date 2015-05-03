@@ -10,7 +10,9 @@ var imgData = [], modImgData = [], blobData = [];
         var scrollThresh = 24, previousScrollThresh = 24;
         // var myblobs1 = [];
 
-        var relativeBlobs = [];
+        var relativeBlobs = {};
+        var relativeBlobsIndxs = [];
+        var clickedBlobs  = [];
         var dDelta = 0, prevdDelta = 0;
 
         var SELBLOB  = 1
@@ -95,11 +97,12 @@ var imgData = [], modImgData = [], blobData = [];
                 return locations;
             };
 
-            var lastPos = null;
-            var currPos = null;
+            var lastPos = [];//null;
+            var currPos = [];//null;
             var p_lastPos = null;
             var p_currPos = null;
             var canvas = null;
+            var hoveredIn = 0, previusHoveredIn = 0;
         
             return function(id,onChange){
                 var localOnChange = (function(onChange){ return function(){
@@ -131,16 +134,21 @@ var imgData = [], modImgData = [], blobData = [];
                             if( blobData[i - 1][0][ourPos] === i){
                                 dragging = i;
                                 clicked = i;
-                                console.log("HITT", i, "on", ourPos);
+                                hoveredIn = i;
+                                console.log("HIIIIIIIIITT", i, "on", ourPos);
                                 blobSelected[i] = !blobSelected[i];
+                                console.log(blobSelected);
 
                                 if(relativeBlobs[i]){
                                     console.log("already exist");
+                                    // previusHoveredIn = 0;
+                                    // hoveredIn = 0;
+                                    // clicked = 0;
+                                    // relativeBlobs[i] = 0;
                                 }
 
                                 else{
                                     console.log("does not exist, create relative blob");
-                                    console.log("imd indx",  blobData[clicked - 1][1]);
 
                                     if(blobData[clicked - 1][1] > 1){
 
@@ -149,8 +157,6 @@ var imgData = [], modImgData = [], blobData = [];
 
                                             if(blobData[j][1] < blobData[clicked - 1][1])
                                                 nrBlobsBefore++;
-
-                                            console.log("loop", blobData[j][1], j);
                                         }
                                         console.log("nrBlobsBefore", nrBlobsBefore ,"ger:", clicked - nrBlobsBefore);
                                         var theBlobNr = clicked - nrBlobsBefore;
@@ -162,14 +168,13 @@ var imgData = [], modImgData = [], blobData = [];
                                     }                                                                                                
                                     //save the new blob
                                     blobData[i - 1][0] = relativeBlobs[i].getBlob();
-                                    redrawScrean(blobData, imgData, blobSelected, p_offseted);
-                                    // stopheeeeere();
+                                    redrawScrean(blobData, imgData, blobSelected, hoveredIn);
                                 }
 
                                 //break;
                             }
                         }
-                        redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                        redrawScrean(blobData, imgData, blobSelected, hoveredIn);
                         // stophere()
                     }
                     else if(radio == PAINTIN || radio == PAINTOUT){
@@ -178,10 +183,11 @@ var imgData = [], modImgData = [], blobData = [];
                         
                         var dx = currPos[0].x;
                         var dy = currPos[0].y;
-                        // blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].compareSingleBlob(scrollThresh, clicked, previousScrollThresh);
                         blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].paint(clicked, dx, dy, radio);
                        
-                        redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                        // redrawScrean(blobData, imgData, blobSelected);
+                        redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+
                     }
 
 
@@ -202,8 +208,58 @@ var imgData = [], modImgData = [], blobData = [];
                             lastPos = tmp;
                         }
                         else{
-                            redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                            redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+
                         }
+                    //om någon blob är clickad
+                    }else if(_.some(blobSelected)){
+                        //check if we are inside a selected blob or not
+                        var dxx = currPos[0].x - lastPos[0].x;
+                        var dyy = currPos[0].y - lastPos[0].y;
+                        if( dxx*dxx + dyy*dyy < 32 ){
+                            currPos = lastPos;
+                            lastPos = tmp;
+                        }
+                        else{
+                            var ourPos = dy * result_canvas.width + dx;
+
+                            previusHoveredIn = hoveredIn;
+                            var blobs;
+                            var blobArray = [];
+                            for( blobs in blobSelected){
+                                if(blobSelected[blobs]){
+                                    var hoverOver = Number(blobs);
+                                    if( blobData[hoverOver - 1][0][ourPos] !== 0){
+                                        hoveredIn = hoverOver;
+                                        clicked   = hoverOver;
+                                        blobArray.push(1);             
+                                    }
+                                    else {
+                                        blobArray.push(0);
+                                    }
+
+                                }
+                            }
+                            if(!_.contains(blobArray, 1)){
+                                hoveredIn = 0;
+                                clicked   = 0;
+                            }
+
+                            //alt om previus hovered in != hoveredIn 
+                            //then redraw screan
+                            if(previusHoveredIn != hoveredIn){
+                                redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+
+                                // console.log(relativeBlobs[3].id);
+                            }
+                            
+                            // var tes1 = _.countBy(blobSelected , function(num) {
+                            //       return num == true ? 'trues': 'false';
+                            // });
+                            // console.log(tes1['trues'], tes1);
+                            
+                        }
+
                     }
 
                     if( e.preventDefault ){
@@ -216,49 +272,202 @@ var imgData = [], modImgData = [], blobData = [];
                 }).on('DOMMouseScroll mousewheel',function(e){
                     if (e.preventDefault) {
                         e.preventDefault();
-                    } //standard
+                    } 
                     else if (e.returnValue) {
                         e.returnValue = false;
                     }
                     var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
                     dDelta += delta;
-                    console.log("threshold:", scrollThresh);
-                    // SPARA blob
-                    // blobData[clicked - 1][0] = myblobs1[blobData[ clicked - 1 ][1]].compareSingleBlob(scrollThresh, clicked, previousScrollThresh);
-                    // redrawScrean(blobData, imgData, blobSelected, p_offseted);
-
 
                     if(clicked){
-                        console.log("clicked", clicked);
                         if(dDelta > prevdDelta){
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdDecreas();
-                            redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                            redrawScrean(blobData, imgData, blobSelected, hoveredIn);
 
 
-                        }else if(dDelta < prevdDelta){ 
+                        }else if(dDelta < prevdDelta){
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
-                            redrawScrean(blobData, imgData, blobSelected, p_offseted);
+                            redrawScrean(blobData, imgData, blobSelected, hoveredIn);
                         }
                     }
                     else{
-                        if(delta > 0 && scrollThresh < (550) ){
-                            scrollThresh = scrollThresh + 1;
+
+
+                        if(_.some(blobSelected)){
+
+
+                            if(delta > 0 && scrollThresh < (550) ){
+                                scrollThresh = scrollThresh + 1;
+                                // previousScrollThresh = scrollThresh;   
+                            }else if(delta < 0 && scrollThresh >= 0){
+                                scrollThresh = scrollThresh - 1;
+                                // previousScrollThresh = scrollThresh;
+                            }
+
+                            clickedBlobs = zeros(blobData[0][0].length);
+
+                            var blobs;
+                            for( blobs in blobSelected){
+                                if(blobSelected[blobs]){
+                                    //loop throo the whole matrix
+                                    for (var x = 0; x < blobData[blobs - 1][0].length; x++){
+                                        if(blobData[blobs - 1][0][x] == blobs){
+                                            clickedBlobs[x] = Number(blobs);
+                                        }                                            
+                                    }
+                                }
+                            }
                             
-                            
-                            getThemBlobs(scrollThresh);
-                            
-                            previousScrollThresh = scrollThresh;   
-                        }else if(delta < 0 && scrollThresh >= 0){
-                            scrollThresh = scrollThresh - 1;
-                            getThemBlobs(scrollThresh);
-                            
+                            getBlobsIgnoreSelected(scrollThresh);
                             previousScrollThresh = scrollThresh;
+
+                            // blobData[clicked - 1][0]
+                        }else{
+                            if(delta > 0 && scrollThresh < (550) ){
+                                scrollThresh = scrollThresh + 1;
+                                
+                                getThemBlobs(scrollThresh);
+                                
+                                previousScrollThresh = scrollThresh;   
+                            }else if(delta < 0 && scrollThresh >= 0){
+                                scrollThresh = scrollThresh - 1;
+                                getThemBlobs(scrollThresh);
+                                
+                                previousScrollThresh = scrollThresh;
+                            }
                         }
                     }
                     prevdDelta = dDelta;
                 });
             };
         })();
+
+        function getBlobsIgnoreSelected(tvalues){
+            console.log(" getBlobsIgnoreSelected ");
+            var globalNumberOfUnique = 0;
+            var selctedOrNot = [];
+            var blobsChangeFrom = [];
+            var blobsChangeTo = [];
+            blobData = [];
+
+            for (var xii = 1; xii < imagesRef.length; xii++){
+                var overlap = imgData[xii];
+                overlap.blobs = myblobs1[xii].compareToThres(tvalues);
+
+                for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
+                    var currentblobindx = y + 1;
+                    var blobtmp = zeros(overlap.blobs.data.length);
+                    var ignore = false;
+                    var clickedBlobsIndx = 0;
+                    for (var x = 0; x < overlap.blobs.data.length; x++){
+
+                        if(currentblobindx === overlap.blobs.data[x]){
+                            blobtmp[x] = currentblobindx + globalNumberOfUnique;
+                            if(clickedBlobs[x] != 0){
+                                console.log("ignore this########################################", blobtmp[x], x);
+                                ignore = true;
+                                clickedBlobsIndx = clickedBlobs[x];
+                                break;
+                            }
+                        }
+                    }
+                    if(ignore){ // &&  !_.contains(blobsChangeFrom, clickedBlobsIndx) 
+                        blobtmp = zeros(overlap.blobs.data.length);
+                        for (var x = 0; x < overlap.blobs.data.length; x++){
+                            if(clickedBlobs[x] == clickedBlobsIndx){
+                                blobtmp[x] = currentblobindx + globalNumberOfUnique;
+                            }
+                        }
+                        // if(!_.contains(blobsChangeFrom, clickedBlobsIndx)){
+                            selctedOrNot.push(true);
+                            console.log("den :", clickedBlobsIndx);
+                            blobsChangeFrom.push(clickedBlobsIndx);    
+                        // }
+                        // else{
+                        //     console.log("MISS", selctedOrNot)
+                        // }
+                        
+                    }
+                    else{
+                        selctedOrNot.push(false);
+                    }
+                    blobData.push([blobtmp, xii]);
+                }
+                globalNumberOfUnique += overlap.blobs.numberOfUnique;
+            }
+
+            blobSelected = {};
+            for (var xii = 0; xii < globalNumberOfUnique; xii++){
+                if(selctedOrNot[xii]){
+                    blobSelected[xii + 1] = true;
+                    console.log("till :", xii + 1);
+                    blobsChangeTo.push(xii + 1);
+
+                }
+                else{
+                    blobSelected[xii + 1] = false;
+                }
+            }
+            for (var ij= 1; ij < blobData.length + 1; ij++){
+                p_offseted[ij] = { x: 0, y: 0 };
+            }
+
+            if(blobsChangeFrom.length > 0){
+                console.log("relativeBlobs before", relativeBlobs);
+                console.log("MAKE THE CHANGES ************************", previousScrollThresh < scrollThresh);
+                console.log("from :", blobsChangeFrom);
+                console.log("to   :", blobsChangeTo);
+                console.log("**************** ************************");
+                var zipped = _.zip(blobsChangeFrom,blobsChangeTo);
+                console.log("zipped", zipped);
+                // if(previousScrollThresh < scrollThresh){
+                //     zipped = _.sortBy(zipped, function(num){ return -num[1]; });
+                // }
+                // else{
+                //     zipped = _.sortBy(zipped, function(num){ return num[1]; });
+                // }
+                zipped = _.sortBy(zipped, function(num){ return -num[1]; });
+                zipped = _.uniq(zipped, false, function(num) {return num [0];})
+                
+                var unzipped = _.unzip(zipped);  
+
+                blobsChangeFrom = unzipped[0];
+                blobsChangeTo   = unzipped[1];
+
+                console.log("zip unzipped ************************");
+                console.log("from :", blobsChangeFrom);
+                console.log("to   :", blobsChangeTo);
+
+
+                for (var ij= 0; ij < blobsChangeFrom.length; ij++){
+                    console.log(ij, relativeBlobs);
+                    // if(relativeBlobs[ij]){
+                        relativeBlobs[blobsChangeFrom[ij]].changeId(blobsChangeTo[ij]);
+                        changeKey(relativeBlobs, blobsChangeFrom[ij], blobsChangeTo[ij] + 99);
+                    // }
+                }
+
+
+                for (var ij= 0; ij < blobsChangeFrom.length; ij++){
+                    // if(relativeBlobs[ij]){
+                        changeKey(relativeBlobs, blobsChangeFrom[ij] + 99 + (blobsChangeTo[ij] - blobsChangeFrom[ij]), blobsChangeTo[ij]);
+                    // }
+                }
+
+                console.log("relativeBlobs after", relativeBlobs);
+
+
+                numBlobs = blobData.length;
+
+                console.log("blobSelected Size", _.size(blobSelected), blobSelected);
+
+                redrawScrean(blobData, imgData, blobSelected);
+
+            }
+        else{
+            console.log("the array is empty", blobSelected);
+        }
+        }; 
 
         function zeros(size) {
             var array = new Array(size);
@@ -298,7 +507,7 @@ var imgData = [], modImgData = [], blobData = [];
             }
             numBlobs = blobData.length;
 
-            redrawScrean(blobData, imgData, blobSelected, p_offseted);
+            redrawScrean(blobData, imgData, blobSelected);
 
         }; 
 
@@ -342,7 +551,6 @@ var imgData = [], modImgData = [], blobData = [];
 
 function blend(){
     var cont = _.contains(mouse.getBlobSelected(), true);
-    console.log(mouse.getBlobSelected());
     if(cont !== true){    
         console.log("do naada");
         alert("First, select which regions to blend by click them in the image");
@@ -418,3 +626,10 @@ function getMask(mask_pixels, src_pixels, blobNr){
     return extraCanvas;//extraCtx.getImageData(0, 0, src_pixels.width, src_pixels.height);
 }
 
+function changeKey(o, old_key, new_key){
+    if (old_key !== new_key) {
+        Object.defineProperty(o, new_key,
+        Object.getOwnPropertyDescriptor(o, old_key));
+        delete o[old_key];
+    }
+}

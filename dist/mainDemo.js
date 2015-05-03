@@ -34,26 +34,42 @@ var TSTEP = 1;
 		statfind.add("features");  
 		
 		var labled = findBlobs(srcPixels.g, xSize, ySize, thresBlob);
+		
+		var allBlobsinPair = labled.data.slice();
 
 		var globalLabeled = labled.data.slice();
 				
 		var labeledClickedPos = labled.data[clickedPos];
 		var ourSelectedRegion = [];
-		console.log("labled clickedPos", labeledClickedPos);
+		console.log("labled clickedPos", labeledClickedPos, "T", thresBlob);
+		console.log("Start find relative T that gives the most similar blob Size as the global T");
+		console.log("***************************************************");
 		for(var x=0; x<labled.data.length; x++){
 			if(labled.data[x] != labeledClickedPos){
 				labled.data[x] = 0;
 			}
 			else{
 				labled.data[x] = -1;
+				allBlobsinPair[x] = -1;
 				ourSelectedRegion.push(x);
 			}
 		}
 
+		var allBlobsinPairUniqe = unique(allBlobsinPair);
+		console.log("allBlobsinPairUniqe", allBlobsinPairUniqe);
+
+		var label;
+		var allBlobsinPairlabels = [];
+	    for( label in allBlobsinPairUniqe ){
+	        if(label != 0 && label != -1){
+				allBlobsinPairlabels.push(Number(label));
+	        }
+	    }
+
+	    console.log("allBlobsinPairlabels", allBlobsinPairlabels);
 
 		function computeSize(threshold){
-			var labledr = findBlobs(srcPixels.r, xSize, ySize, threshold); ///
-			// var labledr = findBlobs_nopush(srcPixels.r, xSize, ySize, threshold);
+			var labledr = findBlobs(srcPixels.r, xSize, ySize, threshold); 
 
 			var uniqueLaledr = unique(labledr.data);
 			//loop through the image and count the apperance of labels
@@ -100,8 +116,6 @@ var TSTEP = 1;
 
 				if( maxFound.reg <= gBlobSize)
 					break;
-
-
 			}
 
 			console.log("Currrrent:", currTf);
@@ -117,6 +131,8 @@ var TSTEP = 1;
 
 			} while(true);
 
+			console.log(Math.abs(prevMax - gBlobSize), "mindre än", Math.abs(maxFound.reg - gBlobSize));
+
 			theMostSimilarThreshold = 0;
 			if( Math.abs(prevMax - gBlobSize) < Math.abs(maxFound.reg - gBlobSize)){
 				theMostSimilarThreshold = currTf + 1;
@@ -124,9 +140,13 @@ var TSTEP = 1;
 			else{
 				theMostSimilarThreshold = currTf;
 			}
-
-			console.log("theMostSimilarThreshold", theMostSimilarThreshold, "gave:", maxFound);
+			
+			console.log("finding the MostSimilar Threshold", theMostSimilarThreshold, "gave:", maxFound);
 			var labledRelative = findBlobs(srcPixels.r, xSize, ySize, theMostSimilarThreshold);
+			console.log("labled R");
+			if(labledRelative.data == 1024){
+				printa32(labledRelative.data, 32);
+			}
 			mySeequedLabel = maxFound.label;
 			
 			return labledRelative.data;
@@ -136,16 +156,11 @@ var TSTEP = 1;
 		var myBlob = findClosestTinRelativeDistance();
 
 		statfind.stop("features");
+		console.log('***************************************************');
 		console.log("find closest T done in:", statfind.log(1), "ms"); 
-		// printa32(myBlob, 32);
 
-		//now we need to create the distances
 		
 		var labeledClickedPos = globalLabeled[clickedPos];
-
-		console.log("global label:");
-		// printa32(globalLabeled, 32);
-
 		var relativeLabelsInsideGlobalLabels = [];
 		for(var i=0; i<globalLabeled.length; i++){
 			if(globalLabeled[i] == labeledClickedPos){
@@ -169,35 +184,60 @@ var TSTEP = 1;
 	    }
 
 	    maxLabel = Number(maxLabel);
-	    console.log(labels);
-	    console.log("maxLabel", maxLabel, "compare to", mySeequedLabel);
+	    // console.log(labels);
+	    // console.log("maxLabel", maxLabel, "compare to", mySeequedLabel);
+
 
 	    var labledRelative = myBlob.slice();
 	    var indexDone = zeros(myBlob.length);
+
+
+	     // console.log("labled.data");
+	    // printa32(labled.data, 32);
+
+		console.log("labled", labels);
+		// printa32(allBlobsinPair, 32);
+		for(var x=0; x<labledRelative.length; x++){
+			if(allBlobsinPair[x] !== 0  && allBlobsinPair[x] !== -1){
+				if(_.contains(allBlobsinPairlabels, allBlobsinPair[x]) && _.contains(labels, labledRelative[x]) ){
+		      //   	var r = Math.floor(x / myXsize);
+		    		// var c = x % myXsize;
+					console.log("RM that", allBlobsinPair[x], labledRelative[x]);//, "r", r, "c",c);
+					labels = _.without(labels, labledRelative[x]);
+				}	
+			}
+		}
+
+		console.log("labled", labels);
 		// we need to put -1 i den regionen vi ska utgå ifrån
 		for(var x=0; x<labledRelative.length; x++){
 			// do a check if part of anoter blob
-			if(! _.contains(labels, labledRelative[x]) ){	
+			if(! _.contains(labels, labledRelative[x]) && labled.data[x] != -1){	
 				labledRelative[x] = 0;
 				myBlob[x] = 0;
 			}
 			else{
-				labledRelative[x] = -1;
-				myBlob[x] = myId;
-				indexDone[x] = 1;
+					labledRelative[x] = -1;
+					myBlob[x] = myId;
+					indexDone[x] = 1;
 			}
 		}
 
 		statfind.start("features");		
 		// getDistances(srcPixels.r, labledRelative, xSize, ySize);
+
+		// labled.data
 		getDistanceswQue(srcPixels.r, labledRelative, xSize, ySize, indexDone, genImageData);
+		// getDistanceswQue(srcPixels.r, labled.data, xSize, ySize, indexDone, genImageData);
 
 		statfind.stop("features");
+
+		console.log('***************************************************');
 		console.log("distances created in:", statfind.log(1), "ms"); 
-		// console.log("myBlob");
-		// printa32(myBlob, 32);
 
 		// var dists = numeric.add(gradients,labledRelative.data);
+
+		// var dists = numeric.round(labled.data);
 		var dists = numeric.round(labledRelative);
 		if(dists.length == 1024){
 			printa32(dists, 32);
@@ -217,25 +257,23 @@ var TSTEP = 1;
                 console.log("The ID is:", myId);
                 return this.id;
             },
+            changeId: function(newid) {
+				myId = newid;                
+            },
             updateThresholdIncreas: function() {
                 initTreshold++;
-                console.log("The ID is:", myId, initTreshold);
                 if (initTreshold > 0) {
-
-                	console.log("Do dists");
 
 					subtactOne(dists, myXsize, myYsize, decIndx, decVal);
 					myBlob = dists.slice(); 
 					makeBlob(myBlob, myId, xSize, ySize);
 
-					console.log("myBlob", dists.length);
 					if( dists.length == 1024){
 						printa32(myBlob, 32)
 					}
 				}
 				else{
 					theMostSimilarThreshold--;
-					console.log("do something else w", theMostSimilarThreshold);
 					var labledr = findBlobs(gGauss, myXsize, myYsize, theMostSimilarThreshold);
 
 					var labelAppearence = new Array(ourSelectedRegion.length);
@@ -261,22 +299,18 @@ var TSTEP = 1;
             },
             updateThresholdDecreas: function() {
                 initTreshold--;
-                console.log("dec The ID is:", myId, initTreshold);
+                console.log("dec The ID is:", myId, "initTreshold",initTreshold);
                 if (initTreshold >= 0){
-                	console.log("dec Do dists");
                 	addOne(dists, myXsize, myYsize, decIndx, decVal);
 
 					myBlob = dists.slice(); 
 					makeBlob(myBlob, myId, xSize, ySize);
-
-					console.log("myBlob");
 					if( dists.length == 1024){
 						printa32(myBlob, 32)
 					}
                 }
 				else{
 					theMostSimilarThreshold++;
-					console.log("dec do something else w", theMostSimilarThreshold);
 					var labledr = findBlobs(gGauss, myXsize, myYsize, theMostSimilarThreshold);
 
 					var labelAppearence = new Array(ourSelectedRegion.length);
@@ -311,7 +345,8 @@ var TSTEP = 1;
             },
             getBlob: function() {
                 return myBlob;
-            }
+            },
+            id: myId
         };
     };
 }(this));
@@ -366,7 +401,6 @@ function makeBlob(myBlob, myId, xSize, ySize){
 			}
 		}
 	}
-	console.log("blobSize" , blobSize ,"px");
 }
 
 function addOne(mydists, xSize, ySize, decIndx, decVal){
@@ -929,7 +963,6 @@ function selView(){
 
 var blob;
 function createImgObj(val){
-    console.log("choose");
     var currentImagesRef = new Array(imagesRef.length);
     var rindx = 0;
 
@@ -1001,7 +1034,6 @@ var myblobs1 = [];
                 ////// Go find them blobs //////////
                 myblobs1[xii] = findDiff(imgBaseChanels, img1Chanels, overlap.width, overlap.height, xii);
                 overlap.blobs = myblobs1[xii].getData();
-                console.log(" num unique",overlap.blobs.numberOfUnique, "length", overlap.blobs.data.length);
                 // Separate the aryes
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
                     
@@ -1021,34 +1053,6 @@ var myblobs1 = [];
             }
             return blobMaps;
         }
-
-        function getThemBlobs(tvalues){
-
-            globalNumberOfUnique = 0;
-            blobMaps = [];
-
-            for (var xii = 1; xii < imagesRef.length; xii++){
-                var overlap = overlapData[xii];
-                overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
-                for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
-                    var currentblobindx = y + 1;
-                    var blobtmp = zeros(overlap.blobs.data.length);
-                    for (var x = 0; x < overlap.blobs.data.length; x++){
-                        if(currentblobindx === overlap.blobs.data[x]){
-                            blobtmp[x] = currentblobindx + globalNumberOfUnique;
-                        }
-                    }
-                    blobMaps.push([blobtmp, xii]);
-                }
-                globalNumberOfUnique += overlap.blobs.numberOfUnique;
-            }
-            blobSelected = {};
-            for (var xii = 0; xii < globalNumberOfUnique; xii++){
-                blobSelected[xii + 1] = false;
-            }
-            mouse.setNblobs(blobMaps, overlapData, blobSelected);
-            redrawScrean(blobMaps, overlapData, blobSelected, mouse.getOffset());      
-        }; 
 
         function getChanels(imageDatar){
             var dptr=0, dptrSingle=0;
