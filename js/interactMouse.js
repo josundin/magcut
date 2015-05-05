@@ -19,13 +19,27 @@ var imgData = [], modImgData = [], blobData = [];
         var SELBLOB  = 1
         var PAINTOUT = 2
         var PAINTIN  = 3
+
+        var startcalcDist = false;
         var radio = $('input[name=optradio]:checked', '#myForm').val(); 
 
         $('#myForm input').on('change', function() {
             radio = $('input[name=optradio]:checked', '#myForm').val(); 
-            console.log(radio); 
+            console.log("RADIO Cnagke", radio); 
+            if(radio == 1){
+                document.body.style.cursor = "auto";
+            }else if(radio == 2){
+                document.body.style.cursor = "cell";
+            }else{
+                document.body.style.cursor = "crosshair";
+            }
         });
 
+        //$('#myStateButton input').button('toggle');
+        // $("#myButtons :input").change(function() {
+        //     console.log(this); // points to the clicked input button
+        // });
+        
         var numBlobs = 0, dragging = false;
         var clicked = false;
         var is_mixing_gradients = true;
@@ -127,6 +141,7 @@ var imgData = [], modImgData = [], blobData = [];
 
                     
                     if(radio == SELBLOB){
+                // document.body.style.cursor = "wait";
 
                         currPos = getPointerPositionsIn(e);
                         //Find out if we have a hit and which shape was clicked
@@ -152,42 +167,13 @@ var imgData = [], modImgData = [], blobData = [];
                                 }
 
                                 else{
+                                    document.body.style.cursor = "wait";
+
                                     console.log("does not exist, create relative blob");
                                     console.log("imd indx",  blobData[clicked - 1][1]);
 
-                                    if(blobData[clicked - 1][1] > 1){
+                                    startcalcDist = true;
 
-                                        var nrBlobsBefore = 0;
-                                        for (var j = 0; j < i; j++){
-
-                                            if(blobData[j][1] < blobData[clicked - 1][1])
-                                                nrBlobsBefore++;
-
-                                            console.log("loop", blobData[j][1], j);
-                                        }
-                                        console.log("nrBlobsBefore", nrBlobsBefore ,"ger:", clicked - nrBlobsBefore);
-                                        var theBlobNr = clicked - nrBlobsBefore;
-                                        relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas_top.width, result_canvas_top.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(theBlobNr), imgData[blobData[clicked - 1][1]].data);     
-
-                                    }
-                                    else{
-                                        relativeBlobs[i] = new relativeBlobTreshold(i, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas_top.width, result_canvas_top.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(clicked), imgData[blobData[clicked - 1][1]].data);                                             
-                                    }                                                                                                
-                                    //save the new blob
-                                    blobData[i - 1][0] = relativeBlobs[i].getBlob();
-                                    redrawScrean(blobData, imgData, blobSelected, hoveredIn);
-                                    console.log("mark global blobs");
-                                    var blobs;
-                                    for( blobs in blobSelected){
-                                        if(blobSelected[blobs]){
-                                            //loop throo the whole matrix
-                                            for (var x = 0; x < blobData[blobs - 1][0].length; x++){
-                                                if(blobData[blobs - 1][0][x] == blobs){
-                                                    clickedBlobs[x] = Number(blobs);
-                                                }                                            
-                                            }
-                                        }
-                                    }
                                 }
 
                                 //break;
@@ -308,6 +294,46 @@ var imgData = [], modImgData = [], blobData = [];
                         e.preventDefault();
                     }
                 }).on('touchend mouseup mouseout',function(e){
+                    
+                    if(startcalcDist){
+                        var ourPos = (Math.abs(currPos[0].y - p_offseted[clicked].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x - p_offseted[clicked].x);
+                        if(blobData[clicked - 1][1] > 1){
+                            var nrBlobsBefore = 0;
+                            for (var j = 0; j < clicked; j++){
+
+                                if(blobData[j][1] < blobData[clicked - 1][1])
+                                    nrBlobsBefore++;
+
+                                console.log("loop", blobData[j][1], j);
+                            }
+                            console.log("nrBlobsBefore", nrBlobsBefore ,"ger:", clicked - nrBlobsBefore);
+                            var theBlobNr = clicked - nrBlobsBefore;
+                            relativeBlobs[clicked] = new relativeBlobTreshold(clicked, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas_top.width, result_canvas_top.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(theBlobNr), imgData[blobData[clicked - 1][1]].data);     
+
+                        }
+                        else{
+                            relativeBlobs[clicked] = new relativeBlobTreshold(clicked, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas_top.width, result_canvas_top.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(clicked), imgData[blobData[clicked - 1][1]].data);                                             
+                        }                                                                                                
+                        //save the new blob
+                        blobData[clicked - 1][0] = relativeBlobs[clicked].getBlob();
+                        redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+                        console.log("mark global blobs");
+                        document.body.style.cursor = "auto";
+                        var blobs;
+                        for( blobs in blobSelected){
+                            if(blobSelected[blobs]){
+                                //loop throo the whole matrix
+                                for (var x = 0; x < blobData[blobs - 1][0].length; x++){
+                                    if(blobData[blobs - 1][0][x] == blobs){
+                                        clickedBlobs[x] = Number(blobs);
+                                    }                                            
+                                }
+                            }
+                        }
+                        startcalcDist = false;
+                    }
+
+
                     if(dragging){
                         dragging = false; 
                     }
@@ -322,6 +348,7 @@ var imgData = [], modImgData = [], blobData = [];
                     dDelta += delta;
                     console.log("===========================================================", hoveredIn);
                     console.log("thres", scrollThresh, "delta", dDelta, dDelta > prevdDelta);
+                   
 
                     if(clicked){
                         console.log("clicked", clicked);
