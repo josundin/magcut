@@ -2791,8 +2791,6 @@ function redrawScrean(maps, odata, blobSelected, hovered){
 
     var myHovered = hovered ? hovered : 0;
 
-    console.log("myHovered", myHovered);
-
     var colors =    
         [
         [0,0,255,255],  //B
