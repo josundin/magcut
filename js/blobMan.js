@@ -3,7 +3,7 @@ function redrawScrean(maps, odata, blobSelected, hovered){
     var baseImgData = odata[0];
 
     var myHovered = hovered ? hovered : 0;
-
+    
     var colors =    
         [
         [0,0,255,255],  //B
@@ -21,9 +21,11 @@ function redrawScrean(maps, odata, blobSelected, hovered){
         ];
 
 
-    result_canvas.width = baseImgData.width;
-    result_canvas.height = baseImgData.height;
-    var result_ctx = result_canvas.getContext("2d");
+    result_canvas_bottom.width = baseImgData.width;
+    result_canvas_bottom.height = baseImgData.height;   
+    result_canvas_top.width = baseImgData.width;
+    result_canvas_top.height = baseImgData.height;
+    var result_ctx = result_canvas_bottom.getContext("2d");
     var canvas2 = document.createElement('CANVAS');
     // document.body.appendChild(canvas2);
     canvas2.width =  baseImgData.width;

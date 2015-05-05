@@ -5,6 +5,16 @@
 <title>Image Editing Demo</title>
 <link rel="stylesheet" href="../libs/twitter-bootstrap/bootstrap.min.css">
 <style>
+    #wrapper{
+        position:relative;
+        width:640px;
+        height:480px;
+    }
+    #blobsbottom,#blobstop{
+        position:absolute;
+       	width:640px;
+        height:480px; 
+    }
 	.selectedFiles img {
 		max-width: 100;
 		max-height: 100px;
@@ -99,7 +109,10 @@
 	  <div class="col-md-8">
 		  <p>The fuond blobs</p> <br>
 		  Select the colored regions by click them to blend
-		  <div id="blobs"></div>
+  		  <div id="wrapper" >
+			  <canvas id="blobsbottom"></canvas>
+			  <canvas id="blobstop"></canvas>
+		  </div>
 	  </div>
 
 	  <div class="col-md-4">

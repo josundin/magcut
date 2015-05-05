@@ -42,6 +42,7 @@ var myblobs1 = [];
                 ////// Go find them blobs //////////
                 myblobs1[xii] = findDiff(imgBaseChanels, img1Chanels, overlap.width, overlap.height, xii);
                 overlap.blobs = myblobs1[xii].getData();
+                console.log(" num unique",overlap.blobs.numberOfUnique, "length", overlap.blobs.data.length);
                 // Separate the aryes
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
                     
@@ -61,6 +62,34 @@ var myblobs1 = [];
             }
             return blobMaps;
         }
+
+        function getThemBlobs(tvalues){
+
+            globalNumberOfUnique = 0;
+            blobMaps = [];
+
+            for (var xii = 1; xii < imagesRef.length; xii++){
+                var overlap = overlapData[xii];
+                overlap.blobs = myblobs1[xii].compareToThres(tvalues[xii]);
+                for (var y = 0; y < overlap.blobs.numberOfUnique; y++){          
+                    var currentblobindx = y + 1;
+                    var blobtmp = zeros(overlap.blobs.data.length);
+                    for (var x = 0; x < overlap.blobs.data.length; x++){
+                        if(currentblobindx === overlap.blobs.data[x]){
+                            blobtmp[x] = currentblobindx + globalNumberOfUnique;
+                        }
+                    }
+                    blobMaps.push([blobtmp, xii]);
+                }
+                globalNumberOfUnique += overlap.blobs.numberOfUnique;
+            }
+            blobSelected = {};
+            for (var xii = 0; xii < globalNumberOfUnique; xii++){
+                blobSelected[xii + 1] = false;
+            }
+            mouse.setNblobs(blobMaps, overlapData, blobSelected);
+            redrawScrean(blobMaps, overlapData, blobSelected);      
+        }; 
 
         function getChanels(imageDatar){
             var dptr=0, dptrSingle=0;
@@ -97,14 +126,16 @@ var myblobs1 = [];
             for (var xii = 0; xii < _.size(blobSelected); xii++){
                 blobSelected[xii + 1] = false;
             }
-            redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset()); 
+            redrawScrean(bmaps, overlapData, blobSelected); 
             var el = document.getElementById('blobs');
             el.scrollIntoView(true);
         }
         return{
             createBlobView: function() {
 
-                result_canvas = loadCanvas("blobs");
+                result_canvas_bottom = document.getElementById("blobsbottom");//loadCanvas("blobs");
+                result_canvas_top = document.getElementById("blobstop");//loadCanvas("blobs");
+                // loadCanvas("blobstop");
                 overlapData = stitch.getOverlap();
                 var ModOverlapData = stitch.getModOverlap();
                  
@@ -115,9 +146,9 @@ var myblobs1 = [];
 
                 mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height, ModOverlapData);
                 mouse.setup(0);
-                redrawScrean(bmaps, overlapData, blobSelected, mouse.getOffset());
+                redrawScrean(bmaps, overlapData, blobSelected);
 
-                var el = document.getElementById('blobs');
+                var el = document.getElementById('blobsbottom');
                 el.scrollIntoView(true);
 
                 return 1;

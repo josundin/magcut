@@ -154,7 +154,8 @@ var stitch = {};
 var computedHs = {};
 var canvasDiv = 'CANVAS';
 var imagesReady = false;
-var result_canvas;
+var result_canvas_bottom;
+var result_canvas_top;
 
 var imageCanvases = {};
 function enablestart() {
