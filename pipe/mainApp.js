@@ -13,7 +13,8 @@
   var stitchImgs = [];
   var computedHs = {};
   var stat2 = new profiler();
-  var result_canvas;
+  var result_canvas_bottom;
+  var result_canvas_top;
   stat2.add("features");   
 
   document.addEventListener("DOMContentLoaded", init, false);
