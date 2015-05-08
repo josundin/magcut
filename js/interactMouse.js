@@ -140,7 +140,7 @@ var imgData = [], modImgData = [], blobData = [];
                     } //older IE
 
                     
-                    if(radio == SELBLOB){
+                    // if(radio == SELBLOB){
                 // document.body.style.cursor = "wait";
 
                         currPos = getPointerPositionsIn(e);
@@ -181,8 +181,9 @@ var imgData = [], modImgData = [], blobData = [];
                         }
                         redrawScrean(blobData, imgData, blobSelected, hoveredIn);
                         // stophere()
-                    }
-                    else if(radio == PAINTIN || radio == PAINTOUT){
+                    // }
+                    // else 
+                    if(radio == PAINTIN || radio == PAINTOUT){
 
                         dragging = true;
                         console.log("PAINT");
