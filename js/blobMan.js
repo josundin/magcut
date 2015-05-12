@@ -1,6 +1,7 @@
 //blobMan.js
 function redrawScrean(maps, odata, blobSelected, hovered){
     var baseImgData = odata[0];
+    console.log("redraw", hovered);
 
     var myHovered = hovered ? hovered : 0;
     
@@ -39,7 +40,8 @@ function redrawScrean(maps, odata, blobSelected, hovered){
             for (var yi = 0; yi < maps.length; yi++){
                 if(maps[yi][0][dptr_s] === yi + 1 &&  odata[maps[yi][1]].data[dptr + 3] != 0){
                    
-                    imageDatar.data[dptr]     =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr] / 2 : 0) : colors[maps[yi][1] - 1][0] ? odata[maps[yi][1]].data[dptr] : 0;
+                    imageDatar.data[dptr]     =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr    ] / 2 : 0) : colors[maps[yi][1] - 1][0] ? odata[maps[yi][1]].data[dptr] : 0;
+                    // imageDatar.data[dptr + 1] =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr + 1] / 2 : 0) : colors[maps[yi][1] - 1][1] ? odata[maps[yi][1]].data[dptr + 1] : 110;
                     imageDatar.data[dptr + 1] =  blobSelected[yi + 1] ? odata[maps[yi][1]].data[dptr + 1] : colors[maps[yi][1] - 1][1] ? odata[maps[yi][1]].data[dptr + 1] : 0 ;
                     imageDatar.data[dptr + 2] =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr + 2] / 2 : 0) : colors[maps[yi][1] - 1][2] ? odata[maps[yi][1]].data[dptr + 2] : 0;
 

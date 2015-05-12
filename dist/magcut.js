@@ -2788,6 +2788,7 @@ function unique(arr){
 ;//blobMan.js
 function redrawScrean(maps, odata, blobSelected, hovered){
     var baseImgData = odata[0];
+    console.log("redraw", hovered);
 
     var myHovered = hovered ? hovered : 0;
     
@@ -2826,7 +2827,8 @@ function redrawScrean(maps, odata, blobSelected, hovered){
             for (var yi = 0; yi < maps.length; yi++){
                 if(maps[yi][0][dptr_s] === yi + 1 &&  odata[maps[yi][1]].data[dptr + 3] != 0){
                    
-                    imageDatar.data[dptr]     =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr] / 2 : 0) : colors[maps[yi][1] - 1][0] ? odata[maps[yi][1]].data[dptr] : 0;
+                    imageDatar.data[dptr]     =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr    ] / 2 : 0) : colors[maps[yi][1] - 1][0] ? odata[maps[yi][1]].data[dptr] : 0;
+                    // imageDatar.data[dptr + 1] =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr + 1] / 2 : 0) : colors[maps[yi][1] - 1][1] ? odata[maps[yi][1]].data[dptr + 1] : 110;
                     imageDatar.data[dptr + 1] =  blobSelected[yi + 1] ? odata[maps[yi][1]].data[dptr + 1] : colors[maps[yi][1] - 1][1] ? odata[maps[yi][1]].data[dptr + 1] : 0 ;
                     imageDatar.data[dptr + 2] =  blobSelected[yi + 1] ? ((myHovered == yi + 1) ? odata[maps[yi][1]].data[dptr + 2] / 2 : 0) : colors[maps[yi][1] - 1][2] ? odata[maps[yi][1]].data[dptr + 2] : 0;
 
@@ -3077,8 +3079,6 @@ var imgData = [], modImgData = [], blobData = [];
                                 clicked   = 0;
                             }
 
-                            //alt om previus hovered in != hoveredIn 
-                            //then redraw screan
                             if(previusHoveredIn != hoveredIn){
                                 console.log("***************************************************");
                                 console.log("REDRAW for color change", hoveredIn, blobSelected);
@@ -3098,7 +3098,7 @@ var imgData = [], modImgData = [], blobData = [];
                         if( blobData[i - 1][0][ourPos] === i){
                             
                             notSelecthoveredIn = i;
-                            if(HoverSelectCnt < 2){
+                            if(HoverSelectCnt < 2 && !(HoverSelectCnt > 3)){
                                 HoverSelectCnt++;
                                 console.log("start, wait marker", HoverSelectCnt);
                             }
@@ -3111,12 +3111,20 @@ var imgData = [], modImgData = [], blobData = [];
                    if(notSelectpreviusHoveredIn != notSelecthoveredIn && !hoveredIn){                        
                         if(notSelecthoveredIn !== 0){
                             console.log("hovered In", notSelecthoveredIn);
-                            handleMouseOver(ourPos, notSelecthoveredIn);
+                            if(!relativeBlobs[notSelecthoveredIn]){
+                                document.body.style.cursor = "wait";
+                                blobSelected[notSelecthoveredIn] = true;
+                                redrawScrean(blobData, imgData, blobSelected, notSelecthoveredIn);   
+                            }
                         }
                         else{
                             console.log("hovered Out");
                             HoverSelectCnt = 0;
                         }
+                    } else if(HoverSelectCnt == 2){
+                        HoverSelectCnt = 4;
+                        blobSelected[notSelecthoveredIn] = false;
+                        handleMouseOver(ourPos, notSelecthoveredIn);
                     }
 
                     if(startcalcDist){
@@ -3299,7 +3307,7 @@ var imgData = [], modImgData = [], blobData = [];
                     startcalcDist = true;
                 }
             }
-            redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+            // redrawScrean(blobData, imgData, blobSelected, hoveredIn);
         }
 
         function getBlobsIgnoreSelected(tvalues){

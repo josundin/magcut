@@ -230,8 +230,6 @@ var imgData = [], modImgData = [], blobData = [];
                                 clicked   = 0;
                             }
 
-                            //alt om previus hovered in != hoveredIn 
-                            //then redraw screan
                             if(previusHoveredIn != hoveredIn){
                                 console.log("***************************************************");
                                 console.log("REDRAW for color change", hoveredIn, blobSelected);
@@ -251,7 +249,7 @@ var imgData = [], modImgData = [], blobData = [];
                         if( blobData[i - 1][0][ourPos] === i){
                             
                             notSelecthoveredIn = i;
-                            if(HoverSelectCnt < 2){
+                            if(HoverSelectCnt < 2 && !(HoverSelectCnt > 3)){
                                 HoverSelectCnt++;
                                 console.log("start, wait marker", HoverSelectCnt);
                             }
@@ -264,12 +262,20 @@ var imgData = [], modImgData = [], blobData = [];
                    if(notSelectpreviusHoveredIn != notSelecthoveredIn && !hoveredIn){                        
                         if(notSelecthoveredIn !== 0){
                             console.log("hovered In", notSelecthoveredIn);
-                            handleMouseOver(ourPos, notSelecthoveredIn);
+                            if(!relativeBlobs[notSelecthoveredIn]){
+                                document.body.style.cursor = "wait";
+                                blobSelected[notSelecthoveredIn] = true;
+                                redrawScrean(blobData, imgData, blobSelected, notSelecthoveredIn);   
+                            }
                         }
                         else{
                             console.log("hovered Out");
                             HoverSelectCnt = 0;
                         }
+                    } else if(HoverSelectCnt == 2){
+                        HoverSelectCnt = 4;
+                        blobSelected[notSelecthoveredIn] = false;
+                        handleMouseOver(ourPos, notSelecthoveredIn);
                     }
 
                     if(startcalcDist){
@@ -452,7 +458,7 @@ var imgData = [], modImgData = [], blobData = [];
                     startcalcDist = true;
                 }
             }
-            redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+            // redrawScrean(blobData, imgData, blobSelected, hoveredIn);
         }
 
         function getBlobsIgnoreSelected(tvalues){
