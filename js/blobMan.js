@@ -1,7 +1,7 @@
 //blobMan.js
 function redrawScrean(maps, odata, blobSelected, hovered){
     var baseImgData = odata[0];
-    console.log("redraw", hovered);
+    console.log("redraw hovered", hovered, "blobSelected", blobSelected);
 
     var myHovered = hovered ? hovered : 0;
     

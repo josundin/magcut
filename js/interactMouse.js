@@ -265,7 +265,12 @@ var imgData = [], modImgData = [], blobData = [];
                             if(!relativeBlobs[notSelecthoveredIn]){
                                 document.body.style.cursor = "wait";
                                 blobSelected[notSelecthoveredIn] = true;
-                                redrawScrean(blobData, imgData, blobSelected, notSelecthoveredIn);   
+                                redrawScrean(blobData, imgData, blobSelected, notSelecthoveredIn);      
+                            }
+                            else{
+                                handleMouseOver(ourPos, notSelecthoveredIn);
+                                HoverSelectCnt = 4;
+                                redrawScrean(blobData, imgData, blobSelected, hoveredIn);
                             }
                         }
                         else{
@@ -273,6 +278,7 @@ var imgData = [], modImgData = [], blobData = [];
                             HoverSelectCnt = 0;
                         }
                     } else if(HoverSelectCnt == 2){
+                        console.log("relese TRIGGER");
                         HoverSelectCnt = 4;
                         blobSelected[notSelecthoveredIn] = false;
                         handleMouseOver(ourPos, notSelecthoveredIn);
