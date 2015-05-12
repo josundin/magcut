@@ -1,12 +1,5 @@
 //relativeBlobTreshold
-/*
-Input:  föregående blobmap
-		nuvarande blobmap
-		blobNr, vilken blob vi har clickat
 
-		git checkout -b systemB
-
-*/
 "use strict";
 
 var testData = 	[0,1,1,1,1,1,1,1,1,1,
@@ -37,13 +30,10 @@ var TSTEP = 1;
 		
 		var labled = findBlobs(srcPixels.g, xSize, ySize, thresBlob);
 		var labledInv = labled.data.slice();
-		
 				
 		var labeledClickedPos = labled.data[clickedPos];
-		var ourSelectedRegion = [];
-		console.log("labled clickedPos", labeledClickedPos, "T", thresBlob);
-		console.log("Start find relative T that gives the most similar blob Size as the global T");
-		console.log("***************************************************");
+		var ourSelectedRegion = [];	
+
 		for(var x=0; x<labled.data.length; x++){
 			if(labled.data[x] != labeledClickedPos){
 				labled.data[x] = 0;
@@ -57,49 +47,10 @@ var TSTEP = 1;
 			}
 		}
 
-
-		var label;
-		function computeSize(threshold){
-			var labledr = findBlobs(srcPixels.r, xSize, ySize, threshold); 
-
-			var uniqueLaledr = unique(labledr.data);
-			//loop through the image and count the apperance of labels
-			var labelAppearence = new Array(ourSelectedRegion.length);
-			for(var x=0; x<ourSelectedRegion.length; x++){
-				 labelAppearence[x] = labledr.data[ourSelectedRegion[x]];
-			}
-
-			var uniqueWithinGlobalBlob = unique(labelAppearence);
-
-		    var label, max = 0, maxLabel = 999999;
-		    for( label in uniqueWithinGlobalBlob ){
-		      if(label != 0){
-		        if(uniqueWithinGlobalBlob[label] > max){
-		          max = uniqueWithinGlobalBlob[label];
-		          maxLabel = label;
-		        }
-		      }
-		    }
-
-		    // console.log(uniqueLaledr[maxLabel], "the one to include in regression");
-		    return {"reg": uniqueLaledr[maxLabel], "max":max, "label":Number(maxLabel)};
-		}
-
-		
-		var mySeequedLabel = 999999;
-		var theMostSimilarThreshold = 0;
-
-		statfind.start("features");
 		var myBlob = []
-
-		statfind.stop("features");
-		console.log('***************************************************');
-		console.log("find closest T done in:", statfind.log(1), "ms"); 
-
 	    var indexDone = zeros(myBlob.length);
 	    var indexDoneInv = zeros(myBlob.length);
 
-		// console.log("labled", labels);
 		// we need to put -1 i den regionen vi ska utgå ifrån
 		for(var x=0; x<labled.data.length; x++){
 			if(labled.data[x] != -1){	
@@ -112,39 +63,24 @@ var TSTEP = 1;
 			}
 		}
 
-
-
 		if(labled.data.length == 1024){
 			printa32(labledInv, 32);
 		}
 
-		statfind.start("features");		
-		// getDistances(srcPixels.r, labledRelative, xSize, ySize);
+		statfind.start("features");	
 
-		// labled.data
-		// getDistanceswQue(srcPixels.r, labledRelative, xSize, ySize, indexDone, genImageData);
 		getDistanceswQue(srcPixels.g, labled.data, xSize, ySize, indexDone, genImageData);
 		getDistancesInvwQue(srcPixels.g, labledInv, xSize, ySize, indexDoneInv, genImageData);
 
 		statfind.stop("features");
-
-		console.log('3***************************************************');
 		console.log("distances created in:", statfind.log(1), "ms"); 
 
 		var dists = numeric.round(labled.data);
-		// if(dists.length == 1024){
-		// 	printa32(dists, 32);
-		// }
 
-		console.log("distsInv");
 		var distsInv = numeric.round(labledInv);
 		if(distsInv.length == 1024){
 			printa32(distsInv, 32);
 		}
-
-		//hitta den nya selected region
-		//som är den största labeln som (i deń nya datan) som finns innanför regionen
-
 
 		var decIndx = [];
 		var decVal = [];
@@ -152,8 +88,6 @@ var TSTEP = 1;
 		var decIndxInv = [];
 		var decValInv = [];
 
-		// callback(myBlob);
-		 
         return{
             printId: function() {
                 console.log("The ID is:", myId);
@@ -175,8 +109,6 @@ var TSTEP = 1;
 					}
 				}
 				else{
-					theMostSimilarThreshold--;
-
 					addOne(distsInv, myXsize, myYsize, decIndxInv, decValInv);
 					myBlob = distsInv.slice(); 
 					makeBlobInv(myBlob, myId, xSize, ySize);
@@ -200,7 +132,6 @@ var TSTEP = 1;
 					}
                 }
 				else{
-					theMostSimilarThreshold++;
 
                 	subtactOne(distsInv, myXsize, myYsize, decIndxInv, decValInv);
 
@@ -485,8 +416,6 @@ function getDistanceswQue(src, distances, xSize, ySize, indexDone, genImageData)
 }
 
 function getDistancesInvwQue(src, distances, xSize, ySize, indexDone, genImageData){
-	console.log("Inv");
-
     // set up priority queue
     var priorityQueue = new UntidyPriorityQueue(20, 2);
 

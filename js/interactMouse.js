@@ -231,8 +231,7 @@ var imgData = [], modImgData = [], blobData = [];
                             }
 
                             if(previusHoveredIn != hoveredIn){
-                                console.log("***************************************************");
-                                console.log("REDRAW for color change", hoveredIn, blobSelected);
+                                // console.log("REDRAW for color change", hoveredIn, blobSelected);
                                 redrawScrean(blobData, imgData, blobSelected, hoveredIn);
                             }
                         }
@@ -251,7 +250,8 @@ var imgData = [], modImgData = [], blobData = [];
                             notSelecthoveredIn = i;
                             if(HoverSelectCnt < 2 && !(HoverSelectCnt > 3)){
                                 HoverSelectCnt++;
-                                console.log("start, wait marker", HoverSelectCnt);
+                                console.log("start, wait marker", HoverSelectCnt, notSelecthoveredIn);
+                                break;
                             }
                             else{
                                 triggerHoverSelect = false;
@@ -305,20 +305,14 @@ var imgData = [], modImgData = [], blobData = [];
                         }
                         redrawScrean(blobData, imgData, blobSelected, hoveredIn);                        
                     }
-                    // else 
-                    if(radio == PAINTIN || radio == PAINTOUT){
 
-                        // dragging = true;
-                        console.log("PAINT");
-                        var dx_down = currPos[0].x;
-                        var dy_down = currPos[0].y;
-
-                        redrawScrean(blobData, imgData, blobSelected, hoveredIn);
-                    }
-
-                    if(startcalcDist){
+                    if(startcalcDist && currPos[0] && p_offseted[clicked]){
                         var ourPos = (Math.abs(currPos[0].y - p_offseted[clicked].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x - p_offseted[clicked].x);
                         calcDist(ourPos);
+                    }
+                    else{
+                        startcalcDist = false;
+                        document.body.style.cursor = "auto";
                     }
 
                     if(dragging){
@@ -333,14 +327,9 @@ var imgData = [], modImgData = [], blobData = [];
                     }
                     var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
                     dDelta += delta;
-                    console.log("===========================================================", hoveredIn);
-                    console.log("thres", scrollThresh, "delta", dDelta, dDelta > prevdDelta);
                    
 
                     if(clicked){
-                        console.log("clicked", clicked);
-                        console.log("blobSelected", blobSelected);
-                        console.log("relativeBlobs", relativeBlobs);
                         if(dDelta > prevdDelta){
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdDecreas();
                             redrawScrean(blobData, imgData, blobSelected, hoveredIn);
@@ -363,9 +352,7 @@ var imgData = [], modImgData = [], blobData = [];
                                 scrollThresh = scrollThresh - 1;
                             }
 
-                            console.log("Special Case -------------------------------------------");
-                            //save the cliced blobs to a global matrix
-
+                            //save the cliced blobs to the global matrix
                             clickedBlobs = zeros(blobData[0][0].length);
 
                             var blobs;
@@ -382,7 +369,6 @@ var imgData = [], modImgData = [], blobData = [];
                             getBlobsIgnoreSelected(scrollThresh);
                             previousScrollThresh = scrollThresh;
 
-                            // blobData[clicked - 1][0]
                         }else{
                             if(delta > 0 && scrollThresh < (550) ){
                                 scrollThresh = scrollThresh + 1;
@@ -439,32 +425,25 @@ var imgData = [], modImgData = [], blobData = [];
 
         function handleMouseOver(ourPos, i){
 
-            //the Position
-            // var ourPos = (Math.abs(currPos[0].y - p_offseted[i].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x - p_offseted[i].x);
             if( blobData[i - 1][0][ourPos] === i){
-                // dragging = i;
                 clicked = i;
                 hoveredIn = i;
-                console.log("HIIIIIIIIITT", i, "on", ourPos);
+                console.log("HIT on blob", i);
                 blobSelected[i] = !blobSelected[i];
-                console.log(blobSelected);
 
                 if(relativeBlobs[i]){
                     console.log("already exist");
                     if(!blobSelected[i]){
                         hoveredIn = 0;
                         clicked   = 0; 
-                        console.log("noll ställ");
                     }
                 }
 
                 else{
                     document.body.style.cursor = "wait";
-
                     startcalcDist = true;
                 }
             }
-            // redrawScrean(blobData, imgData, blobSelected, hoveredIn);
         }
 
         function getBlobsIgnoreSelected(tvalues){
@@ -529,10 +508,9 @@ var imgData = [], modImgData = [], blobData = [];
 
             if(blobsChangeFrom.length > 0){
                 // console.log("relativeBlobs before", relativeBlobs);
-                console.log("MAKE THE CHANGES ************************", previousScrollThresh < scrollThresh);
+                console.log("CHANGES");
                 console.log("from :", blobsChangeFrom);
                 console.log("to   :", blobsChangeTo);
-                console.log("**************** ************************");
                 var zipped = _.zip(blobsChangeFrom,blobsChangeTo);
 
                 zipped = _.sortBy(zipped, function(num){ return -num[1]; });
@@ -573,7 +551,6 @@ var imgData = [], modImgData = [], blobData = [];
         };
 
         function getThemBlobs(tvalues){
-            console.log(" get them, ");
             var globalNumberOfUnique = 0;
             blobData = [];
 
@@ -656,7 +633,6 @@ function maskOutRed(blobNr, w, h, paintData, blobMap){
     var pos = 0;
     var isVisible = 0;
     var dptr_s = 0;
-    console.log("start masking");
     for(var y=0; y<h; y++){
         for(var x=0; x<w; x++, dptr_s+=1){
             pos = dptr_s*4; //(y*xSize+x)*4;
@@ -674,7 +650,6 @@ function maskOutRed(blobNr, w, h, paintData, blobMap){
 
 function blend(){
     var cont = _.contains(mouse.getBlobSelected(), true);
-    console.log(mouse.getBlobSelected());
     if(cont !== true){    
         console.log("do naada");
         alert("First, select which regions to blend by click them in the image");
