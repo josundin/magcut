@@ -16,9 +16,9 @@ var imgData = [], modImgData = [], blobData = [];
         var blobtopCTX;
         var dDelta = 0, prevdDelta = 0;
 
-        var SELBLOB  = 1
-        var PAINTOUT = 2
-        var PAINTIN  = 3
+        var SELBLOB  = 1;
+        var PAINTOUT = 2;
+        var PAINTIN  = 3;
 
         var startcalcDist = false;
         var radio = $('input[name=optradio]:checked', '#myForm').val(); 
