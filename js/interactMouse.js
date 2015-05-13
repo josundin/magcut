@@ -330,15 +330,18 @@ var imgData = [], modImgData = [], blobData = [];
                    
 
                     if(clicked){
-                        if(dDelta > prevdDelta){
+                        if(relativeBlobs[clicked]){
+                            if(dDelta > prevdDelta){
                             blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdDecreas();
                             redrawScrean(blobData, imgData, blobSelected, hoveredIn);
 
-
-                        }else if(dDelta < prevdDelta){
-                            blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
-                            redrawScrean(blobData, imgData, blobSelected, hoveredIn);
-                        }
+                            }else if(dDelta < prevdDelta){
+                                blobData[clicked - 1][0] = relativeBlobs[clicked].updateThresholdIncreas();
+                                redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+                            }
+                        }else{
+                            document.body.style.cursor = "auto";
+                        }                        
                     }
                     else{
 

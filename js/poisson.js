@@ -109,7 +109,7 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 				}
 			}
 		}
-		// console.log(dx, absx);
+
 		cnt++;
 		var epsilon = dx/absx;
 		if(!epsilon || previous_epsilon-epsilon === 0) break; // convergence
@@ -121,7 +121,7 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset
 	// extraCtx.putImageData(test_pixels, 0, 0);
 	///////////////////////////////////////////////////////////////////////////////////////
 	result_ctx.putImageData(result_pixels, 0, 0);
-	console.log(cnt+" times iterated. ?", epsilon , previous_epsilon);
+	console.log(cnt+" times iterated. converged to", epsilon , previous_epsilon);
 
 	//scroll to canvas
 	var el = document.getElementById('final-canvas');
