@@ -6,9 +6,6 @@ var myblobs1 = [];
 "use strict";
 
     _this['blobObj'] = function(){
-    
-        var thresholdfunc = {};
-
 
         var demo_opt = function(blobimg){
             this.threshold = 14;
@@ -17,7 +14,7 @@ var myblobs1 = [];
 
         var overlapData = {}; 
         
-        var blobSelected = {};
+        var theSelectedBlobs = {};
         var bmaps = {}; 
         var blobMaps = [];
 
@@ -25,7 +22,7 @@ var myblobs1 = [];
         createButton1();
         var globalNumberOfUnique = 0;
 
-        function findBlobs(){
+        function findBlobsfirst(){
             globalNumberOfUnique = 0;
             var overlapBase = overlapData[0];
             var imgBaseChanels = getChanels(overlapBase);
@@ -42,6 +39,7 @@ var myblobs1 = [];
                 ////// Go find them blobs //////////
                 myblobs1[xii] = findDiff(imgBaseChanels, img1Chanels, overlap.width, overlap.height, xii);
                 overlap.blobs = myblobs1[xii].getData();
+                console.log(" num unique",overlap.blobs.numberOfUnique, "length", overlap.blobs.data.length);
                 // Separate the aryes
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
                     
@@ -57,7 +55,7 @@ var myblobs1 = [];
                 globalNumberOfUnique += overlap.blobs.numberOfUnique;
             }
             for (var xii = 0; xii < globalNumberOfUnique; xii++){
-                blobSelected[xii + 1] = false;
+                theSelectedBlobs[xii + 1] = false;
             }
             return blobMaps;
         }
@@ -82,12 +80,12 @@ var myblobs1 = [];
                 }
                 globalNumberOfUnique += overlap.blobs.numberOfUnique;
             }
-            blobSelected = {};
+            theSelectedBlobs = {};
             for (var xii = 0; xii < globalNumberOfUnique; xii++){
-                blobSelected[xii + 1] = false;
+                theSelectedBlobs[xii + 1] = false;
             }
-            mouse.setNblobs(blobMaps, overlapData, blobSelected);
-            redrawScrean(blobMaps, overlapData, blobSelected);      
+            mouse.setNblobs(blobMaps, overlapData, theSelectedBlobs);
+            redrawScrean(blobMaps, overlapData, theSelectedBlobs);      
         }; 
 
         function getChanels(imageDatar){
@@ -122,11 +120,13 @@ var myblobs1 = [];
             finalcanvas.width = 0;
             finalcanvas.height = 0;
             $('#btn1').hide();
-            for (var xii = 0; xii < _.size(blobSelected); xii++){
-                blobSelected[xii + 1] = false;
+            $('#outputresult').hide();
+            $('#formInterface').hide();
+            for (var xii = 0; xii < _.size(theSelectedBlobs); xii++){
+                theSelectedBlobs[xii + 1] = false;
             }
-            redrawScrean(bmaps, overlapData, blobSelected); 
-            var el = document.getElementById('blobs');
+            redrawScrean(bmaps, overlapData, theSelectedBlobs); 
+            var el = document.getElementById('selectedF1');
             el.scrollIntoView(true);
         }
         return{
@@ -138,16 +138,17 @@ var myblobs1 = [];
                 overlapData = stitch.getOverlap();
                 var ModOverlapData = stitch.getModOverlap();
                  
-                bmaps = findBlobs();
+                bmaps = findBlobsfirst();
 
+                $('#selectInterface').hide();
                 $('#ComputingBlobs').hide();
                 $('#blobInterface').show();
 
-                mouse = interactMouse(bmaps, overlapData, blobSelected, overlapData[0].width, overlapData[0].height, ModOverlapData);
+                mouse = interactMouse(bmaps, overlapData, theSelectedBlobs, overlapData[0].width, overlapData[0].height, ModOverlapData);
                 mouse.setup(0);
-                redrawScrean(bmaps, overlapData, blobSelected);
+                redrawScrean(bmaps, overlapData, theSelectedBlobs);
 
-                var el = document.getElementById('blobsbottom');
+                var el = document.getElementById('selectedF1');
                 el.scrollIntoView(true);
 
                 return 1;
@@ -156,22 +157,20 @@ var myblobs1 = [];
                 return 1;
             },
             remove: function() {
-                for (var xii = 1; xii < imagesRef.length; xii++){
-                    console.log("REMOVE:", xii);
-                    if(thresholdfunc[xii]){
-                        gui.remove(thresholdfunc[xii]);
-                    }
-                }
+
                 reset();
                 //Remove element
-                var element = document.getElementById('blobs');
-                element.children.blobs.remove();
-                result_canvas = {};
-                blobSelected = {};
+                // var element = document.getElementById('blobs');
+                // element.children.blobs.remove();
+                // result_canvas = {};
+                result_canvas_bottom = {};
+                result_canvas_top = {};
+                theSelectedBlobs = {};
                 overlapData = {}; 
                 myblobs1 = [];
                 bmaps = {}; 
                 blobMaps = [];
+                imgData = [], modImgData = [], blobData = [];
 
                 return 1;
             }

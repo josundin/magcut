@@ -8,7 +8,6 @@ var imgData = [], modImgData = [], blobData = [];
     _this['interactMouse'] = function(overlap, imgs, selectedBlobs, w, h, modImgs){
         var blobSelected = {};
         var scrollThresh = 24, previousScrollThresh = 24;
-        // var myblobs1 = [];
 
         var relativeBlobs = {};
         var relativeBlobsIndxs = [];
@@ -16,7 +15,7 @@ var imgData = [], modImgData = [], blobData = [];
         var blobtopCTX;
         var dDelta = 0, prevdDelta = 0;
         var HoverSelectCnt = 0;
-        var triggerHoverSelect = false;
+        var refImgs = [];
 
         var SELBLOB  = 1;
         var PAINTOUT = 2;
@@ -46,13 +45,13 @@ var imgData = [], modImgData = [], blobData = [];
         var numBlobs = 0, dragging = false, mouseDown = false;
         var clicked = 0, previusClicked = 0;
         var is_mixing_gradients = true;
-        var p_offseted = [];
         var ddx = 0, ddy = 0;
         blobSelected = selectedBlobs;
         cwidth = w;
         cheight = h;
         var setupOverlay = (function(){
             console.log("Do SET Up");
+            document.body.style.cursor = "auto";
             function $(selector){
                 var c = selector.charAt(0);
                 if( c === '#' ){
@@ -120,7 +119,7 @@ var imgData = [], modImgData = [], blobData = [];
             var currPos = [];//null;
             var p_lastPos = null;
             var p_currPos = null;
-            var canvas = null;
+            var canvas = {};
             
         
             return function(id,onChange){
@@ -142,6 +141,18 @@ var imgData = [], modImgData = [], blobData = [];
                         e.returnValue = false;
                     } 
                     mouseDown = true;
+                    if(radio == SELBLOB){
+                        console.log("Check what blob is clicked");
+                        
+                        currPos = getPointerPositionsIn(e);
+                        //Find out if we have a hit and which shape was clicked
+                        for (var i= 1; i < numBlobs + 1; i++) {
+                            var ourPos = (Math.abs(currPos[0].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x);
+                            handleMouseOver(ourPos, i, refImgs);
+                        }
+                        redrawScrean(blobData, imgData, blobSelected, hoveredIn);
+                    }
+
                 }).on('touchmove mousemove',function(e){
 
                     var tmp = lastPos;
@@ -192,7 +203,8 @@ var imgData = [], modImgData = [], blobData = [];
                         }
                     } 
                     if(_.some(blobSelected) || dragging){
-                        //check if we are inside a selected blob or not
+                        // //check if we are inside a selected blob or not
+                        // console.log("check some blob", _.some(blobSelected), blobSelected, dragging);
                         var dxx = currPos[0].x - lastPos[0].x;
                         var dyy = currPos[0].y - lastPos[0].y;
                         if( dxx*dxx + dyy*dyy < 32 ){
@@ -242,19 +254,17 @@ var imgData = [], modImgData = [], blobData = [];
                     notSelecthoveredIn = 0;
                     var ourPos = 0;
 
-                    for (var i= 1; i < numBlobs + 1; i++) {
+                    for (var i= 1; i < blobData.length + 1; i++) {
                         //the Position
-                        ourPos = (Math.abs(currPos[0].y - p_offseted[i].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x - p_offseted[i].x);
+                        ourPos = (Math.abs(currPos[0].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x);
+                        // console.log("bdata", blobData.length, ourPos, i - 1);
                         if( blobData[i - 1][0][ourPos] === i){
                             
                             notSelecthoveredIn = i;
-                            if(HoverSelectCnt < 2 && !(HoverSelectCnt > 3)){
+                            if(HoverSelectCnt < 2 ){
                                 HoverSelectCnt++;
-                                console.log("start, wait marker", HoverSelectCnt, notSelecthoveredIn);
+                                // console.log("start, wait marker", HoverSelectCnt, notSelecthoveredIn);
                                 break;
-                            }
-                            else{
-                                triggerHoverSelect = false;
                             }
                         }
                     }
@@ -262,31 +272,17 @@ var imgData = [], modImgData = [], blobData = [];
                    if(notSelectpreviusHoveredIn != notSelecthoveredIn && !hoveredIn){                        
                         if(notSelecthoveredIn !== 0){
                             console.log("hovered In", notSelecthoveredIn);
-                            if(!relativeBlobs[notSelecthoveredIn]){
-                                document.body.style.cursor = "wait";
-                                blobSelected[notSelecthoveredIn] = true;
-                                redrawScrean(blobData, imgData, blobSelected, notSelecthoveredIn);      
-                            }
-                            else{
-                                handleMouseOver(ourPos, notSelecthoveredIn);
-                                HoverSelectCnt = 4;
-                                redrawScrean(blobData, imgData, blobSelected, hoveredIn);
-                            }
+
                         }
                         else{
-                            console.log("hovered Out");
+                            console.log("hovered Out non sel");
+                            console.log("blobSelected", blobSelected);
+                            console.log("relativeBlobs", relativeBlobs);
                             HoverSelectCnt = 0;
                         }
                     } else if(HoverSelectCnt == 2){
-                        console.log("relese TRIGGER");
+                        // console.log("relese TRIGGER");
                         HoverSelectCnt = 4;
-                        blobSelected[notSelecthoveredIn] = false;
-                        handleMouseOver(ourPos, notSelecthoveredIn);
-                    }
-
-                    if(startcalcDist){
-                        var ourPos = (Math.abs(currPos[0].y - p_offseted[clicked].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x - p_offseted[clicked].x);
-                        calcDist(ourPos);
                     }
 
                     if( e.preventDefault ){
@@ -296,18 +292,15 @@ var imgData = [], modImgData = [], blobData = [];
 
                     mouseDown = false;
 
-                    if(!dragging){
-                        currPos = getPointerPositionsIn(e);
-                        //Find out if we have a hit and which shape was clicked
-                        for (var i= 1; i < numBlobs + 1; i++) {
-                            var ourPos = (Math.abs(currPos[0].y - p_offseted[i].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x - p_offseted[i].x);
-                            handleMouseOver(ourPos, i);
-                        }
-                        redrawScrean(blobData, imgData, blobSelected, hoveredIn);                        
+                    if(startcalcDist){
+                        document.body.style.cursor = "auto";
+                        var ourPos = (Math.abs(currPos[0].y ) *(result_canvas_top.width)) + Math.abs(currPos[0].x);
+                        calcDist(ourPos);
+                        
                     }
 
-                    if(startcalcDist && currPos[0] && p_offseted[clicked]){
-                        var ourPos = (Math.abs(currPos[0].y - p_offseted[clicked].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x - p_offseted[clicked].x);
+                    if(startcalcDist && currPos[0]){
+                        var ourPos = (Math.abs(currPos[0].y) *(result_canvas_top.width)) + Math.abs(currPos[0].x);
                         calcDist(ourPos);
                     }
                     else{
@@ -327,7 +320,6 @@ var imgData = [], modImgData = [], blobData = [];
                     }
                     var delta = e.wheelDelta ? e.wheelDelta/40 : e.detail ? -e.detail : 0;
                     dDelta += delta;
-                   
 
                     if(clicked){
                         if(relativeBlobs[clicked]){
@@ -345,10 +337,8 @@ var imgData = [], modImgData = [], blobData = [];
                     }
                     else{
 
-
                         if(_.some(blobSelected)){
-
-
+                          
                             if(delta > 0 && scrollThresh < (550) ){
                                 scrollThresh = scrollThresh + 1;
                             }else if(delta < 0 && scrollThresh >= 0){
@@ -387,6 +377,7 @@ var imgData = [], modImgData = [], blobData = [];
                             }
                         }
                     }
+                    console.log("scrollThresh", scrollThresh);
                     prevdDelta = dDelta;
                 });
             };
@@ -406,7 +397,13 @@ var imgData = [], modImgData = [], blobData = [];
             }
             else{
                 relativeBlobs[clicked] = new relativeBlobTreshold(clicked, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas_top.width, result_canvas_top.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(clicked), imgData[blobData[clicked - 1][1]].data);                                             
-            }                                                                                                
+            }   
+
+            console.log("****************************************************");
+            console.log("created new relative blob");
+            console.log("****************************************************");
+
+
             //save the new blob
             blobData[clicked - 1][0] = relativeBlobs[clicked].getBlob();
             redrawScrean(blobData, imgData, blobSelected, hoveredIn);
@@ -423,28 +420,30 @@ var imgData = [], modImgData = [], blobData = [];
                 }
             }
             startcalcDist = false;
-
         }
 
-        function handleMouseOver(ourPos, i){
+        function handleMouseOver(ourPos, i, refImgs){
 
             if( blobData[i - 1][0][ourPos] === i){
                 clicked = i;
                 hoveredIn = i;
-                console.log("HIT on blob", i);
+                console.log("HIT on blob", i , blobData[i - 1][1]);
                 blobSelected[i] = !blobSelected[i];
 
                 if(relativeBlobs[i]){
                     console.log("already exist");
                     if(!blobSelected[i]){
                         hoveredIn = 0;
-                        clicked   = 0; 
+                        clicked   = 0;
+                        notSelecthoveredIn = 0;
+                        HoverSelectCnt = 0;
                     }
                 }
 
                 else{
                     document.body.style.cursor = "wait";
                     startcalcDist = true;
+                    refImgs.push(blobData[i - 1][1]);
                 }
             }
         }
@@ -494,55 +493,80 @@ var imgData = [], modImgData = [], blobData = [];
                 globalNumberOfUnique += overlap.blobs.numberOfUnique;
             }
 
-            blobSelected = {};
+            //Obs matcha med den som verkligen är klickad!
             for (var xii = 0; xii < globalNumberOfUnique; xii++){
                 if(selctedOrNot[xii]){
-                    blobSelected[xii + 1] = true;
                     blobsChangeTo.push(xii + 1);
-
-                }
-                else{
-                    blobSelected[xii + 1] = false;
                 }
             }
-            for (var ij= 1; ij < blobData.length + 1; ij++){
-                p_offseted[ij] = { x: 0, y: 0 };
-            }
 
+            //**********************************************************
+            var reduceWith = 0;
             if(blobsChangeFrom.length > 0){
                 // console.log("relativeBlobs before", relativeBlobs);
-                console.log("CHANGES");
-                console.log("from :", blobsChangeFrom);
-                console.log("to   :", blobsChangeTo);
+                // console.log("CHANGES");
+                // console.log("from :", blobsChangeFrom);
+                // console.log("to   :", blobsChangeTo);
+                var initialSize = blobsChangeFrom.length;
                 var zipped = _.zip(blobsChangeFrom,blobsChangeTo);
 
-                zipped = _.sortBy(zipped, function(num){ return -num[1]; });
+                zipped = _.sortBy(zipped, function(num){return -num[1]; });
                 zipped = _.uniq(zipped, false, function(num) {return num [0];})
                 
                 var unzipped = _.unzip(zipped);  
 
                 blobsChangeFrom = unzipped[0];
                 blobsChangeTo   = unzipped[1];
+                console.log("from :", blobsChangeFrom, "to   :", blobsChangeTo);
 
+                reduceWith = initialSize - blobsChangeFrom.length;
 
                 for (var ij= 0; ij < blobsChangeFrom.length; ij++){
                     relativeBlobs[blobsChangeFrom[ij]].changeId(blobsChangeTo[ij]);
                     changeKey(relativeBlobs, blobsChangeFrom[ij], blobsChangeTo[ij] + 99);
                   }
 
-
                 for (var ij= 0; ij < blobsChangeFrom.length; ij++){
                      changeKey(relativeBlobs, blobsChangeFrom[ij] + 99 + (blobsChangeTo[ij] - blobsChangeFrom[ij]), blobsChangeTo[ij]); 
                 }
 
                 numBlobs = blobData.length;
-
-                redrawScrean(blobData, imgData, blobSelected);
-
+                
             }
-        else{
-            console.log("the array is empty", blobSelected);
-        }
+            else{
+                console.log("the array is empty", blobSelected);
+            }
+            //**********************************************************
+
+            
+            selctedOrNot = [];
+            for (var xii = 0; xii < globalNumberOfUnique; xii++){
+                // console.log(xii, _.contains(blobsChangeTo, xii +1) )
+                if(_.contains(blobsChangeTo, xii + 1)){
+                    selctedOrNot.push(true);
+                    //sätt rätt reff image
+                    // console.log("theblob img ref:", blobData[xii][1], "on blob nr:", xii + 1);
+                }
+                else{
+                    selctedOrNot.push(false);
+                }
+            }
+            
+            blobSelected = {};
+            for (var xii = 0; xii < globalNumberOfUnique; xii++){ //_.size(relativeBlobs); xii++){//
+                if(selctedOrNot[xii]){
+                    blobSelected[xii + 1] = true;
+                }
+                else{
+                    blobSelected[xii + 1] = false;
+                }
+            }
+            // for (var xii = 0; xii < blobData.length; xii++){
+            //     console.log("bild nr:", blobData[xii][1], xii);
+            // }
+
+            redrawScrean(blobData, imgData, blobSelected);
+
         }; 
 
         function zeros(size) {
@@ -577,9 +601,7 @@ var imgData = [], modImgData = [], blobData = [];
             for (var xii = 0; xii < globalNumberOfUnique; xii++){
                 blobSelected[xii + 1] = false;
             }
-            for (var ij= 1; ij < blobData.length + 1; ij++){
-                p_offseted[ij] = { x: 0, y: 0 };
-            }
+           
             numBlobs = blobData.length;
 
             redrawScrean(blobData, imgData, blobSelected);
@@ -595,10 +617,7 @@ var imgData = [], modImgData = [], blobData = [];
                     blobData = overlap.slice();
                     imgData = imgs.slice();
                     modImgData = modImgs.slice();
-                    for (var ij= 1; ij < numBlobs + 1; ij++){
-                            p_offseted[ij] = { x: 0, y: 0 };          
-                    }
-
+                    
                     setupOverlay('#blobstop',function(){
                         var TMPcanvas=document.getElementById("blobstop");
                         blobtopCTX = TMPcanvas.getContext("2d"); 
@@ -612,12 +631,6 @@ var imgData = [], modImgData = [], blobData = [];
                 imgData = imgs1.slice();
                 blobSelected = selectedBlobs;
 
-                for (var ij= 1; ij < numBlobs + 1; ij++){
-                    p_offseted[ij] = { x: 0, y: 0 };
-                }
-            },
-            getOffset: function(){
-                return p_offseted;
             },
             getBlobSelected: function(){
                 return blobSelected;
@@ -660,11 +673,15 @@ function blend(){
     }
     
     $('#btn1').show();
+    $('#outputresult').show();
+    $('#formInterface').show();
+    formInterface
 
     //if you would like to see wats going on, choose the out commented lines
     var newcanvas =  document.createElement('CANVAS');//
     // newcanvas = loadCanvas("new-canvas");
     var srccanvas =  document.createElement('CANVAS');//
+
     // srccanvas = loadCanvas("src-canvas");
     newcanvas.width = srccanvas.width = finalcanvas.width = cwidth;
     newcanvas.height = srccanvas.height = finalcanvas.height = cheight;
@@ -672,8 +689,7 @@ function blend(){
     var src_ctx = srccanvas.getContext("2d");
     var new_ctx = newcanvas.getContext("2d");
     var final_ctx = finalcanvas.getContext("2d");
-    var offset = mouse.getOffset();
-
+   
     var firstImg = true;
     for (var i = 0; i <= _.size(mouse.getBlobSelected()); i++){
         if(mouse.getBlobSelected()[i] === true){
@@ -690,15 +706,15 @@ function blend(){
             var mask_pixels = blobData[blobNr -1][0];
             var srcData = src_ctx.getImageData(0, 0, srccanvas.width, srccanvas.height);
             var mask_data = getMask(mask_pixels, srcData, blobNr);
-            console.log("start Blending", blobNr);
-            poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas, offset[blobNr]);
+            console.log("start Blending, blobnr:", blobNr, "ref img :", blobData[i - 1][1]);
+            poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas);
         }
     }
 }
 
 function getMask(mask_pixels, src_pixels, blobNr){
 
-    var extraCanvas =  document.createElement('CANVAS');//loadCanvas("extra-canvas"); //
+    var extraCanvas = document.createElement('CANVAS');//loadCanvas("extra-canvas");
     extraCanvas.width = src_pixels.width; extraCanvas.height = src_pixels.height;
     var extraCtx = extraCanvas.getContext("2d");
 
@@ -709,7 +725,7 @@ function getMask(mask_pixels, src_pixels, blobNr){
 
             var p = dptr_s*4;//;(y*src_pixels.width+x)*4;
 
-            if(mask_pixels[dptr_s] === blobNr){
+            if(mask_pixels[dptr_s] === blobNr && src_pixels.data[p+3] != 0){
                 test_pixels.data[p+0] = 0; 
                 test_pixels.data[p+1] = 255;
                 test_pixels.data[p+2] = 0 ; 

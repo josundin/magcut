@@ -8,13 +8,33 @@ if(localStorage.getItem('selectSceneNum')){
     imageSet = 1;
 }
 
-if(imageSet == 1111){
+if(imageSet == 11111){
     console.log("Test set");
 
-    var imagesRef = ["../imgs/RGB_1a.png", "../imgs/RGB_2b.png"];
-    // var imagesRef = ["../imgs/test/jag1_s.jpg", "../imgs/test/jag2_s.jpg"];
+    // var imagesRef = ["../imgs/RGB_1a.png", "../imgs/RGB_2b.png"];
+    var imagesRef = ["../imgs/patch/P1_32_32.png", "../imgs/patch/P2_32_32.png"];
+    // var imagesRef = ["../imgs/patch/P1_alpha_32_32.png", "../imgs/patch/P2_alpha_32_32.png"];
     // var imagesRef = ["../imgs/poissonTest/BASEcanvas.png", "../imgs/poissonTest/SRCcanvas.png"];
     // var imagesRef = ["../imgs/relative/RGB_1a.png", "../imgs/relative/RGB_2b.png"];
+    var h1 = [[1, 0, 0, 0, 1, 0, 0, 0, 1]];
+    // allHomographies = [h1, h1];    
+    // var h1 =  [[1, 0, 0, 
+    //             -0.5, 1, 0, 
+    //             0, 0, 1]];
+    allHomographies = [h1, h1];
+
+    // var homographiesSienceParkH1 = [[1.3479026556015015, 0.008745760656893253, 0, 
+    //                                 0.15344436466693878, 1.1760369539260864, 0, 
+    //                                 0, 0, 1]];
+    // var homographiesSienceParkH2 = [[0.59467011690139771, -0.023367745801806452, 140.587615966796883, -0.104356661438941964, 0.7485773563385015, 45.653278350830086, -0.00041533523472025997, -0.000075649084465112548, 0.8931218385696411]];
+
+    // allHomographies = [homographiesSienceParkH1,homographiesSienceParkH2];  
+}
+
+if(imageSet == 222222){
+    console.log("Test set");
+
+    var imagesRef = ["../imgs/patch/P1a_body_32_32.png", "../imgs/patch/P3_body_32_32.png"];
     var h1 = [[1, 0, 0, 0, 1, 0, 0, 0, 1]];
     allHomographies = [h1, h1];
 }
@@ -97,7 +117,7 @@ else if(imageSet == 3){
     var homographiesHundH1 = [[0.9959573149681091, -0.004883802495896816, 2.678840160369873, 0.005868001375347376, 0.9916155338287354, 1.220236897468567, 0.000002886128186219139, -0.000019482627976685762, 0.9999841451644897 ]]
     var homographiesHundH2 = [[1.0037338733673096, 0.0017153428634628654, -2.2722158432006836, -0.004822799004614353, 1.0045233964920044, -1.1375906467437744, -0.0000012442297929737833, 0.000012024049283354543, 0.9999890923500061]]
     allHomographies = [homographiesHundH1,homographiesHundH2];  
-    imagesRef = ["../imgs/hundar/DSC6201.jpg", "../imgs/hundar/DSC6202.jpg"];
+    imagesRef = ["../imgs/hundar/_DSC6201.jpg", "../imgs/hundar/_DSC6202.jpg"];
 }
 else if(imageSet == 4){
     var homographiesCarH1 =[[1.0406215190887451, -0.0030779337976127863, -140.2157440185547, 0.017164135351777077, 1.0202465057373047, -0.7551611661911011, 0.00009318920638179407, -5.902680300096108e-7, 0.9874429702758789],
@@ -179,13 +199,18 @@ placeimgs(imagesRef, selDiv1);
 
 
 function placeimgs(images, wdiv){
-	var filesArr = Array.prototype.slice.call(images);
 	for (var i = 0; i < images.length; i++) 
 	{
 		var image = new Image();
 		image.src = images[i];
+        image.id = "myImage" + i.toString();
+        image.onclick = function() {
+            // img clicked
+            console.log(this.id);
+        };
 		wdiv.appendChild(image);
 	}
+
 };
 
 function findScale(){
@@ -214,6 +239,11 @@ function selView(){
 
 var blob;
 function createImgObj(val){
+    $('#ComputingBlobs').show();
+    console.log("choose", val);
+    // getElementById();
+    // document.getElementById("myImage" + val.toString()).className = "selected";
+    document.getElementById("myImage" + val.toString()).className += " selected";
     var currentImagesRef = new Array(imagesRef.length);
     var rindx = 0;
 
@@ -240,4 +270,9 @@ function blobStuff(){
     }
 }
 
-
+function scrollToSelect(){
+    $('#btnScroll').hide();
+    var el = document.getElementById('selectedF1');
+    el.scrollIntoView(true);
+    
+}

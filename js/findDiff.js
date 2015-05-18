@@ -16,8 +16,8 @@
 		var gH = myImageH;
 
 		var myBlobs = computeGaussians();
-					statdiff.stop("statdiff");
-			console.log("Bluring done in:", statdiff.log(1), "ms"); 
+		statdiff.stop("statdiff");
+		console.log("Bluring done in:", statdiff.log(1), "ms"); 
 
 
 		function computeGaussians(){
@@ -103,7 +103,6 @@
 				return myBlobsTmp;
         	},
         	paint: function(clicked, xpos, ypos, radioval) {
-        		console.log("paint");
         		
         		var inout = 0;
         		if(radioval == 2)
