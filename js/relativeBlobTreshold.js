@@ -121,7 +121,6 @@ var TSTEP = 1;
             },
             updateThresholdDecreas: function() {
                 initTreshold--;
-                console.log("dec The ID is:", myId, "initTreshold",initTreshold);
                 if (initTreshold >= 0){
                 	addOne(dists, myXsize, myYsize, decIndx, decVal);
 
