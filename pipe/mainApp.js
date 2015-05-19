@@ -24,7 +24,7 @@
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleFileSelect, false);
     document.querySelector('#files').addEventListener('change', handleFileSelectButton, false);
-    selDiv = document.querySelector("#selectedFiles"); 
+    selDiv = document.querySelector("#selectedF1"); 
   }
 
   function handleFileSelectButton(e) {
@@ -202,6 +202,7 @@ function otherImg(){
             }
             else{
                 console.log("INIT DONE");
+                $('#stitching').hide();
                 hComputed();
             }
             canvas.width = 0;
@@ -211,11 +212,11 @@ function otherImg(){
 };
 
 function selView(){
+    $('#stitching').hide();
+    $('#selectInterface').show();
     computedHs[0] = { val: false, bool: true, H: homographies.slice() };
     var mosaic2 = stitch.getMosaic2();
     selectview('canvas', mosaic2);
-    $('#stitching').hide();
-    $('#poststitch').show();
 
     var el = document.getElementById('selectViewContainer');
     el.scrollIntoView(true);
@@ -245,6 +246,7 @@ function loadCanvas(id){
 
 var blob;
 function createImgObj(val){
+  $('#ComputingBlobs').show();
     var currentImagesRef = new Array(imagesRef.length);
     var rindx = 0;
 
@@ -286,4 +288,8 @@ function blobStuff(){
     }
 }
 
-
+function scrollToSelect(){
+    var el = document.getElementById('selectedF1');
+    el.scrollIntoView(true);
+    
+}
