@@ -189,10 +189,13 @@ function placeimgs(images, wdiv){
 	{
 		var image = new Image();
 		image.src = images[i];
-        image.id = "myImage" + i.toString();
+        image.id = i.toString();
         image.onclick = function() {
             // img clicked
-            console.log(this.id);
+            var srtID = this.id;
+            console.log(parseInt(srtID));
+            localStorage.setItem('selectImg', parseInt(srtID));
+            window.location.reload();
         };
 		wdiv.appendChild(image);
 	}
@@ -213,13 +216,16 @@ function loadCanvas(id){
 };
 
 function selView(){
-    if(!localStorage.getItem('num')) {
-        console.log("Non set", localStorage.getItem('num'));
+    if(!localStorage.getItem('selectImg') || localStorage.getItem('selectImg') == 99) {
+        console.log("Non set", localStorage.getItem('selectImg'));
+        var mosaic2 = stitch.getMosaic2();
+        selectview('canvas', mosaic2);
     } else {
-        console.log("number", localStorage.getItem('num'));
+        var loadImg = localStorage.getItem('selectImg')
+        console.log("load number",loadImg);
+        localStorage.setItem('selectImg', 99);
+        createImgObj(loadImg);
     }
-    var mosaic2 = stitch.getMosaic2();
-    selectview('canvas', mosaic2);
 };
 
 
@@ -229,7 +235,7 @@ function createImgObj(val){
     console.log("choose", val);
     // getElementById();
     // document.getElementById("myImage" + val.toString()).className = "selected";
-    document.getElementById("myImage" + val.toString()).className += " selected";
+    document.getElementById(val.toString()).className += " selected";
     var currentImagesRef = new Array(imagesRef.length);
     var rindx = 0;
 

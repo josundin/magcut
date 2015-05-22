@@ -18,8 +18,9 @@ var imgData = [], modImgData = [], blobData = [];
         var refImgs = [];
 
         var SELBLOB  = 1;
-        var PAINTOUT = 2;
-        var PAINTIN  = 3;
+        var PAINTIN  = 2;
+        var PAINTOUT = 3;
+        
         var hoveredIn = 0, previusHoveredIn = 0;
         var notSelecthoveredIn = 0, notSelectpreviusHoveredIn = 0;
         var startcalcDist = false;
@@ -27,21 +28,23 @@ var imgData = [], modImgData = [], blobData = [];
 
         $('#myForm input').on('change', function() {
             radio = $('input[name=optradio]:checked', '#myForm').val(); 
-            console.log("RADIO Cnagke", radio); 
-            if(radio == 1){
+            console.log("RADIO ", radio);
+            console.log(blobSelected);
+            console.log(_.contains(blobSelected, true));
+            if(radio != 1 && !_.contains(blobSelected, true)){
+                $('input[name=optradio]')[0].checked = true;
+                radio = 1;
+                alert("First, select which blob/s to paint or erase on");
+            }
+            else if(radio == 1){
                 document.body.style.cursor = "auto";
-            }else if(radio == 2){
+            }else if(radio == 3){
                 document.body.style.cursor = "cell";
             }else{
                 document.body.style.cursor = "crosshair";
             }
         });
-
-        //$('#myStateButton input').button('toggle');
-        // $("#myButtons :input").change(function() {
-        //     console.log(this); // points to the clicked input button
-        // });
-        
+   
         var numBlobs = 0, dragging = false, mouseDown = false;
         var clicked = 0, previusClicked = 0;
         var is_mixing_gradients = true;
