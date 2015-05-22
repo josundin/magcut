@@ -216,7 +216,16 @@ function loadCanvas(id){
 };
 
 function selView(){
-    if(!localStorage.getItem('selectImg') || localStorage.getItem('selectImg') == 99) {
+
+    if(localStorage.getItem('doMosaic') == 999){
+        localStorage.setItem('doMosaic', 0);
+
+        scrollToSelect();
+        var mosaic2 = stitch.getMosaic2();
+        selectview('canvas', mosaic2);
+    }
+
+    else if(!localStorage.getItem('selectImg') || localStorage.getItem('selectImg') == 99) {
         console.log("Non set", localStorage.getItem('selectImg'));
         var mosaic2 = stitch.getMosaic2();
         selectview('canvas', mosaic2);
@@ -229,9 +238,10 @@ function selView(){
 };
 
 
-var blob;
+var blob, theImg = 99999;
 function createImgObj(val){
     $('#ComputingBlobs').show();
+    theImg = val;
     console.log("choose", val);
     // getElementById();
     // document.getElementById("myImage" + val.toString()).className = "selected";
@@ -267,4 +277,18 @@ function scrollToSelect(){
     var el = document.getElementById('selectedF1');
     el.scrollIntoView(true);
     
+}
+
+
+function doMosaic(){
+    console.log("theImg", theImg);
+    localStorage.setItem('doMosaic', 999);
+    window.location.reload();
+}
+
+
+function doReset(){
+    console.log("Do reset with theImg", theImg);
+    localStorage.setItem('selectImg', theImg);
+    window.location.reload();
 }
