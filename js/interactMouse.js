@@ -34,7 +34,7 @@ var imgData = [], modImgData = [], blobData = [];
             if(radio != 1 && !_.contains(blobSelected, true)){
                 $('input[name=optradio]')[0].checked = true;
                 radio = 1;
-                alert("First, select which blob/s to paint or erase on");
+                alert("First, select which Layer/s to paint or erase on");
             }
             else if(radio == 1){
                 document.body.style.cursor = "auto";
@@ -671,7 +671,7 @@ function blend(){
     var cont = _.contains(mouse.getBlobSelected(), true);
     if(cont !== true){    
         console.log("do naada");
-        alert("First, select which regions to blend by click them in the image");
+        alert("First, select which Layer/s to blend by click them in the image");
         return 0;    
     }
     

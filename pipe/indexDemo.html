@@ -115,17 +115,17 @@
 
 			<div id="myForm" role="form" class="btn-group-vertical" data-toggle="buttons">
 			    <div class="radio">
-			      <label id="selRadio" class="btn btn-default btn-block"><input type="radio" name="optradio" value="1" checked>Select Blob
+			      <label class="btn btn-default btn-block"><input type="radio" name="optradio" value="1" checked>Select Blob
 			      </label>
 			    </div>
 			    
 			    <div class="radio">
-			      <label id="paintRadio" class="btn btn-success btn-block"><input type="radio" name="optradio" value="2" >Paint Add
+			      <label class="btn btn-success btn-block"><input type="radio" name="optradio" value="3" >Paint Add
 			      	<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 			      </label>
 			    </div>
 			    <div class="radio">
-			      <label id="eraseRadio" class="btn btn-danger btn-block"><input type="radio" name="optradio" value="3" >Erase   
+			      <label class="btn btn-danger btn-block"><input type="radio" name="optradio" value="2" >Erase   
 			      	<span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
 			      </label>
 			    </div>
@@ -141,27 +141,31 @@
 		    <br> <br>
 		    <br> <br>
 		    <br> <br>
-		    <br> <br>
 		    
-		    <!--button id="instructbtn" type="button" class="btn btn-default" aria-label="Left Align"> instructions page
-				<span class="glyphicon glyphicon-info-sign"></span>
-			</button-->
-			<form action="index.html#instructions">
-			    <input type="submit" id="instructbtn" class="btn btn-default" aria-label="Left Align" value="instructions page">
+		    <form action="index.html#instructions">
+			    <input type="submit" id="instructbtn" class="btn btn-default btn-block" aria-label="Left Align" value="instructions page">
+			</form>
+			<form action="selScene.html">
+			    <input type="submit" id="instructbtn" class="btn btn-default btn-block" aria-label="Left Align" value="Demo Sets">
 			</form>
 
 	  </div>
 
-	<div class="col-md-8">
-		  <h3>Adjust threshold by scrolling the mouse wheel, click to select a region </h3>
+		<div class="col-md-8">
+		  <h3>Adjust threshold by scrolling the mouse wheel, click to select a Layer </h3>
   		  <div id="wrapper" >
 			  <canvas id="blobsbottom"></canvas>
 			  <canvas id="blobstop"></canvas>
 		  </div>
-	  </div>
+	  	</div>
+
+	  	 <div class="col-md-2"> 
+	  	 	<br> <br>
+	  	 	<button class="btn btn-default btn-block" name="mosaicBtn" onclick="doMosaic()">Mosaic View</button>
+	  	 	<button class="btn btn-default btn-block" name="restviewBtn" onclick="doReset()">Reset View</button>	
+		</div>
 
 	</div>
-
 	<div class="row">
 		<div class="col-md-2"> <div id="btn1"></div>
 		</div>
