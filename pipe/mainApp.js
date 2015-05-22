@@ -293,3 +293,17 @@ function scrollToSelect(){
     el.scrollIntoView(true);
     
 }
+
+function doReset(){
+    finalcanvas.width = 0;
+    finalcanvas.height = 0;
+    $('#btn1').hide();
+    $('#outputresult').hide();
+    $('#formInterface').hide();
+    // for (var xii = 0; xii < _.size(theSelectedBlobs); xii++){
+    //     theSelectedBlobs[xii + 1] = false;
+    // }
+    // redrawScrean(bmaps, overlapData, theSelectedBlobs); 
+    var el = document.getElementById('selectedF1');
+    el.scrollIntoView(true);
+}
