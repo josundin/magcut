@@ -24,7 +24,6 @@ function adjustBlendPosition() {
 			}
 		}
 	}
-	console.log(blend_position_offset.x, blend_position_offset.y);
 	result_ctx.putImageData(result_pixels, 0, 0);
 }
 
@@ -120,7 +119,6 @@ function poissonBlendImages(newcanvas, srccanvas, mask_data, finalcanvas){
 	// extraCtx.putImageData(test_pixels, 0, 0);
 	///////////////////////////////////////////////////////////////////////////////////////
 	result_ctx.putImageData(result_pixels, 0, 0);
-	console.log(cnt+" times iterated. ?", epsilon , previous_epsilon);
 
 	//scroll to canvas
 	var el = document.getElementById('instructbtn');

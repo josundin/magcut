@@ -39,7 +39,6 @@ var myblobs1 = [];
                 ////// Go find them blobs //////////
                 myblobs1[xii] = findDiff(imgBaseChanels, img1Chanels, overlap.width, overlap.height, xii);
                 overlap.blobs = myblobs1[xii].getData();
-                console.log(" num unique",overlap.blobs.numberOfUnique, "length", overlap.blobs.data.length);
                 // Separate the aryes
                 for (var y = 0; y < overlap.blobs.numberOfUnique; y++){
                     

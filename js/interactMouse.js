@@ -145,7 +145,7 @@ var imgData = [], modImgData = [], blobData = [];
                     } 
                     mouseDown = true;
                     if(radio == SELBLOB){
-                        console.log("Check what blob is clicked");
+                        // console.log("Check what blob is clicked");
                         
                         currPos = getPointerPositionsIn(e);
                         //Find out if we have a hit and which shape was clicked
@@ -188,12 +188,12 @@ var imgData = [], modImgData = [], blobData = [];
                             ctx.beginPath();
 
                             //if paint in
-                            if(radio == PAINTOUT){
+                            if(radio == PAINTIN){
                                 ctx.globalCompositeOperation = 'source-over';
                                 ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
                             }
 
-                            if(radio == PAINTIN){
+                            if(radio == PAINTOUT){
                                 ctx.globalCompositeOperation = 'source-over';
                                 ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
                             }
@@ -278,9 +278,6 @@ var imgData = [], modImgData = [], blobData = [];
 
                         }
                         else{
-                            console.log("hovered Out non sel");
-                            console.log("blobSelected", blobSelected);
-                            console.log("relativeBlobs", relativeBlobs);
                             HoverSelectCnt = 0;
                         }
                     } else if(HoverSelectCnt == 2){
@@ -380,7 +377,7 @@ var imgData = [], modImgData = [], blobData = [];
                             }
                         }
                     }
-                    console.log("scrollThresh", scrollThresh);
+                    // console.log("scrollThresh", scrollThresh);
                     prevdDelta = dDelta;
                 });
             };
@@ -401,11 +398,6 @@ var imgData = [], modImgData = [], blobData = [];
             else{
                 relativeBlobs[clicked] = new relativeBlobTreshold(clicked, myblobs1[blobData[clicked - 1][1]].getGauss(), result_canvas_top.width, result_canvas_top.height, scrollThresh, ourPos, myblobs1[blobData[clicked - 1][1]].getSize(clicked), imgData[blobData[clicked - 1][1]].data);                                             
             }   
-
-            console.log("****************************************************");
-            console.log("created new relative blob");
-            console.log("****************************************************");
-
 
             //save the new blob
             blobData[clicked - 1][0] = relativeBlobs[clicked].getBlob();
@@ -520,7 +512,7 @@ var imgData = [], modImgData = [], blobData = [];
 
                 blobsChangeFrom = unzipped[0];
                 blobsChangeTo   = unzipped[1];
-                console.log("from :", blobsChangeFrom, "to   :", blobsChangeTo);
+                // console.log("from :", blobsChangeFrom, "to   :", blobsChangeTo);
 
                 reduceWith = initialSize - blobsChangeFrom.length;
 
